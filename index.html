@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SOOFT · Portal de Cotización Enterprise</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
@@ -49,8 +49,8 @@
   .sub-panel{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1),opacity .3s ease,margin .3s;opacity:0}
   .sub-panel.open{max-height:400px;opacity:1}
 
-  .cuotas-btn{padding:8px 0;border:1.5px solid #E2E8F0;border-radius:10px;font-size:14px;font-weight:600;font-family:'DM Mono',monospace;color:#64748B;background:white;cursor:pointer;transition:all .15s;text-align:center}
-  .cuotas-btn.active{border-color:#2563EB;background:#EFF6FF;color:#1D4ED8;box-shadow:0 0 0 3px #BFDBFE}
+  .cuotas-btn{padding:6px 0;border:1.5px solid #E2E8F0;border-radius:8px;font-size:13px;font-weight:600;font-family:'DM Mono',monospace;color:#64748B;background:white;cursor:pointer;transition:all .15s;text-align:center}
+  .cuotas-btn.active{border-color:#2563EB;background:#EFF6FF;color:#1D4ED8;box-shadow:0 0 0 2px #BFDBFE}
 
   .ilimitado-pill{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#EFF6FF,#F0FDF4);border:1px solid #BFDBFE;border-radius:99px;padding:5px 14px;font-size:13px;font-weight:600;color:#1D4ED8}
 
@@ -92,119 +92,224 @@
   @media(min-width:1024px){.sidebar-sticky{position:sticky;top:24px}}
   /* ── Print: oculta todo excepto la propuesta ── */
   @media print {
-    body * { visibility: hidden !important; }
-    #proposal-template, #proposal-template * { visibility: visible !important; }
-    #proposal-template {
-      position: fixed !important; top: 0 !important; left: 0 !important;
-      width: 100% !important; height: auto !important;
-      background: white !important; z-index: 9999 !important;
-      padding: 0 !important; margin: 0 !important;
+    html, body {
+      background: white !important;
+      margin: 0 !important;
+      padding: 0 !important;
     }
-    @page { margin: 1.5cm 2cm; size: A4 portrait; }
+    body > *:not(#proposal-template) {
+      display: none !important;
+    }
+    #proposal-template {
+      display: block !important;
+      visibility: visible !important;
+      position: static !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    @page {
+      margin: 1.4cm 1.8cm;
+      size: A4 portrait;
+    }
   }
 
   /* ── Proposal template styles ── */
   #proposal-template { display: none; }
   #proposal-template.visible { display: block; }
 
+  /* SOOFT brand colors */
+  :root {
+    --sooft-orange: #FF6600;
+    --sooft-dark:   #2D2D2D;
+    --sooft-text:   #404040;
+    --sooft-muted:  #595959;
+  }
+
   .prop-page {
-    font-family: 'Plus Jakarta Sans', Arial, sans-serif;
-    color: #0F172A; background: white;
-    max-width: 780px; margin: 0 auto;
-    padding: 48px 52px;
+    font-family: 'Montserrat', Arial, sans-serif;
+    color: var(--sooft-text);
+    background: white;
+    max-width: 820px;
+    margin: 0 auto;
   }
-  .prop-logo-bar {
+
+  /* ── Orange header banner ── */
+  .prop-header-banner {
+    background: var(--sooft-orange);
+    padding: 22px 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0;
+  }
+  .prop-header-logo {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .prop-header-logo-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px; font-weight: 900;
+    color: white; letter-spacing: -0.5px; line-height: 1;
+  }
+  .prop-header-logo-sub {
+    font-size: 8px; font-weight: 500;
+    letter-spacing: 3.5px; text-transform: uppercase;
+    color: rgba(255,255,255,0.85);
+  }
+  .prop-header-tagline {
+    font-size: 11px; font-weight: 800;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: white;
+  }
+  .prop-header-tagline span { font-weight: 400; }
+
+  /* ── Meta strip below header ── */
+  .prop-meta-strip {
+    background: #F9F9F9;
+    border-bottom: 2px solid var(--sooft-orange);
+    padding: 12px 36px;
     display: flex; align-items: center; justify-content: space-between;
-    border-bottom: 2px solid #050E1F; padding-bottom: 28px; margin-bottom: 36px;
   }
-  .prop-logo-text { font-size: 26px; font-weight: 800; color: #050E1F; letter-spacing: -0.5px; }
-  .prop-logo-sub { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #64748B; margin-top: 2px; }
-  .prop-meta { text-align: right; font-size: 12px; color: #64748B; line-height: 1.6; }
-  .prop-meta strong { color: #0F172A; }
+  .prop-meta-strip-label {
+    font-size: 9px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--sooft-orange);
+  }
+  .prop-meta-strip-items {
+    display: flex; gap: 28px; font-size: 11px; color: var(--sooft-muted);
+  }
+  .prop-meta-strip-items strong { color: var(--sooft-text); font-weight: 700; }
 
-  .prop-title-section { margin-bottom: 36px; }
-  .prop-badge { display: inline-block; background: #EFF6FF; color: #1D4ED8; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 4px 12px; border-radius: 99px; margin-bottom: 12px; border: 1px solid #BFDBFE; }
-  .prop-title { font-size: 28px; font-weight: 800; color: #050E1F; line-height: 1.2; margin: 0 0 6px; }
-  .prop-subtitle { font-size: 14px; color: #64748B; margin: 0; }
+  /* ── Body content ── */
+  .prop-body { padding: 32px 36px 20px; }
 
+  /* ── Title section ── */
+  .prop-title-section { margin-bottom: 28px; }
+  .prop-badge {
+    display: inline-block;
+    background: var(--sooft-orange);
+    color: white; font-size: 9px; font-weight: 800;
+    letter-spacing: 2px; text-transform: uppercase;
+    padding: 4px 14px; border-radius: 3px; margin-bottom: 10px;
+  }
+  .prop-title {
+    font-size: 24px; font-weight: 800;
+    color: var(--sooft-dark); line-height: 1.2; margin: 0 0 5px;
+  }
+  .prop-subtitle { font-size: 13px; color: var(--sooft-muted); margin: 0; font-weight: 500; }
+
+  /* ── Client info box ── */
   .prop-client-box {
-    background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px;
-    padding: 20px 24px; margin-bottom: 36px;
+    background: #F9F9F9;
+    border-left: 4px solid var(--sooft-orange);
+    padding: 16px 20px; margin-bottom: 28px;
     display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;
   }
-  .prop-client-label { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: #94A3B8; margin-bottom: 4px; font-weight: 600; }
-  .prop-client-value { font-size: 14px; font-weight: 700; color: #0F172A; }
-  .prop-client-sub { font-size: 12px; color: #64748B; margin-top: 2px; }
-
-  .prop-section { margin-bottom: 32px; }
-  .prop-section-title {
-    font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
-    color: #2563EB; margin-bottom: 14px; padding-bottom: 8px;
-    border-bottom: 1px solid #E2E8F0; display: flex; align-items: center; gap: 8px;
+  .prop-client-label {
+    font-size: 8px; text-transform: uppercase;
+    letter-spacing: 2px; color: var(--sooft-orange);
+    margin-bottom: 4px; font-weight: 800;
   }
-  .prop-section-title::before { content:''; display:inline-block; width:3px; height:14px; background:#2563EB; border-radius:2px; }
+  .prop-client-value { font-size: 13px; font-weight: 700; color: var(--sooft-dark); }
+  .prop-client-sub { font-size: 11px; color: var(--sooft-muted); margin-top: 2px; }
 
+  /* ── Sections ── */
+  .prop-section { margin-bottom: 24px; }
+  .prop-section-title {
+    font-size: 9px; font-weight: 800;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: white; background: var(--sooft-dark);
+    padding: 7px 14px; margin-bottom: 0;
+  }
+
+  /* ── Tables ── */
   .prop-table { width: 100%; border-collapse: collapse; }
   .prop-table th {
-    font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-    color: #94A3B8; padding: 8px 12px; background: #F8FAFC;
-    border-bottom: 1px solid #E2E8F0; text-align: left;
+    font-size: 8px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: white;
+    background: var(--sooft-orange);
+    padding: 8px 12px; text-align: left; border: none;
   }
   .prop-table th:last-child { text-align: right; }
-  .prop-table td { padding: 11px 12px; font-size: 13px; color: #334155; border-bottom: 1px solid #F1F5F9; vertical-align: middle; }
-  .prop-table td:last-child { text-align: right; font-family: 'DM Mono', monospace; font-weight: 700; color: #0F172A; font-size: 13px; }
+  .prop-table td {
+    padding: 10px 12px; font-size: 12px;
+    color: var(--sooft-text);
+    border-bottom: 1px solid #F0F0F0;
+    vertical-align: middle;
+  }
+  .prop-table td:last-child {
+    text-align: right; font-family: 'Montserrat', monospace;
+    font-weight: 700; color: var(--sooft-dark); font-size: 12px;
+  }
   .prop-table tr:last-child td { border-bottom: none; }
-  .prop-table .highlight-row td { background: #EFF6FF; font-weight: 700; }
-  .prop-badge-green { display:inline-block;background:#D1FAE5;color:#065F46;font-size:10px;font-weight:700;padding:2px 9px;border-radius:99px; }
-  .prop-badge-amber { display:inline-block;background:#FEF3C7;color:#92400E;font-size:10px;font-weight:700;padding:2px 9px;border-radius:99px; }
-  .prop-badge-blue  { display:inline-block;background:#EFF6FF;color:#1D4ED8;font-size:10px;font-weight:700;padding:2px 9px;border-radius:99px; }
+  .prop-table tr:nth-child(even) td { background: #FAFAFA; }
+  .prop-table .highlight-row td { background: #FFF5EE; font-weight: 700; }
+  .prop-ilimitado-row td { background: #F5FFF8 !important; }
 
+  .prop-badge-green { display:inline-block;background:#D1FAE5;color:#065F46;font-size:9px;font-weight:800;padding:2px 9px;border-radius:3px;text-transform:uppercase;letter-spacing:1px; }
+  .prop-badge-amber { display:inline-block;background:#FEF3C7;color:#92400E;font-size:9px;font-weight:800;padding:2px 9px;border-radius:3px;text-transform:uppercase;letter-spacing:1px; }
+  .prop-badge-blue  { display:inline-block;background:#EFF6FF;color:#1D4ED8;font-size:9px;font-weight:800;padding:2px 9px;border-radius:3px; }
+
+  /* ── Total bar ── */
   .prop-total-bar {
-    background: #050E1F; border-radius: 10px; padding: 18px 24px;
-    display: flex; justify-content: space-between; align-items: center; margin-top: 4px;
+    background: var(--sooft-dark);
+    padding: 16px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 4px;
   }
-  .prop-total-label { color: white; font-size: 13px; font-weight: 600; }
-  .prop-total-value { color: #60A5FA; font-size: 26px; font-weight: 800; font-family: 'DM Mono', monospace; }
+  .prop-total-label { color: white; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+  .prop-total-value { color: var(--sooft-orange); font-size: 28px; font-weight: 900; font-family: 'Montserrat', sans-serif; }
 
+  /* ── Cuota note ── */
   .prop-cuota-note {
-    background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 8px;
-    padding: 12px 16px; margin-top: 12px; font-size: 12px; color: #92400E; line-height: 1.6;
+    background: #FFF8F0; border-left: 3px solid var(--sooft-orange);
+    padding: 10px 14px; margin-top: 10px;
+    font-size: 11px; color: var(--sooft-muted); line-height: 1.6;
   }
 
-  .prop-ilimitado-row td { background: #F0FDF4 !important; }
-
-  .prop-footer {
-    margin-top: 48px; padding-top: 20px; border-top: 1px solid #E2E8F0;
-    display: flex; justify-content: space-between; align-items: flex-start;
-    font-size: 11px; color: #94A3B8; line-height: 1.6;
-  }
-  .prop-footer-brand { font-weight: 700; color: #0F172A; font-size: 13px; }
-
+  /* ── Validity ── */
   .prop-validity {
-    background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px;
-    padding: 12px 18px; margin-top: 24px; font-size: 12px; color: #64748B;
-    display: flex; align-items: center; gap: 10px;
+    background: #F9F9F9; border: 1px solid #E8E8E8;
+    padding: 10px 16px; margin-top: 20px;
+    font-size: 11px; color: var(--sooft-muted);
+    display: flex; align-items: flex-start; gap: 10px; line-height: 1.5;
   }
+  .prop-validity-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--sooft-orange); flex-shrink: 0; margin-top: 3px;
+  }
+
+  /* ── Dark footer banner ── */
+  .prop-footer-banner {
+    background: var(--sooft-dark);
+    padding: 14px 36px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 24px;
+  }
+  .prop-footer-logo-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px; font-weight: 800;
+    color: white; letter-spacing: -0.3px;
+  }
+  .prop-footer-logo-sub {
+    font-size: 6px; font-weight: 400;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: rgba(255,255,255,0.5); margin-top: 1px;
+  }
+  .prop-footer-web {
+    font-size: 11px; color: rgba(255,255,255,0.6);
+    font-weight: 500; letter-spacing: 0.5px;
+  }
+  .prop-footer-web span { color: var(--sooft-orange); }
 
   /* Botón generar propuesta */
   .btn-proposal {
-    width: 100%;
-    background: #050E1F;
-    color: white;
-    font-weight: 700;
-    padding: 14px 20px;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    transition: all 0.15s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    width: 100%; background: var(--sooft-orange); color: white;
+    font-weight: 800; padding: 14px 20px; border-radius: 10px; border: none;
+    cursor: pointer; font-size: 14px; font-family: 'Plus Jakarta Sans', sans-serif;
+    transition: all 0.15s; display: flex; align-items: center;
+    justify-content: center; gap: 8px; letter-spacing: 0.3px;
   }
-  .btn-proposal:hover { background: #0A1930; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(5,14,31,.25); }
+  .btn-proposal:hover { background: #E55A00; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(255,102,0,.3); }
   .btn-proposal:active { transform: scale(0.98); }
 </style>
 </head>
@@ -394,11 +499,31 @@
             <!-- Cuotas -->
             <div>
               <label class="text-xs font-bold text-steel uppercase tracking-wider block mb-2">Dividir en cuotas mensuales</label>
-              <div class="grid grid-cols-4 gap-2" id="cuotas-grid">
+              <div class="grid grid-cols-6 gap-1.5" id="cuotas-grid">
                 <button class="cuotas-btn active" onclick="setCuotas(1)">1</button>
+                <button class="cuotas-btn" onclick="setCuotas(2)">2</button>
                 <button class="cuotas-btn" onclick="setCuotas(3)">3</button>
+                <button class="cuotas-btn" onclick="setCuotas(4)">4</button>
+                <button class="cuotas-btn" onclick="setCuotas(5)">5</button>
                 <button class="cuotas-btn" onclick="setCuotas(6)">6</button>
+                <button class="cuotas-btn" onclick="setCuotas(7)">7</button>
+                <button class="cuotas-btn" onclick="setCuotas(8)">8</button>
+                <button class="cuotas-btn" onclick="setCuotas(9)">9</button>
+                <button class="cuotas-btn" onclick="setCuotas(10)">10</button>
+                <button class="cuotas-btn" onclick="setCuotas(11)">11</button>
                 <button class="cuotas-btn" onclick="setCuotas(12)">12</button>
+                <button class="cuotas-btn" onclick="setCuotas(13)">13</button>
+                <button class="cuotas-btn" onclick="setCuotas(14)">14</button>
+                <button class="cuotas-btn" onclick="setCuotas(15)">15</button>
+                <button class="cuotas-btn" onclick="setCuotas(16)">16</button>
+                <button class="cuotas-btn" onclick="setCuotas(17)">17</button>
+                <button class="cuotas-btn" onclick="setCuotas(18)">18</button>
+                <button class="cuotas-btn" onclick="setCuotas(19)">19</button>
+                <button class="cuotas-btn" onclick="setCuotas(20)">20</button>
+                <button class="cuotas-btn" onclick="setCuotas(21)">21</button>
+                <button class="cuotas-btn" onclick="setCuotas(22)">22</button>
+                <button class="cuotas-btn" onclick="setCuotas(23)">23</button>
+                <button class="cuotas-btn" onclick="setCuotas(24)">24</button>
               </div>
               <div class="text-xs text-muted mt-1 text-center">meses</div>
             </div>
@@ -718,176 +843,181 @@
 <div id="proposal-template">
 <div class="prop-page">
 
-  <!-- Logo + header -->
-  <div class="prop-logo-bar">
+  <!-- ── ORANGE HEADER BANNER ── -->
+  <div class="prop-header-banner">
+    <div class="prop-header-logo">
+      <div class="prop-header-logo-name">SOOFT</div>
+      <div class="prop-header-logo-sub">Technology</div>
+    </div>
+    <div class="prop-header-tagline"><span>#CREAR</span>ES<span>INFINITO</span></div>
+  </div>
+
+  <!-- ── META STRIP ── -->
+  <div class="prop-meta-strip">
+    <div class="prop-meta-strip-label">Propuesta Comercial Enterprise</div>
+    <div class="prop-meta-strip-items">
+      <span>Fecha: <strong id="pt-fecha">—</strong></span>
+      <span>Ref: <strong id="pt-ref">COT-001</strong></span>
+      <span>Vigencia: <strong id="pt-vigencia">30 días</strong></span>
+    </div>
+  </div>
+
+  <!-- ── BODY ── -->
+  <div class="prop-body">
+
+    <!-- Badge + título -->
+    <div class="prop-title-section">
+      <div class="prop-badge">Propuesta Enterprise · Confidencial</div>
+      <h1 class="prop-title" id="pt-titulo">Propuesta de Implementación</h1>
+      <p class="prop-subtitle">Plataforma ATS + Módulos Enterprise personalizados</p>
+    </div>
+
+    <!-- Cliente info -->
+    <div class="prop-client-box">
+      <div>
+        <div class="prop-client-label">Dirigida a</div>
+        <div class="prop-client-value" id="pt-empresa">—</div>
+        <div class="prop-client-sub" id="pt-contacto">—</div>
+      </div>
+      <div>
+        <div class="prop-client-label">Proyecto</div>
+        <div class="prop-client-value" id="pt-proyecto">—</div>
+      </div>
+      <div>
+        <div class="prop-client-label">Preparado por</div>
+        <div class="prop-client-value" id="pt-comercial">—</div>
+        <div class="prop-client-sub">SOOFT · Equipo Comercial</div>
+      </div>
+    </div>
+
+    <!-- Plan Enterprise -->
+    <div class="prop-section">
+      <div class="prop-section-title">Plan Enterprise — Descripción</div>
+      <table class="prop-table">
+        <thead>
+          <tr>
+            <th style="width:46%">Componente</th>
+            <th style="width:28%">Condición</th>
+            <th>Valor mensual</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Fee Base Mensual</strong><br><span style="font-size:10px;color:#888">ATS completo · Panel admin · Reportes · Soporte email</span></td>
+            <td>Fijo mensual</td>
+            <td id="pt-base">USD 0</td>
+          </tr>
+          <tr class="prop-ilimitado-row">
+            <td><strong>Vacantes Activas</strong><br><span style="font-size:10px;color:#888">Publicaciones simultáneas sin restricción</span></td>
+            <td><span class="prop-badge-green">Ilimitadas</span></td>
+            <td style="color:#065F46;font-weight:800">Incluido</td>
+          </tr>
+          <tr class="prop-ilimitado-row">
+            <td><strong>Usuarios en Plataforma</strong><br><span style="font-size:10px;color:#888">Reclutadores, managers y administradores</span></td>
+            <td><span class="prop-badge-green">Ilimitados</span></td>
+            <td style="color:#065F46;font-weight:800">Incluido</td>
+          </tr>
+          <tr id="pt-row-srv" style="display:none">
+            <td><strong>Infraestructura SOOFT Cloud</strong><br><span style="font-size:10px;color:#888">Alta disponibilidad · Backups automáticos · SLA 99.9%</span></td>
+            <td>Fijo mensual</td>
+            <td id="pt-srv">USD 0</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Implementación -->
+    <div class="prop-section" id="pt-section-impl" style="display:none">
+      <div class="prop-section-title">Implementación e Integración</div>
+      <table class="prop-table">
+        <thead>
+          <tr>
+            <th>Detalle</th>
+            <th style="text-align:center">Horas / Tarifa</th>
+            <th>Importe</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Desarrollo e integración custom</strong><br><span style="font-size:10px;color:#888">API, conectores de sistemas, configuración inicial</span></td>
+            <td style="text-align:center;font-family:monospace;font-size:11px" id="pt-impl-det">—</td>
+            <td id="pt-impl-total">USD 0</td>
+          </tr>
+          <tr class="highlight-row">
+            <td>
+              <strong id="pt-cuota-label">Cuota de Implementación (1 de 1)</strong><br>
+              <span style="font-size:10px;color:#888" id="pt-cuota-note">Monto que se suma al total mensual</span>
+            </td>
+            <td style="text-align:center"><span class="prop-badge-amber" id="pt-cuota-badge">1 cuota</span></td>
+            <td id="pt-cuota-val">USD 0</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="prop-cuota-note" id="pt-cuota-explain" style="display:none"></div>
+    </div>
+
+    <!-- Módulos adicionales -->
+    <div class="prop-section" id="pt-section-mod">
+      <div class="prop-section-title">Módulos Adicionales</div>
+      <table class="prop-table">
+        <thead>
+          <tr>
+            <th>Módulo</th>
+            <th style="text-align:center">Detalle</th>
+            <th>Subtotal / mes</th>
+          </tr>
+        </thead>
+        <tbody id="pt-mod-tbody">
+          <tr><td colspan="3" style="color:#aaa;text-align:center;padding:16px;font-size:11px">Sin módulos adicionales seleccionados</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Soporte -->
+    <div class="prop-section" id="pt-section-spt" style="display:none">
+      <div class="prop-section-title">Soporte Premium</div>
+      <table class="prop-table">
+        <thead>
+          <tr>
+            <th>Servicio</th>
+            <th style="text-align:center">Condición</th>
+            <th>Subtotal / mes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Soporte técnico dedicado</strong><br><span style="font-size:10px;color:#888">Atención prioritaria · SLA garantizado · Canal exclusivo</span></td>
+            <td style="text-align:center;font-family:monospace;font-size:11px" id="pt-spt-det">—</td>
+            <td id="pt-spt-val">USD 0</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Total -->
+    <div class="prop-total-bar">
+      <div>
+        <div class="prop-total-label">Total Mensual Estimado</div>
+        <div style="color:rgba(255,255,255,0.5);font-size:10px;margin-top:3px;font-weight:500;letter-spacing:0.5px" id="pt-total-note">Precio base + módulos activos</div>
+      </div>
+      <div class="prop-total-value" id="pt-total">USD 0</div>
+    </div>
+
+    <!-- Vigencia -->
+    <div class="prop-validity">
+      <div class="prop-validity-dot"></div>
+      <span>Esta propuesta tiene una vigencia de <strong id="pt-validity-txt">30 días corridos</strong> a partir de la fecha de emisión. Los valores están expresados en dólares estadounidenses (USD) y no incluyen impuestos locales.</span>
+    </div>
+
+  </div><!-- /prop-body -->
+
+  <!-- ── DARK FOOTER BANNER ── -->
+  <div class="prop-footer-banner">
     <div>
-      <div class="prop-logo-text">SOOFT Technology</div>
-      <div class="prop-logo-sub">Propuesta Comercial Enterprise</div>
+      <div class="prop-footer-logo-name">SOOFT</div>
+      <div class="prop-footer-logo-sub">Technology</div>
     </div>
-    <div class="prop-meta">
-      <div>Fecha: <strong id="pt-fecha">—</strong></div>
-      <div>Ref: <strong id="pt-ref">COT-001</strong></div>
-      <div style="margin-top:4px">Vigencia: <strong id="pt-vigencia">30 días</strong></div>
-    </div>
-  </div>
-
-  <!-- Badge + título -->
-  <div class="prop-title-section">
-    <div class="prop-badge">Propuesta Enterprise · Confidencial</div>
-    <h1 class="prop-title" id="pt-titulo">Propuesta de Implementación</h1>
-    <p class="prop-subtitle">Plataforma ATS + Módulos Enterprise personalizados</p>
-  </div>
-
-  <!-- Cliente info -->
-  <div class="prop-client-box">
-    <div>
-      <div class="prop-client-label">Dirigida a</div>
-      <div class="prop-client-value" id="pt-empresa">—</div>
-      <div class="prop-client-sub" id="pt-contacto">—</div>
-    </div>
-    <div>
-      <div class="prop-client-label">Proyecto</div>
-      <div class="prop-client-value" id="pt-proyecto">—</div>
-    </div>
-    <div>
-      <div class="prop-client-label">Preparado por</div>
-      <div class="prop-client-value" id="pt-comercial">—</div>
-      <div class="prop-client-sub">SOOFT · Equipo Comercial</div>
-    </div>
-  </div>
-
-  <!-- Sección 1: Plan Enterprise -->
-  <div class="prop-section">
-    <div class="prop-section-title">Plan Enterprise — Descripción</div>
-    <table class="prop-table">
-      <thead>
-        <tr>
-          <th style="width:45%">Componente</th>
-          <th style="width:30%">Condición</th>
-          <th>Valor mensual</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>Fee Base Mensual</strong><br><span style="font-size:11px;color:#94A3B8">ATS completo · Panel admin · Reportes · Soporte email</span></td>
-          <td>Fijo mensual</td>
-          <td id="pt-base">USD 0</td>
-        </tr>
-        <tr class="prop-ilimitado-row">
-          <td><strong>Vacantes Activas</strong><br><span style="font-size:11px;color:#94A3B8">Publicaciones simultáneas sin restricción</span></td>
-          <td><span class="prop-badge-green">Ilimitadas</span></td>
-          <td style="color:#065F46">Incluido</td>
-        </tr>
-        <tr class="prop-ilimitado-row">
-          <td><strong>Usuarios en Plataforma</strong><br><span style="font-size:11px;color:#94A3B8">Reclutadores, managers y admins</span></td>
-          <td><span class="prop-badge-green">Ilimitados</span></td>
-          <td style="color:#065F46">Incluido</td>
-        </tr>
-        <tr id="pt-row-srv" style="display:none">
-          <td><strong>Infraestructura SOOFT Cloud</strong><br><span style="font-size:11px;color:#94A3B8">Alta disponibilidad · Backups automáticos · SLA 99.9%</span></td>
-          <td>Fijo mensual</td>
-          <td id="pt-srv">USD 0</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Sección 2: Implementación -->
-  <div class="prop-section" id="pt-section-impl" style="display:none">
-    <div class="prop-section-title">Implementación e Integración</div>
-    <table class="prop-table">
-      <thead>
-        <tr>
-          <th>Detalle</th>
-          <th style="text-align:center">Horas / Tarifa</th>
-          <th>Importe</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>Desarrollo e integración custom</strong><br><span style="font-size:11px;color:#94A3B8">API, conectores de sistemas, configuración inicial</span></td>
-          <td style="text-align:center;font-family:monospace;font-size:12px" id="pt-impl-det">—</td>
-          <td id="pt-impl-total">USD 0</td>
-        </tr>
-        <tr class="highlight-row">
-          <td>
-            <strong id="pt-cuota-label">Cuota de Implementación (1 de 1)</strong><br>
-            <span style="font-size:11px;color:#64748B" id="pt-cuota-note">Monto que se suma al total mensual</span>
-          </td>
-          <td style="text-align:center"><span class="prop-badge-amber" id="pt-cuota-badge">1 cuota</span></td>
-          <td id="pt-cuota-val">USD 0</td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="prop-cuota-note" id="pt-cuota-explain" style="display:none"></div>
-  </div>
-
-  <!-- Sección 3: Módulos adicionales -->
-  <div class="prop-section" id="pt-section-mod">
-    <div class="prop-section-title">Módulos Adicionales</div>
-    <table class="prop-table">
-      <thead>
-        <tr>
-          <th>Módulo</th>
-          <th style="text-align:center">Detalle</th>
-          <th>Subtotal / mes</th>
-        </tr>
-      </thead>
-      <tbody id="pt-mod-tbody">
-        <tr><td colspan="3" style="color:#94A3B8;text-align:center;padding:16px">Sin módulos adicionales seleccionados</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Sección 4: Soporte -->
-  <div class="prop-section" id="pt-section-spt" style="display:none">
-    <div class="prop-section-title">Soporte Premium</div>
-    <table class="prop-table">
-      <thead>
-        <tr>
-          <th>Servicio</th>
-          <th style="text-align:center">Condición</th>
-          <th>Subtotal / mes</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            <strong>Soporte técnico dedicado</strong><br>
-            <span style="font-size:11px;color:#94A3B8">Atención prioritaria · SLA garantizado · Canal exclusivo</span>
-          </td>
-          <td style="text-align:center;font-family:monospace;font-size:12px" id="pt-spt-det">—</td>
-          <td id="pt-spt-val">USD 0</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Total -->
-  <div class="prop-total-bar">
-    <div>
-      <div class="prop-total-label">Total Mensual Estimado</div>
-      <div style="color:#94A3B8;font-size:11px;margin-top:2px" id="pt-total-note">Precio base + módulos activos</div>
-    </div>
-    <div class="prop-total-value" id="pt-total">USD 0</div>
-  </div>
-
-  <!-- Vigencia -->
-  <div class="prop-validity">
-    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#94A3B8" stroke-width="2" style="flex-shrink:0"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-    <span>Esta propuesta tiene una vigencia de <strong id="pt-validity-txt">30 días corridos</strong> a partir de la fecha de emisión. Los valores están expresados en dólares estadounidenses (USD) y no incluyen impuestos locales.</span>
-  </div>
-
-  <!-- Footer -->
-  <div class="prop-footer">
-    <div>
-      <div class="prop-footer-brand">SOOFT Technology</div>
-      <div>Plataforma ATS Enterprise · sooft.com.ar</div>
-    </div>
-    <div style="text-align:right">
-      <div>Información confidencial · Solo para uso del destinatario</div>
-      <div>Elaborado por el equipo comercial SOOFT</div>
-    </div>
+    <div class="prop-footer-web">/Sooft<span>.tech</span></div>
   </div>
 
 </div><!-- /prop-page -->
@@ -943,8 +1073,8 @@ let cuotasSel = 1;
 function setCuotas(n) {
   cuotasSel = n;
   S.cuotas = n;
-  document.querySelectorAll('#cuotas-grid .cuotas-btn').forEach((b,i)=>{
-    b.classList.toggle('active', [1,3,6,12][i]===n);
+  document.querySelectorAll('#cuotas-grid .cuotas-btn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.textContent) === n);
   });
   calcTotal();
 }
@@ -1279,12 +1409,12 @@ function generarPropuestaPDF() {
   } else { $('pt-section-spt').style.display = 'none'; }
 
   $('pt-total').textContent = fmtU2(total);
-  const noteParts = ['Fee Base'];
-  if (S.servidores==='sooft') noteParts.push('Servidores SOOFT');
-  if (S.int && S.intHrs>0) noteParts.push('Cuota Impl.');
-  if (S.ent && S.entQty>0) noteParts.push('Entrevistas IA');
-  if (S.spt && S.sptHrs>0) noteParts.push('Soporte');
-  $('pt-total-note').textContent = noteParts.join(' + ');
+  const notesParts2 = ['Fee Base'];
+  if (S.servidores === 'sooft') notesParts2.push('Servidores');
+  if (S.int) notesParts2.push('Cuota Implementación');
+  if (S.ent) notesParts2.push('Entrevistas IA');
+  if (S.spt) notesParts2.push('Soporte');
+  $('pt-total-note').textContent = notesParts2.join(' + ');
 
   $('proposal-template').classList.add('visible');
   setTimeout(() => {
