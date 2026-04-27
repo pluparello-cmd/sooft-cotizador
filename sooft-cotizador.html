@@ -776,9 +776,9 @@
     const errorEl     = document.getElementById('msg-error');
     accionesEl.classList.add('hidden');
     guardandoEl.classList.remove('hidden');
-    const WEBHOOK_URL = 'TU_URL_GOOGLE_APPS_SCRIPT_AQUI';
+    const WEBHOOK_URL = 'https://script.google.com/a/macros/sooft.tech/s/AKfycbxD6Jdn_9ZtAUzCLiG8rZHfU7mqGi9CAZT-iza6M2TyE3jPBEoidO8ZGHvr-AM_baQN/exec';
     try {
-      if (WEBHOOK_URL === 'TU_URL_GOOGLE_APPS_SCRIPT_AQUI') {
+      if (WEBHOOK_URL === 'https://script.google.com/a/macros/sooft.tech/s/AKfycbxD6Jdn_9ZtAUzCLiG8rZHfU7mqGi9CAZT-iza6M2TyE3jPBEoidO8ZGHvr-AM_baQN/exec') {
         await new Promise(r => setTimeout(r, 1200));
       } else {
         await fetch(WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload), mode:'no-cors' });
