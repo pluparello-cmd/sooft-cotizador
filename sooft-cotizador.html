@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOOFT · Portal de Cotización Enterprise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          sooft: {
+            900: '#050E1F',
+            800: '#0A1930',
+            700: '#0F2545',
+            600: '#163260',
+            500: '#1B4080',
+            400: '#2563EB',
+            300: '#60A5FA',
+            200: '#BFDBFE',
+            100: '#EFF6FF',
+            50:  '#F8FBFF',
+          },
+          accent: '#0EA5E9',
+          steel: '#64748B',
+          muted: '#94A3B8',
+        },
+        fontFamily: {
+          sans: ['Plus Jakarta Sans', 'sans-serif'],
+          mono: ['DM Mono', 'monospace'],
+        },
+      }
+    }
+  }
+</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { background: #F1F5F9; }
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 99px; }
+
+  /* ── Toggle Switch ── */
+  .toggle-wrap { position: relative; display: inline-flex; align-items: center; cursor: pointer; }
+  .toggle-wrap input { opacity: 0; width: 0; height: 0; position: absolute; }
+  .toggle-track {
+    width: 48px; height: 26px; background: #CBD5E1; border-radius: 99px;
+    transition: background 0.2s ease; position: relative; flex-shrink: 0;
+  }
+  .toggle-thumb {
+    position: absolute; top: 3px; left: 3px;
+    width: 20px; height: 20px; background: white; border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+    transition: transform 0.2s ease;
+  }
+  .toggle-wrap input:checked ~ .toggle-track { background: #2563EB; }
+  .toggle-wrap input:checked ~ .toggle-track .toggle-thumb { transform: translateX(22px); }
+
+  /* ── Slider ── */
+  input[type=range] {
+    -webkit-appearance: none; appearance: none;
+    height: 6px; border-radius: 99px; background: #E2E8F0;
+    outline: none; cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: #2563EB; cursor: pointer;
+    box-shadow: 0 0 0 3px #BFDBFE;
+    transition: box-shadow 0.15s;
+  }
+  input[type=range]::-webkit-slider-thumb:hover { box-shadow: 0 0 0 5px #BFDBFE; }
+
+  /* ── Number Input ── */
+  .num-input {
+    width: 100%; padding: 10px 14px; border: 1.5px solid #E2E8F0;
+    border-radius: 10px; font-family: 'DM Mono', monospace;
+    font-size: 15px; color: #0F172A; background: white;
+    transition: border-color 0.15s, box-shadow 0.15s; outline: none;
+  }
+  .num-input:focus { border-color: #2563EB; box-shadow: 0 0 0 3px #BFDBFE; }
+  .num-input::-webkit-inner-spin-button,
+  .num-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+  /* ── Cards ── */
+  .card {
+    background: white; border-radius: 18px;
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03);
+    transition: box-shadow 0.2s;
+  }
+  .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.05); }
+
+  /* ── Sub-panel (slide-in) ── */
+  .sub-panel {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s ease;
+    opacity: 0;
+  }
+  .sub-panel.open { max-height: 200px; opacity: 1; }
+
+  /* ── Badge ── */
+  .badge-blue {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #EFF6FF; color: #1D4ED8;
+    font-size: 11.5px; font-weight: 600; letter-spacing: 0.04em;
+    padding: 3px 10px; border-radius: 99px;
+    text-transform: uppercase;
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up { animation: fadeUp 0.5s ease both; }
+  .delay-1 { animation-delay: 0.08s; }
+  .delay-2 { animation-delay: 0.16s; }
+  .delay-3 { animation-delay: 0.24s; }
+  .delay-4 { animation-delay: 0.32s; }
+  .delay-5 { animation-delay: 0.40s; }
+  .delay-6 { animation-delay: 0.48s; }
+
+  /* ── Price counter ── */
+  #total-display {
+    font-family: 'DM Mono', monospace;
+    font-size: 42px; font-weight: 500;
+    transition: color 0.3s;
+  }
+
+  /* ── Breakdown rows ── */
+  .breakdown-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 0; border-bottom: 1px solid #F1F5F9;
+    font-size: 13.5px;
+  }
+  .breakdown-row:last-child { border-bottom: none; }
+
+  /* ── Modal ── */
+  #modal-overlay {
+    position: fixed; inset: 0; background: rgba(5,14,31,0.55);
+    backdrop-filter: blur(4px); z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.25s;
+  }
+  #modal-overlay.active { opacity: 1; pointer-events: all; }
+  #modal-box {
+    background: white; border-radius: 22px; width: 100%; max-width: 520px;
+    padding: 36px; margin: 16px;
+    transform: translateY(20px); transition: transform 0.25s;
+    max-height: 90vh; overflow-y: auto;
+  }
+  #modal-overlay.active #modal-box { transform: translateY(0); }
+
+  /* ── Sticky sidebar ── */
+  @media (min-width: 1024px) {
+    .sidebar-sticky { position: sticky; top: 24px; }
+  }
+
+  /* ── Success pulse ── */
+  @keyframes pulse-green {
+    0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
+    50% { box-shadow: 0 0 0 10px rgba(16,185,129,0); }
+  }
+  .success-pulse { animation: pulse-green 1.5s ease 2; }
+
+  /* ── Divider line ── */
+  .section-divider { height: 1px; background: linear-gradient(90deg, transparent, #E2E8F0 20%, #E2E8F0 80%, transparent); margin: 8px 0 20px; }
+</style>
+</head>
+<body class="font-sans text-gray-900 min-h-screen">
+
+<!-- ═══════════════════════════════════════ HEADER ═══ -->
+<header class="bg-white border-b border-slate-200 shadow-sm">
+  <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+    <!-- SOOFT Logo SVG (real, dark version for light header) -->
+    <div class="flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" height="36" viewBox="0 0 1653.32 504.33" style="fill:#0F172A; shape-rendering:geometricPrecision;">
+        <g>
+          <g>
+            <path d="M338.65 240.63c-1.2,-36.35 -24.53,-77.76 -105.87,-91.27 -46.95,-6.87 -103.21,-8.96 -132.21,-17.91 -63.42,-19.52 -43.78,-54.04 -20.64,-70.97 17.42,-13.09 48.35,-22.47 89.85,-22.47 102.41,0 112.05,54.84 112.05,60.83 0,4.64 0,13.66 -8.62,25.14l37.4 14.68c6.4,-9.67 11.95,-22.57 12.46,-38.65 1.34,-41.16 -44.36,-100.01 -153.68,-100.01 -109.32,0 -151.82,52.69 -152.32,96.15 -0.1,27.14 18.79,54.33 64.32,70.28 50.81,17.78 133.94,13.75 170.2,28.41 68.79,26.43 51.79,77.54 -8.35,100.33 -19.08,6.84 -42.65,11.99 -74.73,11.99 -72.8,-1.34 -110.86,-21.47 -124.47,-51.84 -9.45,-21.15 -2.57,-44.05 15.12,-60.58l-32.03 -17.76c-9.33,8.26 -25.36,29.29 -27.07,62.66 -2.1,47.59 45.97,108.54 169.68,107.19 123.71,-1.34 170.32,-62.71 168.85,-106.19l0.05 -0.03z"/>
+            <path d="M1325.54 44.95l0 -40.33 -154.39 0c-69.55,0 -125.91,56.38 -125.91,125.91l0 206.96 40.36 0 0 -166.6 239.94 0 0 -40.36 -239.94 0c0,-49.91 40.46,-85.57 90.36,-85.57l149.58 0z"/>
+            <rect x="1482.04" y="11.13" width="40.36" height="326.16"/>
+            <path d="M1653.32 44.95l0 -40.33 -172.36 0c-26.75,-0 -27.23,40.32 6.4,40.33l165.96 0z"/>
+            <path d="M1351.11 44.95l0 -40.33 172.36 0c26.75,-0 27.23,40.32 -6.4,40.33l-165.96 0z"/>
+            <path d="M523.29 338.7c-3.91,0 -7.87,-0.12 -11.85,-0.37 -39.94,-2.44 -73.95,-16.83 -95.71,-40.53 -44.19,-48.08 -44.53,-113.55 -44.49,-118.6l0 -15c-0.1,-5.11 -0.07,-70.55 43.87,-118.82 21.67,-23.79 55.58,-38.35 95.52,-40.99 35.49,-2.34 69.6,5.18 91.22,20.1 7.38,5.08 13.88,9.94 20.15,14.63 22.79,16.98 37.99,28.29 66.06,30.05 28.07,-1.88 43.19,-13.26 65.91,-30.36 6.28,-4.72 12.75,-9.6 20.1,-14.73 21.55,-15.05 55.62,-22.72 91.12,-20.54 39.94,2.44 73.95,16.83 95.71,40.53 44.19,48.08 44.53,113.55 44.49,118.6l0.05 15c0.07,5.08 0.05,70.53 -43.92,118.82 -21.67,23.79 -55.58,38.35 -95.52,40.99 -35.49,2.34 -69.6,-5.18 -91.22,-20.1 -7.38,-5.08 -13.88,-9.94 -20.15,-14.61 -22.79,-16.98 -37.99,-28.29 -66.06,-30.05 -28.07,1.88 -43.19,13.26 -65.89,30.36 -6.25,4.72 -12.75,9.6 -20.08,14.7 -19.15,13.36 -48.15,20.91 -79.27,20.91l-0.05 0zm-0.1 -295.22c-3.3,0 -6.62,0.1 -9.97,0.32 -29.27,1.93 -54.38,12.19 -68.94,28.17 -34.3,37.67 -33.64,91.12 -33.61,91.66l0 0.34c0,0 0.05,15.44 0.05,15.44l0 0.17c0,0.49 -0.1,54.33 34.08,91.49 14.61,15.9 39.79,26.04 69.06,27.83 26.12,1.59 52.06,-3.71 66.1,-13.51 6.77,-4.72 12.95,-9.38 18.96,-13.9 24.65,-18.54 47.93,-36.06 88.87,-38.33l0.22 3.91 0.1 -3.93 0.71 0c0,0 0.12,4.54 0.12,4.54l0.22 -4.52c40.94,2.05 64.32,19.47 89.04,37.89 6.01,4.47 12.21,9.11 19,13.8 14.09,9.75 40.06,14.93 66.18,13.19 29.27,-1.93 54.38,-12.19 68.91,-28.17 33.98,-37.33 33.64,-91.17 33.61,-91.73l0 -0.29c0,0 -0.05,-15.44 -0.05,-15.44l0 -0.17c0,-0.49 0.1,-54.33 -34.05,-91.49 -14.61,-15.9 -39.79,-26.04 -69.06,-27.83 -26.09,-1.59 -52.06,3.71 -66.1,13.51 -6.77,4.72 -12.97,9.38 -18.96,13.9 -24.65,18.54 -47.93,36.06 -88.87,38.33l-0.25 -4.32 -0.1 4.35 -0.71 -0c0,0 -0.12,-4.13 -0.12,-4.13l-0.19 4.1c-40.94,-2.05 -64.32,-19.47 -89.04,-37.89 -6.01,-4.47 -12.21,-9.11 -19,-13.8 -12.31,-8.5 -33.64,-13.53 -56.21,-13.53l0 0.05z"/>
+          </g>
+          <path fill-rule="nonzero" d="M180.07 440.72l-24.33 0 0 62.99 -11.55 0 0 -62.99 -24.44 0 0 -10.21 60.32 0 0 10.21zm139.79 52.79l0 10.2 -50.21 0 0 -73.21 49.28 0 0 10.21 -37.74 0 0 20.82 32.69 0 0 9.59 -32.69 0 0 22.38 38.67 0zm87.41 -26.92c0,-4.4 0.79,-8.78 2.37,-13.14 1.58,-4.37 3.87,-8.29 6.86,-11.76 2.99,-3.47 6.65,-6.27 10.98,-8.4 4.33,-2.13 9.25,-3.2 14.75,-3.2 6.53,0 12.15,1.48 16.85,4.43 4.71,2.96 8.23,6.81 10.57,11.55l-9.07 6.08c-0.97,-2.2 -2.17,-4.06 -3.61,-5.57 -1.44,-1.51 -3.01,-2.71 -4.69,-3.61 -1.69,-0.89 -3.42,-1.53 -5.21,-1.91 -1.78,-0.38 -3.54,-0.57 -5.25,-0.57 -3.72,0 -7,0.77 -9.85,2.32 -2.85,1.55 -5.24,3.59 -7.17,6.13 -1.93,2.54 -3.37,5.4 -4.33,8.56 -0.96,3.17 -1.45,6.33 -1.45,9.49 0,3.58 0.57,6.98 1.7,10.21 1.13,3.23 2.74,6.09 4.8,8.56 2.06,2.48 4.5,4.45 7.32,5.93 2.82,1.47 5.91,2.21 9.28,2.21 1.72,0 3.52,-0.22 5.42,-0.67 1.89,-0.45 3.67,-1.16 5.36,-2.16 1.69,-1 3.25,-2.25 4.69,-3.76 1.44,-1.51 2.65,-3.33 3.61,-5.47l9.59 5.47c-1.17,2.75 -2.8,5.18 -4.9,7.27 -2.1,2.1 -4.45,3.87 -7.06,5.31 -2.61,1.44 -5.4,2.55 -8.35,3.3 -2.96,0.76 -5.88,1.14 -8.77,1.14 -5.09,0 -9.73,-1.1 -13.92,-3.3 -4.2,-2.2 -7.82,-5.06 -10.88,-8.61 -3.06,-3.54 -5.43,-7.56 -7.11,-12.06 -1.68,-4.5 -2.52,-9.09 -2.52,-13.77zm214.03 -36.09l0 73.21 -11.65 0 0 -32.27 -36.91 0 0 32.27 -11.55 0 0 -73.21 11.55 0 0 30.63 36.91 0 0 -30.63 11.65 0zm107.62 21.66l0 51.55 -11.55 0 0 -73.21 9.07 0 41.86 52.8 0 -52.69 11.65 0 0 73.1 -9.59 0 -41.45 -51.55zm177.22 52.07c-5.15,0 -9.85,-1.05 -14.07,-3.14 -4.23,-2.1 -7.87,-4.88 -10.93,-8.36 -3.06,-3.47 -5.41,-7.44 -7.06,-11.91 -1.65,-4.47 -2.47,-9.04 -2.47,-13.71 0,-4.88 0.88,-9.56 2.63,-14.02 1.75,-4.47 4.17,-8.42 7.27,-11.86 3.09,-3.44 6.77,-6.17 11.03,-8.2 4.26,-2.03 8.9,-3.04 13.92,-3.04 5.15,0 9.85,1.08 14.07,3.25 4.23,2.16 7.86,5 10.88,8.5 3.03,3.51 5.36,7.48 7.01,11.91 1.65,4.43 2.47,8.95 2.47,13.56 0,4.88 -0.88,9.56 -2.63,14.02 -1.75,4.47 -4.17,8.4 -7.27,11.81 -3.1,3.4 -6.76,6.12 -10.98,8.15 -4.23,2.03 -8.85,3.04 -13.87,3.04zm-22.78 -37.12c0,3.44 0.53,6.77 1.6,10 1.07,3.23 2.6,6.08 4.59,8.56 1.99,2.47 4.4,4.45 7.22,5.93 2.82,1.48 5.98,2.22 9.49,2.22 3.58,0 6.79,-0.77 9.65,-2.32 2.85,-1.55 5.25,-3.59 7.21,-6.13 1.96,-2.54 3.45,-5.4 4.49,-8.56 1.03,-3.16 1.54,-6.39 1.54,-9.69 0,-3.51 -0.55,-6.86 -1.65,-10.06 -1.1,-3.19 -2.65,-6.01 -4.64,-8.45 -1.99,-2.44 -4.4,-4.4 -7.22,-5.88 -2.82,-1.48 -5.94,-2.22 -9.38,-2.22 -3.57,0 -6.79,0.77 -9.64,2.32 -2.85,1.55 -5.26,3.56 -7.21,6.03 -1.96,2.48 -3.46,5.32 -4.49,8.51 -1.04,3.2 -1.55,6.45 -1.55,9.75zm149.17 36.6l0 -73.21 11.55 0 0 63 39.28 0 0 10.2 -50.83 0zm167.01 0.52c-5.15,0 -9.84,-1.05 -14.07,-3.14 -4.23,-2.1 -7.87,-4.88 -10.93,-8.36 -3.06,-3.47 -5.41,-7.44 -7.06,-11.91 -1.65,-4.47 -2.48,-9.04 -2.48,-13.71 0,-4.88 0.88,-9.56 2.64,-14.02 1.75,-4.47 4.17,-8.42 7.26,-11.86 3.1,-3.44 6.77,-6.17 11.04,-8.2 4.27,-2.03 8.9,-3.04 13.92,-3.04 5.16,0 9.84,1.08 14.08,3.25 4.22,2.16 7.85,5 10.88,8.5 3.03,3.51 5.36,7.48 7,11.91 1.66,4.43 2.49,8.95 2.49,13.56 0,4.88 -0.88,9.56 -2.64,14.02 -1.74,4.47 -4.17,8.4 -7.27,11.81 -3.09,3.4 -6.75,6.12 -10.98,8.15 -4.22,2.03 -8.85,3.04 -13.87,3.04zm-22.78 -37.12c0,3.44 0.53,6.77 1.6,10 1.06,3.23 2.59,6.08 4.59,8.56 1.99,2.47 4.41,4.45 7.22,5.93 2.82,1.48 5.98,2.22 9.49,2.22 3.58,0 6.78,-0.77 9.64,-2.32 2.85,-1.55 5.25,-3.59 7.22,-6.13 1.96,-2.54 3.46,-5.4 4.49,-8.56 1.02,-3.16 1.54,-6.39 1.54,-9.69 0,-3.51 -0.55,-6.86 -1.65,-10.06 -1.1,-3.19 -2.65,-6.01 -4.64,-8.45 -1.99,-2.44 -4.39,-4.4 -7.22,-5.88 -2.81,-1.48 -5.94,-2.22 -9.38,-2.22 -3.58,0 -6.79,0.77 -9.64,2.32 -2.86,1.55 -5.25,3.56 -7.21,6.03 -1.96,2.48 -3.46,5.32 -4.49,8.51 -1.03,3.2 -1.55,6.45 -1.55,9.75zm199.7 27.53c-5.98,6.39 -12.96,9.59 -20.93,9.59 -4.75,0 -9.2,-1.05 -13.36,-3.14 -4.16,-2.1 -7.76,-4.88 -10.82,-8.36 -3.06,-3.47 -5.46,-7.46 -7.22,-11.96 -1.76,-4.5 -2.64,-9.16 -2.64,-13.97 0,-4.95 0.88,-9.66 2.64,-14.12 1.76,-4.47 4.16,-8.38 7.22,-11.75 3.06,-3.37 6.68,-6.03 10.87,-7.99 4.2,-1.96 8.78,-2.94 13.72,-2.94 6.87,0 12.64,1.46 17.32,4.38 4.67,2.92 8.22,6.79 10.62,11.6l-8.87 6.39c-2,-3.99 -4.7,-6.98 -8.1,-8.97 -3.4,-1.99 -7.16,-2.99 -11.29,-2.99 -3.37,0 -6.43,0.74 -9.18,2.22 -2.75,1.47 -5.11,3.44 -7.06,5.87 -1.96,2.44 -3.48,5.28 -4.55,8.51 -1.07,3.23 -1.59,6.6 -1.59,10.11 0,3.71 0.58,7.18 1.76,10.41 1.16,3.23 2.8,6.05 4.89,8.45 2.1,2.41 4.56,4.31 7.38,5.72 2.81,1.4 5.87,2.11 9.18,2.11 7.42,0 14.09,-3.61 20,-10.82l0 -7.74 -15.37 0 0 -8.55 25.06 0 0 37.01 -9.69 0 0 -9.07zm103.8 -64.13l20.32 36.71 20.41 -36.71 12.58 0 -27.22 47.02 0 26.19 -11.64 0 0 -26.4 -27.12 -46.81 12.68 0z"/>
+        </g>
+      </svg>
+    </div>
+    <div class="hidden sm:flex items-center gap-2">
+      <span class="badge-blue">
+        <span class="w-1.5 h-1.5 bg-blue-500 rounded-full inline-block"></span>
+        Portal Enterprise
+      </span>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════ HERO ═══ -->
+<div class="bg-slate-50 border-b border-slate-200 pb-14 pt-10">
+  <div class="max-w-6xl mx-auto px-6 text-center fade-up">
+    <p class="text-sooft-400 text-sm font-semibold uppercase tracking-widest mb-3">Cotización personalizada</p>
+    <h1 class="text-slate-900 text-4xl sm:text-5xl font-bold tracking-tight leading-tight mb-3">
+      Diseñá tu plan <span class="text-sooft-400">Enterprise</span>
+    </h1>
+    <p class="text-steel text-base max-w-xl mx-auto">
+      Configurá los módulos que necesitás y obtené un estimado de precio en tiempo real. Sin compromisos.
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ MAIN ═══ -->
+<main class="max-w-6xl mx-auto px-4 sm:px-6 -mt-6 pb-20">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+
+    <!-- ─── LEFT COLUMN: FORM ─── -->
+    <div class="lg:col-span-2 space-y-5">
+
+      <!-- 0. BASE PRICE INFO -->
+      <div class="card p-5 fade-up">
+        <div class="flex items-center justify-between mb-1">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-sooft-100 flex items-center justify-center">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#2563EB" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            </div>
+            <span class="font-semibold text-gray-800">Plataforma Base</span>
+          </div>
+          <span class="font-mono font-semibold text-sooft-400 text-lg">USD 800<span class="text-sm text-muted font-normal">/mes</span></span>
+        </div>
+        <p class="text-sm text-steel ml-10">Incluye ATS completo, panel de administración, reportes, soporte por email y hasta 3 usuarios admin.</p>
+      </div>
+
+      <!-- 1. SERVIDORES -->
+      <div class="card p-5 fade-up delay-1">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-sooft-100 flex items-center justify-center flex-shrink-0">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#2563EB" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+            </div>
+            <div>
+              <div class="font-semibold text-gray-800">Servidores</div>
+              <div class="text-xs text-steel mt-0.5">¿Dónde se aloja la infraestructura?</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 bg-slate-50 rounded-xl p-1 border border-slate-200">
+            <button id="srv-client-btn" onclick="setServidores('cliente')"
+              class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all bg-white text-sooft-400 border border-sooft-200 shadow-sm">
+              Cliente
+            </button>
+            <button id="srv-sooft-btn" onclick="setServidores('sooft')"
+              class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all text-steel">
+              SOOFT
+            </button>
+          </div>
+        </div>
+        <div id="srv-info" class="mt-3 hidden">
+          <div class="flex items-center gap-2 bg-blue-50 rounded-lg px-3 py-2 border border-blue-100">
+            <svg width="14" height="14" fill="#2563EB" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+            <span class="text-xs text-sooft-600">Servidores gestionados por SOOFT: <strong>+USD 400/mes</strong> (alta disponibilidad, backups automáticos).</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. INTEGRACIÓN -->
+      <div class="card p-5 fade-up delay-2">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-sooft-100 flex items-center justify-center flex-shrink-0">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#2563EB" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            </div>
+            <div>
+              <div class="font-semibold text-gray-800">Integración de Sistemas</div>
+              <div class="text-xs text-steel mt-0.5">API custom, conectores HR, ERP</div>
+            </div>
+          </div>
+          <label class="toggle-wrap">
+            <input type="checkbox" id="tog-integration" onchange="togglePanel('panel-integration', this.checked); calcTotal()">
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          </label>
+        </div>
+
+        <div id="panel-integration" class="sub-panel mt-4">
+          <div class="bg-slate-50 rounded-xl border border-slate-200 p-4">
+            <label class="text-xs font-semibold text-steel uppercase tracking-wide block mb-3">
+              Horas estimadas de desarrollo
+            </label>
+            <div class="flex items-center gap-3 mb-3">
+              <div class="flex-1">
+                <input type="number" id="inp-integration-hrs" class="num-input text-center text-lg" min="0" max="500" value="0" placeholder="0" oninput="calcTotal(); actualizarSubtotalIntegracion()">
+              </div>
+              <div class="text-steel font-medium text-sm">hrs</div>
+              <div class="text-steel text-lg font-light">×</div>
+              <div class="bg-white border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-mono font-medium text-steel whitespace-nowrap">USD 35 / hr</div>
+            </div>
+            <div class="flex items-center justify-between bg-sooft-100 rounded-lg px-4 py-2.5 border border-sooft-200">
+              <span class="text-sm font-medium text-sooft-600">Subtotal integración</span>
+              <span id="subtotal-integracion" class="font-mono font-bold text-sooft-400 text-base">USD 0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. VACANTES -->
+      <div class="card p-5 fade-up delay-3">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-8 h-8 rounded-lg bg-sooft-100 flex items-center justify-center flex-shrink-0">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#2563EB" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          </div>
+          <div>
+            <div class="font-semibold text-gray-800">Vacantes Activas / Mes</div>
+            <div class="text-xs text-steel mt-0.5">USD 15 por vacante publicada</div>
+          </div>
+        </div>
+        <input type="number" id="inp-vacantes" class="num-input" min="0" max="9999" value="10" placeholder="0" oninput="calcTotal()">
+        <div class="flex justify-between text-xs text-muted mt-2">
+          <span>0 vacantes</span><span id="vacantes-label" class="font-mono text-sooft-400">USD 150</span><span>500+</span>
+        </div>
+      </div>
+
+      <!-- 4. USUARIOS -->
+      <div class="card p-5 fade-up delay-4">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-8 h-8 rounded-lg bg-sooft-100 flex items-center justify-center flex-shrink-0">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#2563EB" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <div class="font-semibold text-gray-800">Usuarios en Plataforma</div>
+              <span id="usuarios-display" class="font-mono font-semibold text-sooft-400 text-lg">25</span>
+            </div>
+            <div class="text-xs text-steel mt-0.5">USD 8 por usuario / mes</div>
+          </div>
+        </div>
+        <input type="range" id="slider-usuarios" class="w-full accent-sooft-400" min="1" max="500" value="25" step="1" oninput="updateUsuarios(this.value)">
+        <div class="flex justify-between text-xs text-muted mt-2">
+          <span>1</span>
+          <span id="usuarios-cost" class="font-mono text-sooft-400">USD 200</span>
+          <span>500</span>
+        </div>
+        <div class="mt-3">
+          <input type="number" id="inp-usuarios" class="num-input" min="1" max="9999" value="25" placeholder="25" oninput="syncUsuariosInput(this.value)">
+        </div>
+      </div>
+
+      <!-- 5. ENTREVISTADOR VIRTUAL -->
+      <div class="card p-5 fade-up delay-5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-sooft-100 flex items-center justify-center flex-shrink-0">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#2563EB" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.069A1 1 0 0121 8.82v6.36a1 1 0 01-1.447.893L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            </div>
+            <div>
+              <div class="font-semibold text-gray-800">Entrevistador Virtual IA</div>
+              <div class="text-xs text-steel mt-0.5">USD 25 por entrevista completada</div>
+            </div>
+          </div>
+          <label class="toggle-wrap">
+            <input type="checkbox" id="tog-entrevistas" onchange="togglePanel('panel-entrevistas', this.checked); calcTotal()">
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          </label>
+        </div>
+        <div id="panel-entrevistas" class="sub-panel mt-4">
+          <label class="text-xs font-semibold text-steel uppercase tracking-wide block mb-1.5">Cantidad de entrevistas por mes</label>
+          <div class="flex items-center gap-3">
+            <input type="number" id="inp-entrevistas" class="num-input" min="0" max="9999" value="0" placeholder="0" oninput="calcTotal()">
+            <span class="text-sm text-steel whitespace-nowrap">× USD 25 c/u</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. SOPORTE -->
+      <div class="card p-5 fade-up delay-6">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-sooft-100 flex items-center justify-center flex-shrink-0">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#2563EB" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            </div>
+            <div>
+              <div class="font-semibold text-gray-800">Soporte Premium</div>
+              <div class="text-xs text-steel mt-0.5">SLA garantizado — USD 35/hr</div>
+            </div>
+          </div>
+          <label class="toggle-wrap">
+            <input type="checkbox" id="tog-soporte" onchange="togglePanel('panel-soporte', this.checked); calcTotal()">
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          </label>
+        </div>
+        <div id="panel-soporte" class="sub-panel mt-4">
+          <label class="text-xs font-semibold text-steel uppercase tracking-wide block mb-1.5">Horas de soporte mensuales</label>
+          <div class="flex items-center gap-3">
+            <input type="number" id="inp-soporte-hrs" class="num-input" min="0" max="999" value="0" placeholder="0" oninput="calcTotal()">
+            <span class="text-sm text-steel whitespace-nowrap">hrs × USD 35</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /left -->
+
+    <!-- ─── RIGHT COLUMN: SUMMARY ─── -->
+    <div class="lg:col-span-1">
+      <div class="sidebar-sticky space-y-5">
+
+        <!-- Price card -->
+        <div class="card p-6 border-t-4 border-sooft-400 fade-up">
+          <div class="text-xs font-semibold text-steel uppercase tracking-widest mb-1">Total estimado mensual</div>
+          <div id="total-display" class="text-sooft-400 mt-1">USD 0</div>
+          <div class="text-xs text-muted mt-1">No incluye impuestos locales</div>
+
+          <div class="section-divider mt-4"></div>
+
+          <!-- Breakdown -->
+          <div id="breakdown-list" class="space-y-0 mb-4">
+            <!-- Injected by JS -->
+          </div>
+
+          <button onclick="abrirModal()"
+            class="w-full bg-sooft-400 hover:bg-sooft-500 active:scale-95 text-white font-semibold py-3 px-4 rounded-xl transition-all text-sm shadow-md shadow-blue-200 mt-2">
+            Ver resumen y guardar →
+          </button>
+          <p class="text-center text-xs text-muted mt-3">El registro quedará guardado en Google Sheets</p>
+        </div>
+
+        <!-- Datos del cliente -->
+        <div class="card px-5 py-4 fade-up">
+          <p class="qp-section-label mb-3" style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#64748B;font-weight:600;">Datos del cliente</p>
+          <div class="space-y-2.5">
+            <div>
+              <label class="text-xs font-medium text-steel block mb-1">Empresa *</label>
+              <input id="cli-empresa" type="text" placeholder="Nombre de la empresa" class="num-input text-sm" style="font-family:'Plus Jakarta Sans',sans-serif;">
+            </div>
+            <div>
+              <label class="text-xs font-medium text-steel block mb-1">Contacto *</label>
+              <input id="cli-nombre" type="text" placeholder="Nombre y apellido" class="num-input text-sm" style="font-family:'Plus Jakarta Sans',sans-serif;">
+            </div>
+            <div>
+              <label class="text-xs font-medium text-steel block mb-1">Email</label>
+              <input id="cli-email" type="email" placeholder="email@empresa.com" class="num-input text-sm" style="font-family:'Plus Jakarta Sans',sans-serif;">
+            </div>
+            <div>
+              <label class="text-xs font-medium text-steel block mb-1">Teléfono</label>
+              <input id="cli-tel" type="tel" placeholder="+54 11 ..." class="num-input text-sm" style="font-family:'Plus Jakarta Sans',sans-serif;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Comercial responsable -->
+        <div class="card px-5 py-4 fade-up">
+          <p class="qp-section-label mb-3" style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#64748B;font-weight:600;">Comercial responsable</p>
+          <div>
+            <label class="text-xs font-medium text-steel block mb-1">Nombre del comercial *</label>
+            <input id="comercial-nombre" type="text" placeholder="Tu nombre completo" class="num-input text-sm" style="font-family:'Plus Jakarta Sans',sans-serif;">
+          </div>
+          <div class="mt-2.5">
+            <label class="text-xs font-medium text-steel block mb-1">Notas internas</label>
+            <textarea id="comercial-notas" placeholder="Contexto de la oportunidad, necesidades específicas..." rows="3"
+              class="num-input text-sm resize-none" style="font-family:'Plus Jakarta Sans',sans-serif; height:auto; padding-top:8px;"></textarea>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ═══════════════════════════════════════ MODAL ═══ -->
+<div id="modal-overlay" onclick="cerrarModal(event)">
+  <div id="modal-box">
+
+    <!-- Header modal -->
+    <div class="flex items-center justify-between mb-5">
+      <div class="flex items-center gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" height="26" viewBox="0 0 1653.32 504.33" style="fill:#0F172A; shape-rendering:geometricPrecision;"><g><g><path d="M338.65 240.63c-1.2,-36.35 -24.53,-77.76 -105.87,-91.27 -46.95,-6.87 -103.21,-8.96 -132.21,-17.91 -63.42,-19.52 -43.78,-54.04 -20.64,-70.97 17.42,-13.09 48.35,-22.47 89.85,-22.47 102.41,0 112.05,54.84 112.05,60.83 0,4.64 0,13.66 -8.62,25.14l37.4 14.68c6.4,-9.67 11.95,-22.57 12.46,-38.65 1.34,-41.16 -44.36,-100.01 -153.68,-100.01 -109.32,0 -151.82,52.69 -152.32,96.15 -0.1,27.14 18.79,54.33 64.32,70.28 50.81,17.78 133.94,13.75 170.2,28.41 68.79,26.43 51.79,77.54 -8.35,100.33 -19.08,6.84 -42.65,11.99 -74.73,11.99 -72.8,-1.34 -110.86,-21.47 -124.47,-51.84 -9.45,-21.15 -2.57,-44.05 15.12,-60.58l-32.03 -17.76c-9.33,8.26 -25.36,29.29 -27.07,62.66 -2.1,47.59 45.97,108.54 169.68,107.19 123.71,-1.34 170.32,-62.71 168.85,-106.19l0.05 -0.03z"/><path d="M1325.54 44.95l0 -40.33 -154.39 0c-69.55,0 -125.91,56.38 -125.91,125.91l0 206.96 40.36 0 0 -166.6 239.94 0 0 -40.36 -239.94 0c0,-49.91 40.46,-85.57 90.36,-85.57l149.58 0z"/><rect x="1482.04" y="11.13" width="40.36" height="326.16"/><path d="M1653.32 44.95l0 -40.33 -172.36 0c-26.75,-0 -27.23,40.32 6.4,40.33l165.96 0z"/><path d="M1351.11 44.95l0 -40.33 172.36 0c26.75,-0 27.23,40.32 -6.4,40.33l-165.96 0z"/><path d="M523.29 338.7c-3.91,0 -7.87,-0.12 -11.85,-0.37 -39.94,-2.44 -73.95,-16.83 -95.71,-40.53 -44.19,-48.08 -44.53,-113.55 -44.49,-118.6l0 -15c-0.1,-5.11 -0.07,-70.55 43.87,-118.82 21.67,-23.79 55.58,-38.35 95.52,-40.99 35.49,-2.34 69.6,5.18 91.22,20.1 7.38,5.08 13.88,9.94 20.15,14.63 22.79,16.98 37.99,28.29 66.06,30.05 28.07,-1.88 43.19,-13.26 65.91,-30.36 6.28,-4.72 12.75,-9.6 20.1,-14.73 21.55,-15.05 55.62,-22.72 91.12,-20.54 39.94,2.44 73.95,16.83 95.71,40.53 44.19,48.08 44.53,113.55 44.49,118.6l0.05 15c0.07,5.08 0.05,70.53 -43.92,118.82 -21.67,23.79 -55.58,38.35 -95.52,40.99 -35.49,2.34 -69.6,-5.18 -91.22,-20.1 -7.38,-5.08 -13.88,-9.94 -20.15,-14.61 -22.79,-16.98 -37.99,-28.29 -66.06,-30.05 -28.07,1.88 -43.19,13.26 -65.89,30.36 -6.25,4.72 -12.75,9.6 -20.08,14.7 -19.15,13.36 -48.15,20.91 -79.27,20.91l-0.05 0zm-0.1 -295.22c-3.3,0 -6.62,0.1 -9.97,0.32 -29.27,1.93 -54.38,12.19 -68.94,28.17 -34.3,37.67 -33.64,91.12 -33.61,91.66l0 0.34c0,0 0.05,15.44 0.05,15.44l0 0.17c0,0.49 -0.1,54.33 34.08,91.49 14.61,15.9 39.79,26.04 69.06,27.83 26.12,1.59 52.06,-3.71 66.1,-13.51 6.77,-4.72 12.95,-9.38 18.96,-13.9 24.65,-18.54 47.93,-36.06 88.87,-38.33l0.22 3.91 0.1 -3.93 0.71 0c0,0 0.12,4.54 0.12,4.54l0.22 -4.52c40.94,2.05 64.32,19.47 89.04,37.89 6.01,4.47 12.21,9.11 19,13.8 14.09,9.75 40.06,14.93 66.18,13.19 29.27,-1.93 54.38,-12.19 68.91,-28.17 33.98,-37.33 33.64,-91.17 33.61,-91.73l0 -0.29c0,0 -0.05,-15.44 -0.05,-15.44l0 -0.17c0,-0.49 0.1,-54.33 -34.05,-91.49 -14.61,-15.9 -39.79,-26.04 -69.06,-27.83 -26.09,-1.59 -52.06,3.71 -66.1,13.51 -6.77,4.72 -12.97,9.38 -18.96,13.9 -24.65,18.54 -47.93,36.06 -88.87,38.33l-0.25 -4.32 -0.1 4.35 -0.71 -0c0,0 -0.12,-4.13 -0.12,-4.13l-0.19 4.1c-40.94,-2.05 -64.32,-19.47 -89.04,-37.89 -6.01,-4.47 -12.21,-9.11 -19,-13.8 -12.31,-8.5 -33.64,-13.53 -56.21,-13.53l0 0.05z"/></g><path fill-rule="nonzero" d="M180.07 440.72l-24.33 0 0 62.99 -11.55 0 0 -62.99 -24.44 0 0 -10.21 60.32 0 0 10.21zm139.79 52.79l0 10.2 -50.21 0 0 -73.21 49.28 0 0 10.21 -37.74 0 0 20.82 32.69 0 0 9.59 -32.69 0 0 22.38 38.67 0zm87.41 -26.92c0,-4.4 0.79,-8.78 2.37,-13.14 1.58,-4.37 3.87,-8.29 6.86,-11.76 2.99,-3.47 6.65,-6.27 10.98,-8.4 4.33,-2.13 9.25,-3.2 14.75,-3.2 6.53,0 12.15,1.48 16.85,4.43 4.71,2.96 8.23,6.81 10.57,11.55l-9.07 6.08c-0.97,-2.2 -2.17,-4.06 -3.61,-5.57 -1.44,-1.51 -3.01,-2.71 -4.69,-3.61 -1.69,-0.89 -3.42,-1.53 -5.21,-1.91 -1.78,-0.38 -3.54,-0.57 -5.25,-0.57 -3.72,0 -7,0.77 -9.85,2.32 -2.85,1.55 -5.24,3.59 -7.17,6.13 -1.93,2.54 -3.37,5.4 -4.33,8.56 -0.96,3.17 -1.45,6.33 -1.45,9.49 0,3.58 0.57,6.98 1.7,10.21 1.13,3.23 2.74,6.09 4.8,8.56 2.06,2.48 4.5,4.45 7.32,5.93 2.82,1.47 5.91,2.21 9.28,2.21 1.72,0 3.52,-0.22 5.42,-0.67 1.89,-0.45 3.67,-1.16 5.36,-2.16 1.69,-1 3.25,-2.25 4.69,-3.76 1.44,-1.51 2.65,-3.33 3.61,-5.47l9.59 5.47c-1.17,2.75 -2.8,5.18 -4.9,7.27 -2.1,2.1 -4.45,3.87 -7.06,5.31 -2.61,1.44 -5.4,2.55 -8.35,3.3 -2.96,0.76 -5.88,1.14 -8.77,1.14 -5.09,0 -9.73,-1.1 -13.92,-3.3 -4.2,-2.2 -7.82,-5.06 -10.88,-8.61 -3.06,-3.54 -5.43,-7.56 -7.11,-12.06 -1.68,-4.5 -2.52,-9.09 -2.52,-13.77zm214.03 -36.09l0 73.21 -11.65 0 0 -32.27 -36.91 0 0 32.27 -11.55 0 0 -73.21 11.55 0 0 30.63 36.91 0 0 -30.63 11.65 0zm107.62 21.66l0 51.55 -11.55 0 0 -73.21 9.07 0 41.86 52.8 0 -52.69 11.65 0 0 73.1 -9.59 0 -41.45 -51.55zm177.22 52.07c-5.15,0 -9.85,-1.05 -14.07,-3.14 -4.23,-2.1 -7.87,-4.88 -10.93,-8.36 -3.06,-3.47 -5.41,-7.44 -7.06,-11.91 -1.65,-4.47 -2.47,-9.04 -2.47,-13.71 0,-4.88 0.88,-9.56 2.63,-14.02 1.75,-4.47 4.17,-8.42 7.27,-11.86 3.09,-3.44 6.77,-6.17 11.03,-8.2 4.26,-2.03 8.9,-3.04 13.92,-3.04 5.15,0 9.85,1.08 14.07,3.25 4.23,2.16 7.86,5 10.88,8.5 3.03,3.51 5.36,7.48 7.01,11.91 1.65,4.43 2.47,8.95 2.47,13.56 0,4.88 -0.88,9.56 -2.63,14.02 -1.75,4.47 -4.17,8.4 -7.27,11.81 -3.1,3.4 -6.76,6.12 -10.98,8.15 -4.23,2.03 -8.85,3.04 -13.87,3.04zm-22.78 -37.12c0,3.44 0.53,6.77 1.6,10 1.07,3.23 2.6,6.08 4.59,8.56 1.99,2.47 4.4,4.45 7.22,5.93 2.82,1.48 5.98,2.22 9.49,2.22 3.58,0 6.79,-0.77 9.65,-2.32 2.85,-1.55 5.25,-3.59 7.21,-6.13 1.96,-2.54 3.45,-5.4 4.49,-8.56 1.03,-3.16 1.54,-6.39 1.54,-9.69 0,-3.51 -0.55,-6.86 -1.65,-10.06 -1.1,-3.19 -2.65,-6.01 -4.64,-8.45 -1.99,-2.44 -4.4,-4.4 -7.22,-5.88 -2.82,-1.48 -5.94,-2.22 -9.38,-2.22 -3.57,0 -6.79,0.77 -9.64,2.32 -2.85,1.55 -5.26,3.56 -7.21,6.03 -1.96,2.48 -3.46,5.32 -4.49,8.51 -1.04,3.2 -1.55,6.45 -1.55,9.75zm149.17 36.6l0 -73.21 11.55 0 0 63 39.28 0 0 10.2 -50.83 0zm167.01 0.52c-5.15,0 -9.84,-1.05 -14.07,-3.14 -4.23,-2.1 -7.87,-4.88 -10.93,-8.36 -3.06,-3.47 -5.41,-7.44 -7.06,-11.91 -1.65,-4.47 -2.48,-9.04 -2.48,-13.71 0,-4.88 0.88,-9.56 2.64,-14.02 1.75,-4.47 4.17,-8.42 7.26,-11.86 3.1,-3.44 6.77,-6.17 11.04,-8.2 4.27,-2.03 8.9,-3.04 13.92,-3.04 5.16,0 9.84,1.08 14.08,3.25 4.22,2.16 7.85,5 10.88,8.5 3.03,3.51 5.36,7.48 7,11.91 1.66,4.43 2.49,8.95 2.49,13.56 0,4.88 -0.88,9.56 -2.64,14.02 -1.74,4.47 -4.17,8.4 -7.27,11.81 -3.09,3.4 -6.75,6.12 -10.98,8.15 -4.22,2.03 -8.85,3.04 -13.87,3.04zm-22.78 -37.12c0,3.44 0.53,6.77 1.6,10 1.06,3.23 2.59,6.08 4.59,8.56 1.99,2.47 4.41,4.45 7.22,5.93 2.82,1.48 5.98,2.22 9.49,2.22 3.58,0 6.78,-0.77 9.64,-2.32 2.85,-1.55 5.25,-3.59 7.22,-6.13 1.96,-2.54 3.46,-5.4 4.49,-8.56 1.02,-3.16 1.54,-6.39 1.54,-9.69 0,-3.51 -0.55,-6.86 -1.65,-10.06 -1.1,-3.19 -2.65,-6.01 -4.64,-8.45 -1.99,-2.44 -4.39,-4.4 -7.22,-5.88 -2.81,-1.48 -5.94,-2.22 -9.38,-2.22 -3.58,0 -6.79,0.77 -9.64,2.32 -2.86,1.55 -5.25,3.56 -7.21,6.03 -1.96,2.48 -3.46,5.32 -4.49,8.51 -1.03,3.2 -1.55,6.45 -1.55,9.75zm199.7 27.53c-5.98,6.39 -12.96,9.59 -20.93,9.59 -4.75,0 -9.2,-1.05 -13.36,-3.14 -4.16,-2.1 -7.76,-4.88 -10.82,-8.36 -3.06,-3.47 -5.46,-7.46 -7.22,-11.96 -1.76,-4.5 -2.64,-9.16 -2.64,-13.97 0,-4.95 0.88,-9.66 2.64,-14.12 1.76,-4.47 4.16,-8.38 7.22,-11.75 3.06,-3.37 6.68,-6.03 10.87,-7.99 4.2,-1.96 8.78,-2.94 13.72,-2.94 6.87,0 12.64,1.46 17.32,4.38 4.67,2.92 8.22,6.79 10.62,11.6l-8.87 6.39c-2,-3.99 -4.7,-6.98 -8.1,-8.97 -3.4,-1.99 -7.16,-2.99 -11.29,-2.99 -3.37,0 -6.43,0.74 -9.18,2.22 -2.75,1.47 -5.11,3.44 -7.06,5.87 -1.96,2.44 -3.48,5.28 -4.55,8.51 -1.07,3.23 -1.59,6.6 -1.59,10.11 0,3.71 0.58,7.18 1.76,10.41 1.16,3.23 2.8,6.05 4.89,8.45 2.1,2.41 4.56,4.31 7.38,5.72 2.81,1.4 5.87,2.11 9.18,2.11 7.42,0 14.09,-3.61 20,-10.82l0 -7.74 -15.37 0 0 -8.55 25.06 0 0 37.01 -9.69 0 0 -9.07zm103.8 -64.13l20.32 36.71 20.41 -36.71 12.58 0 -27.22 47.02 0 26.19 -11.64 0 0 -26.4 -27.12 -46.81 12.68 0z"/></g></svg>
+        <div>
+          <div class="font-bold text-gray-900 text-base leading-tight">Resumen de cotización</div>
+          <div class="text-xs text-steel mt-0.5">Uso interno · <span id="modal-fecha"></span></div>
+        </div>
+      </div>
+      <button onclick="cerrarModal(null, true)" class="text-muted hover:text-gray-700 transition-colors p-1 flex-shrink-0">
+        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Cliente + Comercial strip -->
+    <div id="modal-cliente-strip" class="bg-slate-50 rounded-xl border border-slate-200 px-4 py-3 mb-4 grid grid-cols-2 gap-3 text-sm">
+      <div>
+        <div class="text-xs text-steel mb-0.5">Cliente</div>
+        <div id="modal-empresa" class="font-semibold text-gray-900">—</div>
+        <div id="modal-contacto" class="text-xs text-steel mt-0.5">—</div>
+      </div>
+      <div>
+        <div class="text-xs text-steel mb-0.5">Comercial</div>
+        <div id="modal-comercial" class="font-semibold text-gray-900">—</div>
+        <div id="modal-notas-strip" class="text-xs text-steel mt-0.5 italic">—</div>
+      </div>
+    </div>
+
+    <!-- Desglose ítems -->
+    <div id="modal-items" class="mb-4 rounded-xl border border-slate-200 overflow-hidden text-sm"></div>
+
+    <!-- Total -->
+    <div class="flex justify-between items-center bg-sooft-900 text-white rounded-xl px-5 py-4 mb-5">
+      <span class="font-medium text-sm">Total mensual estimado</span>
+      <span id="modal-total" class="font-mono font-bold text-xl text-sooft-300"></span>
+    </div>
+
+    <!-- Botones acción -->
+    <div id="modal-acciones" class="space-y-2.5">
+      <button onclick="guardarCotizacion()"
+        class="w-full bg-sooft-400 hover:bg-sooft-500 active:scale-95 text-white font-semibold py-3 rounded-xl transition-all text-sm shadow-md shadow-blue-200 flex items-center justify-center gap-2">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+        Guardar cotización en Sheets
+      </button>
+      <button onclick="imprimirPDF()"
+        class="w-full bg-white hover:bg-slate-50 active:scale-95 text-slate-700 font-semibold py-3 rounded-xl transition-all text-sm border border-slate-300 flex items-center justify-center gap-2">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+        Exportar PDF / Imprimir
+      </button>
+    </div>
+
+    <!-- Estado: guardando -->
+    <div id="msg-guardando" class="hidden mt-3 text-center text-sm text-steel animate-pulse">Guardando en Google Sheets...</div>
+
+    <!-- Estado: éxito -->
+    <div id="msg-exito" class="hidden mt-3 bg-green-50 border border-green-200 rounded-xl px-4 py-3 flex items-center gap-3">
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#10B981" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <div>
+        <div class="text-sm font-semibold text-green-800">Cotización guardada</div>
+        <div id="msg-exito-id" class="text-xs text-green-700 mt-0.5"></div>
+      </div>
+    </div>
+
+    <!-- Estado: error -->
+    <div id="msg-error" class="hidden mt-3 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700"></div>
+
+    <p class="text-center text-xs text-muted mt-4">Los valores son estimados y pueden ajustarse en la propuesta formal.</p>
+  </div>
+</div>
+
+<!-- ═══ PRINT STYLES ═══ -->
+<style>
+@media print {
+  body * { visibility: hidden; }
+  #print-area, #print-area * { visibility: visible; }
+  #print-area { position: fixed; top: 0; left: 0; width: 100%; padding: 32px; }
+}
+</style>
+<div id="print-area" style="display:none;"></div>
+<!-- ═══════════════════════════════════════ SCRIPT ═══ -->
+<script>
+  /* ── State ── */
+  const state = {
+    base: 800,
+    servidores: 'cliente',   // 'sooft' | 'cliente'
+    integracion: false,
+    intHrs: 0,
+    vacantes: 10,
+    usuarios: 25,
+    entrevistas: false,
+    entQty: 0,
+    soporte: false,
+    sptHrs: 0,
+  };
+
+  /* ── Prices ── */
+  const PRICE = {
+    servidor: 400,
+    intHr: 35,
+    vacante: 15,
+    usuario: 8,
+    entrevista: 25,
+    soporteHr: 35,
+  };
+
+  /* ── Helpers ── */
+  function fmtUSD(n) {
+    return 'USD ' + Math.round(n).toLocaleString('es-AR');
+  }
+
+  function togglePanel(id, open) {
+    const el = document.getElementById(id);
+    el.classList.toggle('open', open);
+  }
+
+  /* ── Subtotal integración en tiempo real ── */
+  function actualizarSubtotalIntegracion() {
+    const hrs = Math.max(0, parseInt(document.getElementById('inp-integration-hrs').value) || 0);
+    document.getElementById('subtotal-integracion').textContent = fmtUSD(hrs * 35);
+  }
+
+  /* ── Servidores toggle ── */
+  function setServidores(val) {
+    state.servidores = val;
+    const srvInfo = document.getElementById('srv-info');
+    const btnClient = document.getElementById('srv-client-btn');
+    const btnSooft  = document.getElementById('srv-sooft-btn');
+    if (val === 'sooft') {
+      srvInfo.classList.remove('hidden');
+      btnSooft.classList.add('bg-white','text-sooft-400','border','border-sooft-200','shadow-sm');
+      btnSooft.classList.remove('text-steel');
+      btnClient.classList.remove('bg-white','text-sooft-400','border','border-sooft-200','shadow-sm');
+      btnClient.classList.add('text-steel');
+    } else {
+      srvInfo.classList.add('hidden');
+      btnClient.classList.add('bg-white','text-sooft-400','border','border-sooft-200','shadow-sm');
+      btnClient.classList.remove('text-steel');
+      btnSooft.classList.remove('bg-white','text-sooft-400','border','border-sooft-200','shadow-sm');
+      btnSooft.classList.add('text-steel');
+    }
+    calcTotal();
+  }
+
+  /* ── Usuarios sync ── */
+  function updateUsuarios(val) {
+    val = Math.max(1, parseInt(val) || 1);
+    document.getElementById('usuarios-display').textContent = val;
+    document.getElementById('inp-usuarios').value = val;
+    document.getElementById('usuarios-cost').textContent = fmtUSD(val * PRICE.usuario);
+    state.usuarios = val;
+    calcTotal();
+  }
+  function syncUsuariosInput(val) {
+    val = Math.max(1, parseInt(val) || 1);
+    document.getElementById('slider-usuarios').value = Math.min(val, 500);
+    document.getElementById('usuarios-display').textContent = val;
+    document.getElementById('usuarios-cost').textContent = fmtUSD(val * PRICE.usuario);
+    state.usuarios = val;
+    calcTotal();
+  }
+
+  /* ── Main calculation ── */
+  function calcTotal() {
+    state.intHrs   = Math.max(0, parseInt(document.getElementById('inp-integration-hrs').value) || 0);
+    state.vacantes = Math.max(0, parseInt(document.getElementById('inp-vacantes').value) || 0);
+    state.entQty   = Math.max(0, parseInt(document.getElementById('inp-entrevistas').value) || 0);
+    state.sptHrs   = Math.max(0, parseInt(document.getElementById('inp-soporte-hrs').value) || 0);
+    state.integracion = document.getElementById('tog-integration').checked;
+    state.entrevistas = document.getElementById('tog-entrevistas').checked;
+    state.soporte     = document.getElementById('tog-soporte').checked;
+
+    const parts = {
+      base:         state.base,
+      servidor:     state.servidores === 'sooft' ? PRICE.servidor : 0,
+      integracion:  state.integracion ? state.intHrs * PRICE.intHr : 0,
+      vacantes:     state.vacantes * PRICE.vacante,
+      usuarios:     state.usuarios * PRICE.usuario,
+      entrevistas:  state.entrevistas ? state.entQty * PRICE.entrevista : 0,
+      soporte:      state.soporte ? state.sptHrs * PRICE.soporteHr : 0,
+    };
+
+    const total = Object.values(parts).reduce((a, b) => a + b, 0);
+
+    /* Update total display */
+    document.getElementById('total-display').textContent = fmtUSD(total);
+
+    /* Update vacantes label */
+    document.getElementById('vacantes-label').textContent = fmtUSD(state.vacantes * PRICE.vacante);
+
+    /* Build breakdown */
+    const labels = {
+      base:        'Plataforma Base',
+      servidor:    'Servidores SOOFT',
+      integracion: 'Integración de Sistemas',
+      vacantes:    'Vacantes activas',
+      usuarios:    'Usuarios',
+      entrevistas: 'Entrevistador Virtual',
+      soporte:     'Soporte Premium',
+    };
+    const list = document.getElementById('breakdown-list');
+    list.innerHTML = '';
+    Object.entries(parts).forEach(([k, v]) => {
+      if (v === 0 && k !== 'base') return;
+      const row = document.createElement('div');
+      row.className = 'breakdown-row';
+      row.innerHTML = `
+        <span class="text-steel">${labels[k]}</span>
+        <span class="font-mono font-medium text-gray-800">${fmtUSD(v)}</span>
+      `;
+      list.appendChild(row);
+    });
+
+    /* Add total row */
+    const totalRow = document.createElement('div');
+    totalRow.className = 'breakdown-row';
+    totalRow.style.borderTop = '1.5px solid #E2E8F0';
+    totalRow.style.marginTop = '6px';
+    totalRow.style.paddingTop = '10px';
+    totalRow.innerHTML = `
+      <span class="font-semibold text-gray-900">Total estimado</span>
+      <span class="font-mono font-bold text-sooft-400">${fmtUSD(total)}</span>
+    `;
+    list.appendChild(totalRow);
+
+    return { parts, total };
+  }
+
+  
+  /* ── Modal ── */
+  function abrirModal() {
+    const empresa   = document.getElementById('cli-empresa').value.trim();
+    const comercial = document.getElementById('comercial-nombre').value.trim();
+    if (!empresa)   { alert('Completá el nombre de la empresa cliente.'); document.getElementById('cli-empresa').focus(); return; }
+    if (!comercial) { alert('Completá el nombre del comercial responsable.'); document.getElementById('comercial-nombre').focus(); return; }
+    const { parts, total } = calcTotal();
+    document.getElementById('modal-fecha').textContent = new Date().toLocaleDateString('es-AR', { day:'2-digit', month:'long', year:'numeric' });
+    document.getElementById('modal-total').textContent = fmtUSD(total);
+    const nombre = document.getElementById('cli-nombre').value.trim();
+    const email  = document.getElementById('cli-email').value.trim();
+    const notas  = document.getElementById('comercial-notas').value.trim();
+    document.getElementById('modal-empresa').textContent   = empresa;
+    document.getElementById('modal-contacto').textContent  = [nombre, email].filter(Boolean).join(' · ') || '—';
+    document.getElementById('modal-comercial').textContent = comercial;
+    document.getElementById('modal-notas-strip').textContent = notas || '—';
+    const labels = {
+      base:        'Plataforma Base',
+      servidor:    'Servidores SOOFT',
+      integracion: `Integración (${state.intHrs} hrs × USD 35)`,
+      vacantes:    `Vacantes (${state.vacantes} × USD 15)`,
+      usuarios:    `Usuarios (${state.usuarios} × USD 8)`,
+      entrevistas: `Entrevistas IA (${state.entQty} × USD 25)`,
+      soporte:     `Soporte (${state.sptHrs} hrs × USD 35)`,
+    };
+    const itemsEl = document.getElementById('modal-items');
+    itemsEl.innerHTML = '';
+    const activeEntries = Object.entries(parts).filter(([k,v]) => v > 0 || k === 'base');
+    activeEntries.forEach(([k, v], i) => {
+      const row = document.createElement('div');
+      const isLast = i === activeEntries.length - 1;
+      row.style.cssText = `display:flex;justify-content:space-between;align-items:center;padding:9px 16px;font-size:13px;${!isLast ? 'border-bottom:1px solid #F1F5F9' : ''}`;
+      row.innerHTML = `<span style="color:#64748B">${labels[k]}</span><span style="font-family:monospace;font-weight:600;color:#0F172A">${fmtUSD(v)}</span>`;
+      itemsEl.appendChild(row);
+    });
+    ['msg-guardando','msg-exito','msg-error'].forEach(id => document.getElementById(id).classList.add('hidden'));
+    document.getElementById('modal-acciones').classList.remove('hidden');
+    document.getElementById('modal-overlay').classList.add('active');
+  }
+
+  function cerrarModal(e, force) {
+    if (force || (e && e.target === document.getElementById('modal-overlay'))) {
+      document.getElementById('modal-overlay').classList.remove('active');
+    }
+  }
+
+  /* ── Guardar cotización ── */
+  async function guardarCotizacion() {
+    const { parts, total } = calcTotal();
+    const payload = {
+      timestamp:   new Date().toISOString(),
+      comercial:   document.getElementById('comercial-nombre').value.trim(),
+      notas:       document.getElementById('comercial-notas').value.trim(),
+      cliente: {
+        empresa:  document.getElementById('cli-empresa').value.trim(),
+        nombre:   document.getElementById('cli-nombre').value.trim(),
+        email:    document.getElementById('cli-email').value.trim(),
+        telefono: document.getElementById('cli-tel').value.trim(),
+      },
+      configuracion: {
+        servidores: state.servidores, integracion: state.integracion,
+        horasIntegracion: state.intHrs, vacantes: state.vacantes,
+        usuarios: state.usuarios, entrevistadorVirtual: state.entrevistas,
+        cantidadEntrevistas: state.entQty, soporte: state.soporte, horasSoporte: state.sptHrs,
+      },
+      desglose: parts,
+      totalMensualUSD: total,
+    };
+    const accionesEl  = document.getElementById('modal-acciones');
+    const guardandoEl = document.getElementById('msg-guardando');
+    const exitoEl     = document.getElementById('msg-exito');
+    const errorEl     = document.getElementById('msg-error');
+    accionesEl.classList.add('hidden');
+    guardandoEl.classList.remove('hidden');
+    const WEBHOOK_URL = 'TU_URL_GOOGLE_APPS_SCRIPT_AQUI';
+    try {
+      if (WEBHOOK_URL === 'TU_URL_GOOGLE_APPS_SCRIPT_AQUI') {
+        await new Promise(r => setTimeout(r, 1200));
+      } else {
+        await fetch(WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload), mode:'no-cors' });
+      }
+      guardandoEl.classList.add('hidden');
+      exitoEl.classList.remove('hidden');
+      document.getElementById('msg-exito-id').textContent = `Guardado correctamente · ${payload.cliente.empresa}`;
+    } catch(err) {
+      guardandoEl.classList.add('hidden');
+      errorEl.textContent = 'Error al conectar: ' + err.message;
+      errorEl.classList.remove('hidden');
+      accionesEl.classList.remove('hidden');
+    }
+  }
+
+  /* ── Exportar PDF ── */
+  function imprimirPDF() {
+    const { parts, total } = calcTotal();
+    const empresa   = document.getElementById('cli-empresa').value.trim() || 'Cliente';
+    const contacto  = document.getElementById('cli-nombre').value.trim();
+    const email     = document.getElementById('cli-email').value.trim();
+    const comercial = document.getElementById('comercial-nombre').value.trim();
+    const fecha     = new Date().toLocaleDateString('es-AR', {day:'2-digit',month:'long',year:'numeric'});
+    const labels = {
+      base:'Plataforma Base', servidor:'Servidores SOOFT',
+      integracion:`Integración de Sistemas (${state.intHrs} hrs)`,
+      vacantes:`Vacantes activas (${state.vacantes}/mes)`,
+      usuarios:`Usuarios en plataforma (${state.usuarios})`,
+      entrevistas:`Entrevistador Virtual IA (${state.entQty} entrevistas)`,
+      soporte:`Soporte Premium (${state.sptHrs} hrs/mes)`,
+    };
+    const rows = Object.entries(parts).filter(([k,v])=>v>0||k==='base')
+      .map(([k,v])=>`<tr><td style="padding:10px 0;border-bottom:1px solid #E2E8F0;color:#334155;font-size:13px;">${labels[k]}</td><td style="padding:10px 0;border-bottom:1px solid #E2E8F0;text-align:right;font-weight:600;font-family:monospace;font-size:13px;">${fmtUSD(v)}</td></tr>`).join('');
+    const html = `<div style="font-family:Arial,sans-serif;max-width:680px;margin:0 auto;">
+      <div style="background:#050E1F;padding:24px 28px;border-radius:10px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;">
+        <div><div style="color:white;font-size:20px;font-weight:700;">SOOFT Technology</div><div style="color:#60A5FA;font-size:11px;margin-top:3px;letter-spacing:2px;text-transform:uppercase;">Cotización Enterprise</div></div>
+        <div style="text-align:right;color:#94A3B8;font-size:11px;"><div>${fecha}</div><div style="margin-top:2px;">Comercial: <strong style="color:#CBD5E1;">${comercial}</strong></div></div>
+      </div>
+      <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:16px 20px;margin-bottom:20px;">
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#94A3B8;margin-bottom:8px;">Datos del cliente</div>
+        <div style="font-size:17px;font-weight:700;color:#0F172A;">${empresa}</div>
+        ${contacto ? `<div style="color:#64748B;font-size:12px;margin-top:3px;">${contacto}${email?' · '+email:''}</div>` : ''}
+      </div>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:14px;">
+        <thead><tr style="background:#EFF6FF;"><th style="padding:9px 0;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#1D4ED8;border-bottom:2px solid #BFDBFE;">Módulo / Servicio</th><th style="padding:9px 0;text-align:right;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#1D4ED8;border-bottom:2px solid #BFDBFE;">Subtotal / mes</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div style="background:#050E1F;border-radius:8px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+        <span style="color:white;font-size:14px;font-weight:500;">Total mensual estimado</span>
+        <span style="color:#60A5FA;font-size:22px;font-weight:700;font-family:monospace;">${fmtUSD(total)}</span>
+      </div>
+      <div style="color:#94A3B8;font-size:10px;text-align:center;border-top:1px solid #E2E8F0;padding-top:14px;">Valores estimados en USD · La propuesta formal puede variar según auditoría técnica · SOOFT Technology</div>
+    </div>`;
+    const printArea = document.getElementById('print-area');
+    printArea.innerHTML = html;
+    printArea.style.display = 'block';
+    setTimeout(()=>{ window.print(); printArea.style.display='none'; }, 200);
+  }
+
+  /* ── Init ── */
+  setServidores('cliente');
+  calcTotal();
+</script>
+</body>
+</html>
