@@ -3,1429 +3,1538 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SOOFT · Portal de Cotización Enterprise</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          sooft: { 900:'#050E1F',800:'#0A1930',700:'#0F2545',600:'#163260',500:'#1B4080',400:'#2563EB',300:'#60A5FA',200:'#BFDBFE',100:'#EFF6FF',50:'#F8FBFF' },
-          steel:'#64748B', muted:'#94A3B8',
-        },
-        fontFamily: { sans:['Plus Jakarta Sans','sans-serif'], mono:['DM Mono','monospace'] },
-      }
-    }
-  }
-</script>
+<title>SOOFT · Portal Comercial Interno</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <style>
-  *,*::before,*::after{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{background:#F1F5F9;min-height:100vh}
-  ::-webkit-scrollbar{width:6px}
-  ::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:99px}
+/* ══ RESET & BASE ══ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Montserrat',sans-serif;background:#F4F4F2;min-height:100vh;font-size:14px}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-thumb{background:#DDD9D0;border-radius:99px}
 
-  .toggle-wrap{position:relative;display:inline-flex;align-items:center;cursor:pointer}
-  .toggle-wrap input{opacity:0;width:0;height:0;position:absolute}
-  .toggle-track{width:48px;height:26px;background:#CBD5E1;border-radius:99px;transition:background .2s;position:relative;flex-shrink:0}
-  .toggle-thumb{position:absolute;top:3px;left:3px;width:20px;height:20px;background:white;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.18);transition:transform .2s}
-  .toggle-wrap input:checked~.toggle-track{background:#2563EB}
-  .toggle-wrap input:checked~.toggle-track .toggle-thumb{transform:translateX(22px)}
+/* ══ BRAND TOKENS ══ */
+:root{
+  --orange:#FF6600;
+  --orange-dk:#E55A00;
+  --dark:#2D2D2D;
+  --blue:#1A5FA8;
+  --blue-lt:#EBF2FB;
+  --green:#1A7A52;
+  --green-lt:#E6F5EE;
+  --gold:#8B5E00;
+  --gold-lt:#FFF4DC;
+  --red:#B91C1C;
+  --red-lt:#FEE8E8;
+  --border:#EDE9E2;
+  --bg:#F4F4F2;
+  --card:#FFFFFF;
+  --text:#1C1C1E;
+  --muted:#6B6B6F;
+}
 
-  input[type=range]{-webkit-appearance:none;appearance:none;height:6px;border-radius:99px;background:#E2E8F0;outline:none;cursor:pointer}
-  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#2563EB;cursor:pointer;box-shadow:0 0 0 3px #BFDBFE;transition:box-shadow .15s}
-  input[type=range]::-webkit-slider-thumb:hover{box-shadow:0 0 0 5px #BFDBFE}
+/* ══ HEADER ══ */
+.site-header{
+  background:var(--orange);
+  padding:0 20px;
+  height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50;
+}
+.hdr-logo{display:flex;flex-direction:column;line-height:1}
 
-  .field{width:100%;padding:10px 14px;border:1.5px solid #E2E8F0;border-radius:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;color:#0F172A;background:white;transition:border-color .15s,box-shadow .15s;outline:none}
-  .field:focus{border-color:#2563EB;box-shadow:0 0 0 3px #BFDBFE}
-  .field-mono{font-family:'DM Mono',monospace;font-size:15px}
-  .field::-webkit-inner-spin-button,.field::-webkit-outer-spin-button{-webkit-appearance:none}
 
-  .card{background:white;border-radius:18px;border:1px solid #E2E8F0;box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.03);transition:box-shadow .2s}
-  .card:hover{box-shadow:0 2px 8px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.05)}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.hdr-tagline{color:rgba(255,255,255,.9);font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;display:none}
+@media(min-width:560px){.hdr-tagline{display:block}}
+.btn-admin{
+  background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);
+  color:white;font-size:11px;font-weight:700;
+  padding:6px 12px;border-radius:6px;cursor:pointer;
+  font-family:'Montserrat',sans-serif;
+  transition:background .15s;letter-spacing:.5px;
+}
+.btn-admin:hover{background:rgba(255,255,255,.3)}
 
-  .sub-panel{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1),opacity .3s ease,margin .3s;opacity:0}
-  .sub-panel.open{max-height:400px;opacity:1}
+/* ══ NAV TABS ══ */
+.nav-tabs{
+  background:var(--card);border-bottom:2px solid var(--border);
+  display:flex;position:sticky;top:56px;z-index:40;
+}
+.nav-tab{
+  flex:1;padding:13px 0;border:none;background:none;
+  font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;
+  cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;
+  transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px;
+  letter-spacing:.3px;text-transform:uppercase;
+}
+.nav-tab.active{color:var(--orange);border-bottom-color:var(--orange)}
+.nav-tab:hover:not(.active){color:var(--dark)}
+.tab-icon{font-size:14px}
 
-  .cuotas-btn{padding:6px 0;border:1.5px solid #E2E8F0;border-radius:8px;font-size:13px;font-weight:600;font-family:'DM Mono',monospace;color:#64748B;background:white;cursor:pointer;transition:all .15s;text-align:center}
-  .cuotas-btn.active{border-color:#2563EB;background:#EFF6FF;color:#1D4ED8;box-shadow:0 0 0 2px #BFDBFE}
+/* ══ LAYOUT ══ */
+.tab-panel{display:none;padding:16px;max-width:780px;margin:0 auto;gap:14px;flex-direction:column}
+.tab-panel.active{display:flex}
 
-  .ilimitado-pill{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#EFF6FF,#F0FDF4);border:1px solid #BFDBFE;border-radius:99px;padding:5px 14px;font-size:13px;font-weight:600;color:#1D4ED8}
+/* ══ CARDS ══ */
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.04);
+}
+.card-title{
+  font-size:10px;font-weight:800;color:var(--orange);
+  text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px;
+  display:flex;align-items:center;gap:7px;
+}
+.card-title::before{
+  content:'';display:inline-block;width:3px;height:12px;
+  background:var(--orange);border-radius:2px;flex-shrink:0;
+}
 
-  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-  .fade-up{animation:fadeUp .5s ease both}
-  .d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.18s}
-  .d4{animation-delay:.24s}.d5{animation-delay:.30s}.d6{animation-delay:.36s}
+/* ══ FIELDS ══ */
+.field{
+  width:100%;padding:9px 11px;
+  border:1.5px solid #C5D9F0;border-radius:8px;
+  font-size:13px;background:var(--blue-lt);color:var(--blue);
+  font-weight:600;outline:none;font-family:'Montserrat',sans-serif;
+  transition:border-color .15s;
+}
+.field:focus{border-color:var(--orange)}
+.field::-webkit-inner-spin-button,.field::-webkit-outer-spin-button{-webkit-appearance:none}
+.field-green{border-color:#8ECFB0;background:var(--green-lt);color:var(--green)}
+.field-gold{border-color:#E8C96A;background:var(--gold-lt);color:var(--gold)}
+.field-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
 
-  .total-num{font-family:'DM Mono',monospace;font-size:40px;font-weight:500;line-height:1;transition:color .3s}
+/* ══ GRID ══ */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 
-  /* Overlays */
-  .overlay{position:fixed;inset:0;background:rgba(5,14,31,.6);backdrop-filter:blur(6px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
-  .overlay.active{opacity:1;pointer-events:all}
-  .overlay-box{background:white;border-radius:22px;width:100%;margin:16px;transform:translateY(18px);transition:transform .25s;max-height:92vh;overflow-y:auto}
-  .overlay.active .overlay-box{transform:translateY(0)}
+/* ══ TOGGLE SWITCH ══ */
+.tog-wrap{position:relative;display:inline-flex;align-items:center;cursor:pointer}
+.tog-wrap input{opacity:0;width:0;height:0;position:absolute}
+.tog-track{width:44px;height:24px;background:#DDD9D0;border-radius:99px;transition:background .2s;position:relative;flex-shrink:0}
+.tog-thumb{position:absolute;top:3px;left:3px;width:18px;height:18px;background:white;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .2s}
+.tog-wrap input:checked~.tog-track{background:var(--orange)}
+.tog-wrap input:checked~.tog-track .tog-thumb{transform:translateX(20px)}
 
-  #modal-overlay{z-index:110}
-  #admin-overlay{z-index:120}
-  #login-overlay{z-index:130}
+/* ══ CUOTAS GRID ══ */
+.cuota-btn{
+  padding:7px 0;border:1.5px solid var(--border);border-radius:8px;
+  font-size:12px;font-weight:700;font-family:'DM Mono',monospace;
+  color:var(--muted);background:var(--card);cursor:pointer;transition:all .15s;
+  text-align:center;
+}
+.cuota-btn.active{border-color:var(--orange);background:#FFF3EB;color:var(--orange);box-shadow:0 0 0 2px #FFD4B3}
+.cuotas-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
 
-  .admin-field{width:100%;padding:8px 11px;border:1.5px solid #E2E8F0;border-radius:9px;font-size:13px;color:#0F172A;background:#F8FAFC;outline:none;transition:border-color .15s;font-family:'DM Mono',monospace}
-  .admin-field:focus{border-color:#2563EB;background:white}
+/* ══ TOGGLE BUTTON GROUP (Servidores) ══ */
+.srv-btn{
+  display:flex;align-items:center;gap:10px;padding:12px;
+  border-radius:10px;border:2px solid var(--border);background:var(--card);
+  cursor:pointer;transition:all .15s;
+}
+.srv-btn.active{border-color:var(--orange);background:#FFF3EB}
 
-  /* Summary table */
-  .summary-table{width:100%;border-collapse:collapse}
-  .summary-table th{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#94A3B8;padding:8px 14px;text-align:left;background:#F8FAFC;border-bottom:1px solid #E2E8F0}
-  .summary-table th:last-child{text-align:right}
-  .summary-table td{padding:10px 14px;font-size:13px;border-bottom:1px solid #F1F5F9;color:#334155;vertical-align:middle}
-  .summary-table td:last-child{text-align:right;font-family:'DM Mono',monospace;font-weight:600;color:#0F172A}
-  .summary-table tr:last-child td{border-bottom:none}
-  .summary-table tr.total-row td{background:#050E1F;color:white;font-weight:700;font-size:14px}
-  .summary-table tr.total-row td:last-child{color:#60A5FA;font-family:'DM Mono',monospace;font-size:16px}
+/* ══ SUB PANEL ══ */
+.sub-panel{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1),opacity .25s;opacity:0}
+.sub-panel.open{max-height:400px;opacity:1}
 
-  .tag{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600;vertical-align:middle;margin-left:6px}
-  .tag-amber{background:#FEF3C7;color:#92400E}
-  .tag-blue{background:#EFF6FF;color:#1D4ED8}
-  .tag-green{background:#D1FAE5;color:#065F46}
+/* ══ KPI BOXES ══ */
+.kpi{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px}
+.kpi-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:5px}
+.kpi-val{font-size:22px;font-weight:900;color:var(--text);font-family:'DM Mono',monospace}
 
-  @media(min-width:1024px){.sidebar-sticky{position:sticky;top:24px}}
-  /* ── Print: oculta todo excepto la propuesta ── */
-  @media print {
-    html, body {
-      background: white !important;
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-    body > *:not(#proposal-template) {
-      display: none !important;
-    }
-    #proposal-template {
-      display: block !important;
-      visibility: visible !important;
-      position: static !important;
-      width: 100% !important;
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-    @page {
-      margin: 1.4cm 1.8cm;
-      size: A4 portrait;
-    }
-  }
+/* ══ TABLE ══ */
+.summary-table{width:100%;border-collapse:collapse}
+.summary-table th{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:white;background:var(--dark);padding:8px 10px;text-align:left}
+.summary-table th:last-child{text-align:right}
+.summary-table td{padding:9px 10px;font-size:12px;color:var(--text);border-bottom:1px solid #F0F0F0;vertical-align:middle}
+.summary-table td:last-child{text-align:right;font-family:'DM Mono',monospace;font-weight:700}
+.summary-table tr:nth-child(even) td{background:#FAFAFA}
+.summary-table tr:last-child td{border-bottom:none}
 
-  /* ── Proposal template styles ── */
-  #proposal-template { display: none; }
-  #proposal-template.visible { display: block; }
+/* ══ SCENARIO ROW (staff) ══ */
+.sc-row{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:8px;margin-bottom:4px;font-size:13px}
 
-  /* SOOFT brand colors */
-  :root {
-    --sooft-orange: #FF6600;
-    --sooft-dark:   #2D2D2D;
-    --sooft-text:   #404040;
-    --sooft-muted:  #595959;
-  }
+/* ══ ILIMITADO BADGE ══ */
+.badge-inf{display:inline-flex;align-items:center;gap:4px;background:#E6F5EE;color:var(--green);font-size:9px;font-weight:800;padding:2px 9px;border-radius:3px;text-transform:uppercase;letter-spacing:1px}
 
-  .prop-page {
-    font-family: 'Montserrat', Arial, sans-serif;
-    color: var(--sooft-text);
-    background: white;
-    max-width: 820px;
-    margin: 0 auto;
-  }
+/* ══ TOTAL BAR ══ */
+.total-bar{background:var(--dark);border-radius:10px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center}
+.total-bar-label{color:white;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.total-bar-val{color:var(--orange);font-size:26px;font-weight:900;font-family:'DM Mono',monospace}
 
-  /* ── Orange header banner ── */
-  .prop-header-banner {
-    background: var(--sooft-orange);
-    padding: 22px 36px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0;
-  }
-  .prop-header-logo {
-    display: flex; flex-direction: column; gap: 2px;
-  }
-  .prop-header-logo-name {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 22px; font-weight: 900;
-    color: white; letter-spacing: -0.5px; line-height: 1;
-  }
-  .prop-header-logo-sub {
-    font-size: 8px; font-weight: 500;
-    letter-spacing: 3.5px; text-transform: uppercase;
-    color: rgba(255,255,255,0.85);
-  }
-  .prop-header-tagline {
-    font-size: 11px; font-weight: 800;
-    letter-spacing: 2px; text-transform: uppercase;
-    color: white;
-  }
-  .prop-header-tagline span { font-weight: 400; }
+/* ══ BUTTONS ══ */
+.btn-primary{
+  width:100%;padding:13px;background:var(--orange);color:white;border:none;
+  border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;
+  font-family:'Montserrat',sans-serif;transition:all .15s;letter-spacing:.3px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-primary:hover{background:var(--orange-dk);transform:translateY(-1px);box-shadow:0 6px 16px rgba(255,102,0,.3)}
+.btn-primary:active{transform:scale(.98)}
+.btn-secondary{
+  width:100%;padding:11px;background:var(--card);color:var(--dark);
+  border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-weight:700;
+  cursor:pointer;font-family:'Montserrat',sans-serif;transition:all .15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-secondary:hover{background:var(--bg);border-color:#C5C5C0}
+.btn-blue{background:var(--blue);color:white;border-color:var(--blue)}
+.btn-blue:hover{background:#155090;border-color:#155090;color:white}
 
-  /* ── Meta strip below header ── */
-  .prop-meta-strip {
-    background: #F9F9F9;
-    border-bottom: 2px solid var(--sooft-orange);
-    padding: 12px 36px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .prop-meta-strip-label {
-    font-size: 9px; font-weight: 700; letter-spacing: 2px;
-    text-transform: uppercase; color: var(--sooft-orange);
-  }
-  .prop-meta-strip-items {
-    display: flex; gap: 28px; font-size: 11px; color: var(--sooft-muted);
-  }
-  .prop-meta-strip-items strong { color: var(--sooft-text); font-weight: 700; }
+/* ══ OVERLAYS ══ */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(5px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+.overlay.active{opacity:1;pointer-events:all}
+.overlay-box{background:white;border-radius:18px;width:100%;max-width:520px;padding:28px;margin:16px;transform:translateY(16px);transition:transform .25s;max-height:90vh;overflow-y:auto}
+.overlay.active .overlay-box{transform:translateY(0)}
 
-  /* ── Body content ── */
-  .prop-body { padding: 32px 36px 20px; }
+/* ══ PRINT ══ */
+@media print{
+  body>*:not(#proposal-print){display:none!important}
+  #proposal-print{display:block!important;visibility:visible!important;position:static!important}
+  @page{margin:1.2cm 1.8cm;size:A4 portrait}
+}
 
-  /* ── Title section ── */
-  .prop-title-section { margin-bottom: 28px; }
-  .prop-badge {
-    display: inline-block;
-    background: var(--sooft-orange);
-    color: white; font-size: 9px; font-weight: 800;
-    letter-spacing: 2px; text-transform: uppercase;
-    padding: 4px 14px; border-radius: 3px; margin-bottom: 10px;
-  }
-  .prop-title {
-    font-size: 24px; font-weight: 800;
-    color: var(--sooft-dark); line-height: 1.2; margin: 0 0 5px;
-  }
-  .prop-subtitle { font-size: 13px; color: var(--sooft-muted); margin: 0; font-weight: 500; }
+/* ══ PROPOSAL PRINT TEMPLATE ══ */
+#proposal-print{display:none}
+.pp{font-family:'Montserrat',Arial,sans-serif;color:#404040;background:white;max-width:780px;margin:0 auto}
+.pp-hdr{background:#FF6600;padding:20px 32px;display:flex;align-items:center;justify-content:space-between}
+.pp-hdr-name{color:white;font-size:20px;font-weight:900;letter-spacing:-.5px}
+.pp-hdr-sub{color:rgba(255,255,255,.8);font-size:7px;letter-spacing:3px;text-transform:uppercase;margin-top:2px}
+.pp-hdr-tag{color:rgba(255,255,255,.9);font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+.pp-meta{background:#F9F9F9;border-bottom:2px solid #FF6600;padding:10px 32px;display:flex;align-items:center;justify-content:space-between}
+.pp-meta-lbl{font-size:8px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#FF6600}
+.pp-meta-items{display:flex;gap:22px;font-size:10px;color:#595959}
+.pp-meta-items strong{color:#2D2D2D;font-weight:700}
+.pp-body{padding:26px 32px 16px}
+.pp-badge{display:inline-block;background:#FF6600;color:white;font-size:8px;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:3px 12px;border-radius:3px;margin-bottom:9px}
+.pp-title{font-size:22px;font-weight:800;color:#2D2D2D;line-height:1.2;margin:0 0 4px}
+.pp-subtitle{font-size:12px;color:#595959;font-weight:500;margin:0 0 22px}
+.pp-client{background:#F9F9F9;border-left:4px solid #FF6600;padding:14px 18px;margin-bottom:24px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.pp-cl-lbl{font-size:8px;text-transform:uppercase;letter-spacing:2px;color:#FF6600;margin-bottom:3px;font-weight:800}
+.pp-cl-val{font-size:12px;font-weight:700;color:#2D2D2D}
+.pp-cl-sub{font-size:10px;color:#595959;margin-top:2px}
+.pp-sec-title{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:white;background:#2D2D2D;padding:7px 12px;margin-bottom:0}
+.pp-tbl{width:100%;border-collapse:collapse}
+.pp-tbl th{font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:white;background:#FF6600;padding:7px 10px;text-align:left}
+.pp-tbl th:last-child{text-align:right}
+.pp-tbl td{padding:8px 10px;font-size:11px;color:#404040;border-bottom:1px solid #F0F0F0;vertical-align:middle}
+.pp-tbl td:last-child{text-align:right;font-weight:700;color:#2D2D2D}
+.pp-tbl tr:nth-child(even) td{background:#FAFAFA}
+.pp-tbl .il-row td{background:#F5FFF8!important}
+.pp-total{background:#2D2D2D;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;margin-top:4px}
+.pp-total-lbl{color:white;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.pp-total-val{color:#FF6600;font-size:22px;font-weight:900}
+.pp-note{background:#FFF8F0;border-left:3px solid #FF6600;padding:9px 12px;margin:10px 0;font-size:10px;color:#595959;line-height:1.6}
+.pp-validity{display:flex;align-items:flex-start;gap:8px;padding:9px 14px;background:#F9F9F9;border:1px solid #EBEBEB;margin-top:16px;font-size:10px;color:#595959;line-height:1.5}
+.pp-dot{width:7px;height:7px;border-radius:50%;background:#FF6600;flex-shrink:0;margin-top:3px}
+.pp-ftr{background:#2D2D2D;padding:12px 32px;display:flex;align-items:center;justify-content:space-between;margin-top:20px}
+.pp-ftr-name{color:white;font-size:12px;font-weight:800}
+.pp-ftr-sub{color:rgba(255,255,255,.5);font-size:6px;letter-spacing:3px;text-transform:uppercase;margin-top:1px}
+.pp-ftr-web{font-size:10px;color:rgba(255,255,255,.5);font-weight:500}
+.pp-ftr-web span{color:#FF6600}
 
-  /* ── Client info box ── */
-  .prop-client-box {
-    background: #F9F9F9;
-    border-left: 4px solid var(--sooft-orange);
-    padding: 16px 20px; margin-bottom: 28px;
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;
-  }
-  .prop-client-label {
-    font-size: 8px; text-transform: uppercase;
-    letter-spacing: 2px; color: var(--sooft-orange);
-    margin-bottom: 4px; font-weight: 800;
-  }
-  .prop-client-value { font-size: 13px; font-weight: 700; color: var(--sooft-dark); }
-  .prop-client-sub { font-size: 11px; color: var(--sooft-muted); margin-top: 2px; }
+/* Staff-specific */
+.staff-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);margin-bottom:7px}
+.del-btn{width:26px;height:26px;border:1px solid var(--border);background:var(--card);border-radius:6px;cursor:pointer;font-size:15px;color:var(--muted)}
+.msg-bubble{padding:10px 13px;border-radius:10px;font-size:13px;line-height:1.6;white-space:pre-wrap;max-width:90%}
 
-  /* ── Sections ── */
-  .prop-section { margin-bottom: 24px; }
-  .prop-section-title {
-    font-size: 9px; font-weight: 800;
-    letter-spacing: 2px; text-transform: uppercase;
-    color: white; background: var(--sooft-dark);
-    padding: 7px 14px; margin-bottom: 0;
-  }
+/* Proposal tab bridge notice */
+.bridge-notice{background:#FFF3EB;border:1.5px solid #FFD4B3;border-radius:10px;padding:12px 16px;display:flex;align-items:flex-start;gap:10px;font-size:12px;color:#7A3800}
+.bridge-dot{width:8px;height:8px;border-radius:50%;background:var(--orange);flex-shrink:0;margin-top:3px}
 
-  /* ── Tables ── */
-  .prop-table { width: 100%; border-collapse: collapse; }
-  .prop-table th {
-    font-size: 8px; font-weight: 700; letter-spacing: 1.5px;
-    text-transform: uppercase; color: white;
-    background: var(--sooft-orange);
-    padding: 8px 12px; text-align: left; border: none;
-  }
-  .prop-table th:last-child { text-align: right; }
-  .prop-table td {
-    padding: 10px 12px; font-size: 12px;
-    color: var(--sooft-text);
-    border-bottom: 1px solid #F0F0F0;
-    vertical-align: middle;
-  }
-  .prop-table td:last-child {
-    text-align: right; font-family: 'Montserrat', monospace;
-    font-weight: 700; color: var(--sooft-dark); font-size: 12px;
-  }
-  .prop-table tr:last-child td { border-bottom: none; }
-  .prop-table tr:nth-child(even) td { background: #FAFAFA; }
-  .prop-table .highlight-row td { background: #FFF5EE; font-weight: 700; }
-  .prop-ilimitado-row td { background: #F5FFF8 !important; }
-
-  .prop-badge-green { display:inline-block;background:#D1FAE5;color:#065F46;font-size:9px;font-weight:800;padding:2px 9px;border-radius:3px;text-transform:uppercase;letter-spacing:1px; }
-  .prop-badge-amber { display:inline-block;background:#FEF3C7;color:#92400E;font-size:9px;font-weight:800;padding:2px 9px;border-radius:3px;text-transform:uppercase;letter-spacing:1px; }
-  .prop-badge-blue  { display:inline-block;background:#EFF6FF;color:#1D4ED8;font-size:9px;font-weight:800;padding:2px 9px;border-radius:3px; }
-
-  /* ── Total bar ── */
-  .prop-total-bar {
-    background: var(--sooft-dark);
-    padding: 16px 20px;
-    display: flex; justify-content: space-between; align-items: center;
-    margin-top: 4px;
-  }
-  .prop-total-label { color: white; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-  .prop-total-value { color: var(--sooft-orange); font-size: 28px; font-weight: 900; font-family: 'Montserrat', sans-serif; }
-
-  /* ── Cuota note ── */
-  .prop-cuota-note {
-    background: #FFF8F0; border-left: 3px solid var(--sooft-orange);
-    padding: 10px 14px; margin-top: 10px;
-    font-size: 11px; color: var(--sooft-muted); line-height: 1.6;
-  }
-
-  /* ── Validity ── */
-  .prop-validity {
-    background: #F9F9F9; border: 1px solid #E8E8E8;
-    padding: 10px 16px; margin-top: 20px;
-    font-size: 11px; color: var(--sooft-muted);
-    display: flex; align-items: flex-start; gap: 10px; line-height: 1.5;
-  }
-  .prop-validity-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--sooft-orange); flex-shrink: 0; margin-top: 3px;
-  }
-
-  /* ── Dark footer banner ── */
-  .prop-footer-banner {
-    background: var(--sooft-dark);
-    padding: 14px 36px;
-    display: flex; align-items: center; justify-content: space-between;
-    margin-top: 24px;
-  }
-  .prop-footer-logo-name {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 13px; font-weight: 800;
-    color: white; letter-spacing: -0.3px;
-  }
-  .prop-footer-logo-sub {
-    font-size: 6px; font-weight: 400;
-    letter-spacing: 3px; text-transform: uppercase;
-    color: rgba(255,255,255,0.5); margin-top: 1px;
-  }
-  .prop-footer-web {
-    font-size: 11px; color: rgba(255,255,255,0.6);
-    font-weight: 500; letter-spacing: 0.5px;
-  }
-  .prop-footer-web span { color: var(--sooft-orange); }
-
-  /* Botón generar propuesta */
-  .btn-proposal {
-    width: 100%; background: var(--sooft-orange); color: white;
-    font-weight: 800; padding: 14px 20px; border-radius: 10px; border: none;
-    cursor: pointer; font-size: 14px; font-family: 'Plus Jakarta Sans', sans-serif;
-    transition: all 0.15s; display: flex; align-items: center;
-    justify-content: center; gap: 8px; letter-spacing: 0.3px;
-  }
-  .btn-proposal:hover { background: #E55A00; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(255,102,0,.3); }
-  .btn-proposal:active { transform: scale(0.98); }
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp .4s ease both}
+.fu1{animation-delay:.05s}.fu2{animation-delay:.1s}.fu3{animation-delay:.15s}.fu4{animation-delay:.2s}.fu5{animation-delay:.25s}.fu6{animation-delay:.3s}
 </style>
 </head>
-<body class="font-sans">
+<body>
 
-<!-- ═══ SVG LOGO (template) ═══ -->
-<svg id="sooft-svg-src" style="display:none" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 1653.32 504.33">
-  <g><g>
-    <path d="M338.65 240.63c-1.2,-36.35 -24.53,-77.76 -105.87,-91.27 -46.95,-6.87 -103.21,-8.96 -132.21,-17.91 -63.42,-19.52 -43.78,-54.04 -20.64,-70.97 17.42,-13.09 48.35,-22.47 89.85,-22.47 102.41,0 112.05,54.84 112.05,60.83 0,4.64 0,13.66 -8.62,25.14l37.4 14.68c6.4,-9.67 11.95,-22.57 12.46,-38.65 1.34,-41.16 -44.36,-100.01 -153.68,-100.01 -109.32,0 -151.82,52.69 -152.32,96.15 -0.1,27.14 18.79,54.33 64.32,70.28 50.81,17.78 133.94,13.75 170.2,28.41 68.79,26.43 51.79,77.54 -8.35,100.33 -19.08,6.84 -42.65,11.99 -74.73,11.99 -72.8,-1.34 -110.86,-21.47 -124.47,-51.84 -9.45,-21.15 -2.57,-44.05 15.12,-60.58l-32.03 -17.76c-9.33,8.26 -25.36,29.29 -27.07,62.66 -2.1,47.59 45.97,108.54 169.68,107.19 123.71,-1.34 170.32,-62.71 168.85,-106.19l0.05 -0.03z"/>
-    <path d="M1325.54 44.95l0 -40.33 -154.39 0c-69.55,0 -125.91,56.38 -125.91,125.91l0 206.96 40.36 0 0 -166.6 239.94 0 0 -40.36 -239.94 0c0,-49.91 40.46,-85.57 90.36,-85.57l149.58 0z"/>
-    <rect x="1482.04" y="11.13" width="40.36" height="326.16"/>
-    <path d="M1653.32 44.95l0 -40.33 -172.36 0c-26.75,-0 -27.23,40.32 6.4,40.33l165.96 0z"/>
-    <path d="M1351.11 44.95l0 -40.33 172.36 0c26.75,-0 27.23,40.32 -6.4,40.33l-165.96 0z"/>
-    <path d="M523.29 338.7c-3.91,0 -7.87,-0.12 -11.85,-0.37 -39.94,-2.44 -73.95,-16.83 -95.71,-40.53 -44.19,-48.08 -44.53,-113.55 -44.49,-118.6l0 -15c-0.1,-5.11 -0.07,-70.55 43.87,-118.82 21.67,-23.79 55.58,-38.35 95.52,-40.99 35.49,-2.34 69.6,5.18 91.22,20.1 7.38,5.08 13.88,9.94 20.15,14.63 22.79,16.98 37.99,28.29 66.06,30.05 28.07,-1.88 43.19,-13.26 65.91,-30.36 6.28,-4.72 12.75,-9.6 20.1,-14.73 21.55,-15.05 55.62,-22.72 91.12,-20.54 39.94,2.44 73.95,16.83 95.71,40.53 44.19,48.08 44.53,113.55 44.49,118.6l0.05 15c0.07,5.08 0.05,70.53 -43.92,118.82 -21.67,23.79 -55.58,38.35 -95.52,40.99 -35.49,2.34 -69.6,-5.18 -91.22,-20.1 -7.38,-5.08 -13.88,-9.94 -20.15,-14.61 -22.79,-16.98 -37.99,-28.29 -66.06,-30.05 -28.07,1.88 -43.19,13.26 -65.89,30.36 -6.25,4.72 -12.75,9.6 -20.08,14.7 -19.15,13.36 -48.15,20.91 -79.27,20.91l-0.05 0zm-0.1 -295.22c-3.3,0 -6.62,0.1 -9.97,0.32 -29.27,1.93 -54.38,12.19 -68.94,28.17 -34.3,37.67 -33.64,91.12 -33.61,91.66l0 0.34 0.05 15.44 0 0.17c0,.49 -0.1,54.33 34.08,91.49 14.61,15.9 39.79,26.04 69.06,27.83 26.12,1.59 52.06,-3.71 66.1,-13.51 6.77,-4.72 12.95,-9.38 18.96,-13.9 24.65,-18.54 47.93,-36.06 88.87,-38.33l.22 3.91 .1 -3.93 .71 0 .12 4.54 .22 -4.52c40.94,2.05 64.32,19.47 89.04,37.89 6.01,4.47 12.21,9.11 19,13.8 14.09,9.75 40.06,14.93 66.18,13.19 29.27,-1.93 54.38,-12.19 68.91,-28.17 33.98,-37.33 33.64,-91.17 33.61,-91.73l0 -.29 -.05 -15.44 0 -.17c0,-.49 .1,-54.33 -34.05,-91.49 -14.61,-15.9 -39.79,-26.04 -69.06,-27.83 -26.09,-1.59 -52.06,3.71 -66.1,13.51 -6.77,4.72 -12.97,9.38 -18.96,13.9 -24.65,18.54 -47.93,36.06 -88.87,38.33l-.25 -4.32 -.1 4.35 -.71 0 -.12 -4.13 -.19 4.1c-40.94,-2.05 -64.32,-19.47 -89.04,-37.89 -6.01,-4.47 -12.21,-9.11 -19,-13.8 -12.31,-8.5 -33.64,-13.53 -56.21,-13.53l0 .05z"/>
-  </g>
-  <path fill-rule="nonzero" d="M180.07 440.72l-24.33 0 0 62.99 -11.55 0 0 -62.99 -24.44 0 0 -10.21 60.32 0 0 10.21zm139.79 52.79l0 10.2 -50.21 0 0 -73.21 49.28 0 0 10.21 -37.74 0 0 20.82 32.69 0 0 9.59 -32.69 0 0 22.38 38.67 0zm87.41 -26.92c0,-4.4 .79,-8.78 2.37,-13.14 1.58,-4.37 3.87,-8.29 6.86,-11.76 2.99,-3.47 6.65,-6.27 10.98,-8.4 4.33,-2.13 9.25,-3.2 14.75,-3.2 6.53,0 12.15,1.48 16.85,4.43 4.71,2.96 8.23,6.81 10.57,11.55l-9.07 6.08c-.97,-2.2 -2.17,-4.06 -3.61,-5.57 -1.44,-1.51 -3.01,-2.71 -4.69,-3.61 -1.69,-.89 -3.42,-1.53 -5.21,-1.91 -1.78,-.38 -3.54,-.57 -5.25,-.57 -3.72,0 -7,.77 -9.85,2.32 -2.85,1.55 -5.24,3.59 -7.17,6.13 -1.93,2.54 -3.37,5.4 -4.33,8.56 -.96,3.17 -1.45,6.33 -1.45,9.49 0,3.58 .57,6.98 1.7,10.21 1.13,3.23 2.74,6.09 4.8,8.56 2.06,2.48 4.5,4.45 7.32,5.93 2.82,1.47 5.91,2.21 9.28,2.21 1.72,0 3.52,-.22 5.42,-.67 1.89,-.45 3.67,-1.16 5.36,-2.16 1.69,-1 3.25,-2.25 4.69,-3.76 1.44,-1.51 2.65,-3.33 3.61,-5.47l9.59 5.47c-1.17,2.75 -2.8,5.18 -4.9,7.27 -2.1,2.1 -4.45,3.87 -7.06,5.31 -2.61,1.44 -5.4,2.55 -8.35,3.3 -2.96,.76 -5.88,1.14 -8.77,1.14 -5.09,0 -9.73,-1.1 -13.92,-3.3 -4.2,-2.2 -7.82,-5.06 -10.88,-8.61 -3.06,-3.54 -5.43,-7.56 -7.11,-12.06 -1.68,-4.5 -2.52,-9.09 -2.52,-13.77zm214.03 -36.09l0 73.21 -11.65 0 0 -32.27 -36.91 0 0 32.27 -11.55 0 0 -73.21 11.55 0 0 30.63 36.91 0 0 -30.63 11.65 0zm107.62 21.66l0 51.55 -11.55 0 0 -73.21 9.07 0 41.86 52.8 0 -52.69 11.65 0 0 73.1 -9.59 0 -41.45 -51.55zm177.22 52.07c-5.15,0 -9.85,-1.05 -14.07,-3.14 -4.23,-2.1 -7.87,-4.88 -10.93,-8.36 -3.06,-3.47 -5.41,-7.44 -7.06,-11.91 -1.65,-4.47 -2.47,-9.04 -2.47,-13.71 0,-4.88 .88,-9.56 2.63,-14.02 1.75,-4.47 4.17,-8.42 7.27,-11.86 3.09,-3.44 6.77,-6.17 11.03,-8.2 4.26,-2.03 8.9,-3.04 13.92,-3.04 5.15,0 9.85,1.08 14.07,3.25 4.23,2.16 7.86,5 10.88,8.5 3.03,3.51 5.36,7.48 7.01,11.91 1.65,4.43 2.47,8.95 2.47,13.56 0,4.88 -.88,9.56 -2.63,14.02 -1.75,4.47 -4.17,8.4 -7.27,11.81 -3.1,3.4 -6.76,6.12 -10.98,8.15 -4.23,2.03 -8.85,3.04 -13.87,3.04zm-22.78 -37.12c0,3.44 .53,6.77 1.6,10 1.07,3.23 2.6,6.08 4.59,8.56 1.99,2.47 4.4,4.45 7.22,5.93 2.82,1.48 5.98,2.22 9.49,2.22 3.58,0 6.79,-.77 9.65,-2.32 2.85,-1.55 5.25,-3.59 7.21,-6.13 1.96,-2.54 3.45,-5.4 4.49,-8.56 1.03,-3.16 1.54,-6.39 1.54,-9.69 0,-3.51 -.55,-6.86 -1.65,-10.06 -1.1,-3.19 -2.65,-6.01 -4.64,-8.45 -1.99,-2.44 -4.4,-4.4 -7.22,-5.88 -2.82,-1.48 -5.94,-2.22 -9.38,-2.22 -3.57,0 -6.79,.77 -9.64,2.32 -2.85,1.55 -5.26,3.56 -7.21,6.03 -1.96,2.48 -3.46,5.32 -4.49,8.51 -1.04,3.2 -1.55,6.45 -1.55,9.75zm149.17 36.6l0 -73.21 11.55 0 0 63 39.28 0 0 10.2 -50.83 0zm167.01 .52c-5.15,0 -9.84,-1.05 -14.07,-3.14 -4.23,-2.1 -7.87,-4.88 -10.93,-8.36 -3.06,-3.47 -5.41,-7.44 -7.06,-11.91 -1.65,-4.47 -2.48,-9.04 -2.48,-13.71 0,-4.88 .88,-9.56 2.64,-14.02 1.75,-4.47 4.17,-8.42 7.26,-11.86 3.1,-3.44 6.77,-6.17 11.04,-8.2 4.27,-2.03 8.9,-3.04 13.92,-3.04 5.16,0 9.84,1.08 14.08,3.25 4.22,2.16 7.85,5 10.88,8.5 3.03,3.51 5.36,7.48 7,11.91 1.66,4.43 2.49,8.95 2.49,13.56 0,4.88 -.88,9.56 -2.64,14.02 -1.74,4.47 -4.17,8.4 -7.27,11.81 -3.09,3.4 -6.75,6.12 -10.98,8.15 -4.22,2.03 -8.85,3.04 -13.87,3.04zm-22.78 -37.12c0,3.44 .53,6.77 1.6,10 1.06,3.23 2.59,6.08 4.59,8.56 1.99,2.47 4.41,4.45 7.22,5.93 2.82,1.48 5.98,2.22 9.49,2.22 3.58,0 6.78,-.77 9.64,-2.32 2.85,-1.55 5.25,-3.59 7.22,-6.13 1.96,-2.54 3.46,-5.4 4.49,-8.56 1.02,-3.16 1.54,-6.39 1.54,-9.69 0,-3.51 -.55,-6.86 -1.65,-10.06 -1.1,-3.19 -2.65,-6.01 -4.64,-8.45 -1.99,-2.44 -4.39,-4.4 -7.22,-5.88 -2.81,-1.48 -5.94,-2.22 -9.38,-2.22 -3.58,0 -6.79,.77 -9.64,2.32 -2.86,1.55 -5.25,3.56 -7.21,6.03 -1.96,2.48 -3.46,5.32 -4.49,8.51 -1.03,3.2 -1.55,6.45 -1.55,9.75zm199.7 27.53c-5.98,6.39 -12.96,9.59 -20.93,9.59 -4.75,0 -9.2,-1.05 -13.36,-3.14 -4.16,-2.1 -7.76,-4.88 -10.82,-8.36 -3.06,-3.47 -5.46,-7.46 -7.22,-11.96 -1.76,-4.5 -2.64,-9.16 -2.64,-13.97 0,-4.95 .88,-9.66 2.64,-14.12 1.76,-4.47 4.16,-8.38 7.22,-11.75 3.06,-3.37 6.68,-6.03 10.87,-7.99 4.2,-1.96 8.78,-2.94 13.72,-2.94 6.87,0 12.64,1.46 17.32,4.38 4.67,2.92 8.22,6.79 10.62,11.6l-8.87 6.39c-2,-3.99 -4.7,-6.98 -8.1,-8.97 -3.4,-1.99 -7.16,-2.99 -11.29,-2.99 -3.37,0 -6.43,.74 -9.18,2.22 -2.75,1.47 -5.11,3.44 -7.06,5.87 -1.96,2.44 -3.48,5.28 -4.55,8.51 -1.07,3.23 -1.59,6.6 -1.59,10.11 0,3.71 .58,7.18 1.76,10.41 1.16,3.23 2.8,6.05 4.89,8.45 2.1,2.41 4.56,4.31 7.38,5.72 2.81,1.4 5.87,2.11 9.18,2.11 7.42,0 14.09,-3.61 20,-10.82l0 -7.74 -15.37 0 0 -8.55 25.06 0 0 37.01 -9.69 0 0 -9.07zm103.8 -64.13l20.32 36.71 20.41 -36.71 12.58 0 -27.22 47.02 0 26.19 -11.64 0 0 -26.4 -27.12 -46.81 12.68 0z"/>
-  </g>
-</svg>
-
-<!-- ═══ HEADER ═══ -->
-<header class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-50">
-  <div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between">
-    <div id="hdr-logo"></div>
-    <div class="flex items-center gap-3">
-      <span class="hidden sm:inline-flex items-center gap-1.5 bg-sooft-100 text-sooft-600 text-xs font-semibold px-3 py-1.5 rounded-full border border-sooft-200">
-        <span class="w-1.5 h-1.5 bg-sooft-400 rounded-full"></span>Uso Interno
-      </span>
-      <button onclick="abrirLogin()" class="flex items-center gap-1.5 text-xs font-semibold text-steel border border-slate-200 px-3 py-2 rounded-lg hover:bg-slate-50 hover:border-sooft-300 hover:text-sooft-500 transition-all">
-        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-        Administración
-      </button>
-    </div>
+<!-- ══ HEADER ══ -->
+<header class="site-header">
+  <div class="hdr-logo"><svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" height="36" viewBox="0 0 1653.32 504.33" style="fill:white;display:block;shape-rendering:geometricPrecision"><g><g><path d="M338.65 240.63c-1.2,-36.35 -24.53,-77.76 -105.87,-91.27 -46.95,-6.87 -103.21,-8.96 -132.21,-17.91 -63.42,-19.52 -43.78,-54.04 -20.64,-70.97 17.42,-13.09 48.35,-22.47 89.85,-22.47 102.41,0 112.05,54.84 112.05,60.83 0,4.64 0,13.66 -8.62,25.14l37.4 14.68c6.4,-9.67 11.95,-22.57 12.46,-38.65 1.34,-41.16 -44.36,-100.01 -153.68,-100.01 -109.32,0 -151.82,52.69 -152.32,96.15 -0.1,27.14 18.79,54.33 64.32,70.28 50.81,17.78 133.94,13.75 170.2,28.41 68.79,26.43 51.79,77.54 -8.35,100.33 -19.08,6.84 -42.65,11.99 -74.73,11.99 -72.8,-1.34 -110.86,-21.47 -124.47,-51.84 -9.45,-21.15 -2.57,-44.05 15.12,-60.58l-32.03 -17.76c-9.33,8.26 -25.36,29.29 -27.07,62.66 -2.1,47.59 45.97,108.54 169.68,107.19 123.71,-1.34 170.32,-62.71 168.85,-106.19l0.05 -0.03z"/><path d="M1325.54 44.95l0 -40.33 -154.39 0c-69.55,0 -125.91,56.38 -125.91,125.91l0 206.96 40.36 0 0 -166.6 239.94 0 0 -40.36 -239.94 0c0,-49.91 40.46,-85.57 90.36,-85.57l149.58 0z"/><rect x="1482.04" y="11.13" width="40.36" height="326.16"/><path d="M1653.32 44.95l0 -40.33 -172.36 0c-26.75,-0 -27.23,40.32 6.4,40.33l165.96 0z"/><path d="M1351.11 44.95l0 -40.33 172.36 0c26.75,-0 27.23,40.32 -6.4,40.33l-165.96 0z"/><path d="M523.29 338.7c-3.91,0 -7.87,-0.12 -11.85,-0.37 -39.94,-2.44 -73.95,-16.83 -95.71,-40.53 -44.19,-48.08 -44.53,-113.55 -44.49,-118.6l0 -15c-0.1,-5.11 -0.07,-70.55 43.87,-118.82 21.67,-23.79 55.58,-38.35 95.52,-40.99 35.49,-2.34 69.6,5.18 91.22,20.1 7.38,5.08 13.88,9.94 20.15,14.63 22.79,16.98 37.99,28.29 66.06,30.05 28.07,-1.88 43.19,-13.26 65.91,-30.36 6.28,-4.72 12.75,-9.6 20.1,-14.73 21.55,-15.05 55.62,-22.72 91.12,-20.54 39.94,2.44 73.95,16.83 95.71,40.53 44.19,48.08 44.53,113.55 44.49,118.6l0.05 15c0.07,5.08 0.05,70.53 -43.92,118.82 -21.67,23.79 -55.58,38.35 -95.52,40.99 -35.49,2.34 -69.6,-5.18 -91.22,-20.1 -7.38,-5.08 -13.88,-9.94 -20.15,-14.61 -22.79,-16.98 -37.99,-28.29 -66.06,-30.05 -28.07,1.88 -43.19,13.26 -65.89,30.36 -6.25,4.72 -12.75,9.6 -20.08,14.7 -19.15,13.36 -48.15,20.91 -79.27,20.91l-0.05 0zm-0.1 -295.22c-3.3,0 -6.62,0.1 -9.97,0.32 -29.27,1.93 -54.38,12.19 -68.94,28.17 -34.3,37.67 -33.64,91.12 -33.61,91.66l0 0.34 0.05 15.44 0 0.17c0,0.49 -0.1,54.33 34.08,91.49 14.61,15.9 39.79,26.04 69.06,27.83 26.12,1.59 52.06,-3.71 66.1,-13.51 6.77,-4.72 12.95,-9.38 18.96,-13.9 24.65,-18.54 47.93,-36.06 88.87,-38.33l0.22 3.91 0.1 -3.93 0.71 0 0.12 4.54 0.22 -4.52c40.94,2.05 64.32,19.47 89.04,37.89 6.01,4.47 12.21,9.11 19,13.8 14.09,9.75 40.06,14.93 66.18,13.19 29.27,-1.93 54.38,-12.19 68.91,-28.17 33.98,-37.33 33.64,-91.17 33.61,-91.73l0 -0.29 -0.05 -15.44 0 -0.17c0,-0.49 0.1,-54.33 -34.05,-91.49 -14.61,-15.9 -39.79,-26.04 -69.06,-27.83 -26.09,-1.59 -52.06,3.71 -66.1,13.51 -6.77,4.72 -12.97,9.38 -18.96,13.9 -24.65,18.54 -47.93,36.06 -88.87,38.33l-0.25 -4.32 -0.1 4.35 -0.71 0 -0.12 -4.13 -0.19 4.1c-40.94,-2.05 -64.32,-19.47 -89.04,-37.89 -6.01,-4.47 -12.21,-9.11 -19,-13.8 -12.31,-8.5 -33.64,-13.53 -56.21,-13.53l0 0.05z"/></g><path fill-rule="nonzero" d="M180.07 440.72l-24.33 0 0 62.99 -11.55 0 0 -62.99 -24.44 0 0 -10.21 60.32 0 0 10.21zm139.79 52.79l0 10.2 -50.21 0 0 -73.21 49.28 0 0 10.21 -37.74 0 0 20.82 32.69 0 0 9.59 -32.69 0 0 22.38 38.67 0zm87.41 -26.92c0,-4.4 0.79,-8.78 2.37,-13.14 1.58,-4.37 3.87,-8.29 6.86,-11.76 2.99,-3.47 6.65,-6.27 10.98,-8.4 4.33,-2.13 9.25,-3.2 14.75,-3.2 6.53,0 12.15,1.48 16.85,4.43 4.71,2.96 8.23,6.81 10.57,11.55l-9.07 6.08c-0.97,-2.2 -2.17,-4.06 -3.61,-5.57 -1.44,-1.51 -3.01,-2.71 -4.69,-3.61 -1.69,-0.89 -3.42,-1.53 -5.21,-1.91 -1.78,-0.38 -3.54,-0.57 -5.25,-0.57 -3.72,0 -7,0.77 -9.85,2.32 -2.85,1.55 -5.24,3.59 -7.17,6.13 -1.93,2.54 -3.37,5.4 -4.33,8.56 -0.96,3.17 -1.45,6.33 -1.45,9.49 0,3.58 0.57,6.98 1.7,10.21 1.13,3.23 2.74,6.09 4.8,8.56 2.06,2.48 4.5,4.45 7.32,5.93 2.82,1.47 5.91,2.21 9.28,2.21 1.72,0 3.52,-0.22 5.42,-0.67 1.89,-0.45 3.67,-1.16 5.36,-2.16 1.69,-1 3.25,-2.25 4.69,-3.76 1.44,-1.51 2.65,-3.33 3.61,-5.47l9.59 5.47c-1.17,2.75 -2.8,5.18 -4.9,7.27 -2.1,2.1 -4.45,3.87 -7.06,5.31 -2.61,1.44 -5.4,2.55 -8.35,3.3 -2.96,0.76 -5.88,1.14 -8.77,1.14 -5.09,0 -9.73,-1.1 -13.92,-3.3 -4.2,-2.2 -7.82,-5.06 -10.88,-8.61 -3.06,-3.54 -5.43,-7.56 -7.11,-12.06 -1.68,-4.5 -2.52,-9.09 -2.52,-13.77zm214.03 -36.09l0 73.21 -11.65 0 0 -32.27 -36.91 0 0 32.27 -11.55 0 0 -73.21 11.55 0 0 30.63 36.91 0 0 -30.63 11.65 0zm107.62 21.66l0 51.55 -11.55 0 0 -73.21 9.07 0 41.86 52.8 0 -52.69 11.65 0 0 73.1 -9.59 0 -41.45 -51.55zm177.22 52.07c-5.15,0 -9.85,-1.05 -14.07,-3.14 -4.23,-2.1 -7.87,-4.88 -10.93,-8.36 -3.06,-3.47 -5.41,-7.44 -7.06,-11.91 -1.65,-4.47 -2.47,-9.04 -2.47,-13.71 0,-4.88 0.88,-9.56 2.63,-14.02 1.75,-4.47 4.17,-8.42 7.27,-11.86 3.09,-3.44 6.77,-6.17 11.03,-8.2 4.26,-2.03 8.9,-3.04 13.92,-3.04 5.15,0 9.85,1.08 14.07,3.25 4.23,2.16 7.86,5 10.88,8.5 3.03,3.51 5.36,7.48 7.01,11.91 1.65,4.43 2.47,8.95 2.47,13.56 0,4.88 -0.88,9.56 -2.63,14.02 -1.75,4.47 -4.17,8.4 -7.27,11.81 -3.1,3.4 -6.76,6.12 -10.98,8.15 -4.23,2.03 -8.85,3.04 -13.87,3.04zm-22.78 -37.12c0,3.44 0.53,6.77 1.6,10 1.07,3.23 2.6,6.08 4.59,8.56 1.99,2.47 4.4,4.45 7.22,5.93 2.82,1.48 5.98,2.22 9.49,2.22 3.58,0 6.79,-0.77 9.65,-2.32 2.85,-1.55 5.25,-3.59 7.21,-6.13 1.96,-2.54 3.45,-5.4 4.49,-8.56 1.03,-3.16 1.54,-6.39 1.54,-9.69 0,-3.51 -0.55,-6.86 -1.65,-10.06 -1.1,-3.19 -2.65,-6.01 -4.64,-8.45 -1.99,-2.44 -4.4,-4.4 -7.22,-5.88 -2.82,-1.48 -5.94,-2.22 -9.38,-2.22 -3.57,0 -6.79,0.77 -9.64,2.32 -2.85,1.55 -5.26,3.56 -7.21,6.03 -1.96,2.48 -3.46,5.32 -4.49,8.51 -1.04,3.2 -1.55,6.45 -1.55,9.75zm149.17 36.6l0 -73.21 11.55 0 0 63 39.28 0 0 10.2 -50.83 0zm167.01 0.52c-5.15,0 -9.84,-1.05 -14.07,-3.14 -4.23,-2.1 -7.87,-4.88 -10.93,-8.36 -3.06,-3.47 -5.41,-7.44 -7.06,-11.91 -1.65,-4.47 -2.48,-9.04 -2.48,-13.71 0,-4.88 0.88,-9.56 2.64,-14.02 1.75,-4.47 4.17,-8.42 7.26,-11.86 3.1,-3.44 6.77,-6.17 11.04,-8.2 4.27,-2.03 8.9,-3.04 13.92,-3.04 5.16,0 9.84,1.08 14.08,3.25 4.22,2.16 7.85,5 10.88,8.5 3.03,3.51 5.36,7.48 7,11.91 1.66,4.43 2.49,8.95 2.49,13.56 0,4.88 -0.88,9.56 -2.64,14.02 -1.74,4.47 -4.17,8.4 -7.27,11.81 -3.09,3.4 -6.75,6.12 -10.98,8.15 -4.22,2.03 -8.85,3.04 -13.87,3.04zm-22.78 -37.12c0,3.44 0.53,6.77 1.6,10 1.06,3.23 2.59,6.08 4.59,8.56 1.99,2.47 4.41,4.45 7.22,5.93 2.82,1.48 5.98,2.22 9.49,2.22 3.58,0 6.78,-0.77 9.64,-2.32 2.85,-1.55 5.25,-3.59 7.22,-6.13 1.96,-2.54 3.46,-5.4 4.49,-8.56 1.02,-3.16 1.54,-6.39 1.54,-9.69 0,-3.51 -0.55,-6.86 -1.65,-10.06 -1.1,-3.19 -2.65,-6.01 -4.64,-8.45 -1.99,-2.44 -4.39,-4.4 -7.22,-5.88 -2.81,-1.48 -5.94,-2.22 -9.38,-2.22 -3.58,0 -6.79,0.77 -9.64,2.32 -2.86,1.55 -5.25,3.56 -7.21,6.03 -1.96,2.48 -3.46,5.32 -4.49,8.51 -1.03,3.2 -1.55,6.45 -1.55,9.75zm199.7 27.53c-5.98,6.39 -12.96,9.59 -20.93,9.59 -4.75,0 -9.2,-1.05 -13.36,-3.14 -4.16,-2.1 -7.76,-4.88 -10.82,-8.36 -3.06,-3.47 -5.46,-7.46 -7.22,-11.96 -1.76,-4.5 -2.64,-9.16 -2.64,-13.97 0,-4.95 0.88,-9.66 2.64,-14.12 1.76,-4.47 4.16,-8.38 7.22,-11.75 3.06,-3.37 6.68,-6.03 10.87,-7.99 4.2,-1.96 8.78,-2.94 13.72,-2.94 6.87,0 12.64,1.46 17.32,4.38 4.67,2.92 8.22,6.79 10.62,11.6l-8.87 6.39c-2,-3.99 -4.7,-6.98 -8.1,-8.97 -3.4,-1.99 -7.16,-2.99 -11.29,-2.99 -3.37,0 -6.43,0.74 -9.18,2.22 -2.75,1.47 -5.11,3.44 -7.06,5.87 -1.96,2.44 -3.48,5.28 -4.55,8.51 -1.07,3.23 -1.59,6.6 -1.59,10.11 0,3.71 0.58,7.18 1.76,10.41 1.16,3.23 2.8,6.05 4.89,8.45 2.1,2.41 4.56,4.31 7.38,5.72 2.81,1.4 5.87,2.11 9.18,2.11 7.42,0 14.09,-3.61 20,-10.82l0 -7.74 -15.37 0 0 -8.55 25.06 0 0 37.01 -9.69 0 0 -9.07zm103.8 -64.13l20.32 36.71 20.41 -36.71 12.58 0 -27.22 47.02 0 26.19 -11.64 0 0 -26.4 -27.12 -46.81 12.68 0z"/></g></svg></div>
+  <div class="hdr-right">
+    <div class="hdr-tagline">#CREARESINFINITO</div>
+    <button class="btn-admin" onclick="openLogin()">⚙ Admin</button>
   </div>
 </header>
 
-<!-- ═══ HERO ═══ -->
-<div class="bg-gradient-to-b from-slate-50 to-slate-100 border-b border-slate-200 py-12">
-  <div class="max-w-6xl mx-auto px-5 text-center fade-up">
-    <div class="inline-flex items-center gap-2 bg-sooft-100 border border-sooft-200 text-sooft-600 text-xs font-bold px-4 py-1.5 rounded-full mb-4 uppercase tracking-wider">
-      <svg width="11" height="11" fill="#2563EB" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
-      Portal Enterprise · Equipo Comercial
-    </div>
-    <h1 class="text-slate-900 text-4xl sm:text-5xl font-bold tracking-tight mb-3">
-      Cotizador <span class="text-sooft-400">SOOFT</span>
-    </h1>
-    <p class="text-steel max-w-lg mx-auto text-base">Armá propuestas enterprise en tiempo real. Todos los valores se calculan automáticamente.</p>
-  </div>
-</div>
+<!-- ══ NAV ══ -->
+<nav class="nav-tabs">
+  <button class="nav-tab active" onclick="goTab(0)" id="nt0">
+    <span class="tab-icon">🏢</span> Plataforma
+  </button>
+  <button class="nav-tab" onclick="goTab(1)" id="nt1">
+    <span class="tab-icon">👥</span> Equipo
+  </button>
+  <button class="nav-tab" onclick="goTab(2)" id="nt2">
+    <span class="tab-icon">📋</span> Propuesta
+  </button>
+</nav>
 
-<!-- ═══ MAIN ═══ -->
-<main class="max-w-6xl mx-auto px-4 sm:px-5 py-8">
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+<!-- ════════════════════════════════════════
+     TAB 0 — PLATAFORMA (SOOFT SaaS Cotizador)
+════════════════════════════════════════ -->
+<div id="tp0" class="tab-panel active">
 
-    <!-- ─── LEFT COLUMN ─── -->
-    <div class="lg:col-span-2 space-y-4">
-
-      <!-- FEE BASE -->
-      <div class="card p-5 fade-up border-l-4 border-sooft-400">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-sooft-100 flex items-center justify-center flex-shrink-0">
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#2563EB" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path stroke-linecap="round" d="M3 9h18M9 21V9"/></svg>
-            </div>
-            <div>
-              <div class="font-bold text-gray-900">Fee Base Mensual</div>
-              <div class="text-xs text-steel mt-0.5">ATS · Panel Admin · Reportes · Soporte email · Vacantes y usuarios ilimitados</div>
-            </div>
-          </div>
-          <div class="text-right">
-            <div class="font-mono font-bold text-sooft-400 text-xl">USD <span id="lbl-base">800</span></div>
-            <div class="text-xs text-muted">/mes · fijo</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- VACANTES (ilimitado) -->
-      <div class="card p-5 fade-up d1">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-            </div>
-            <div>
-              <div class="font-semibold text-gray-800">Vacantes Activas</div>
-              <div class="text-xs text-steel mt-0.5">Publicaciones simultáneas en la plataforma</div>
-            </div>
-          </div>
-          <div class="flex flex-col items-end gap-1">
-            <span class="ilimitado-pill">
-              <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-              Ilimitado
-            </span>
-            <span class="text-xs text-steel">Incluido en Fee Base</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- USUARIOS (ilimitado) -->
-      <div class="card p-5 fade-up d2">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-            </div>
-            <div>
-              <div class="font-semibold text-gray-800">Usuarios en Plataforma</div>
-              <div class="text-xs text-steel mt-0.5">Reclutadores, managers, administradores</div>
-            </div>
-          </div>
-          <div class="flex flex-col items-end gap-1">
-            <span class="ilimitado-pill">
-              <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="#059669" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-              Ilimitado
-            </span>
-            <span class="text-xs text-steel">Incluido en Fee Base</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- SERVIDORES -->
-      <div class="card p-5 fade-up d3">
-        <div class="flex items-center justify-between mb-0">
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-sooft-100 flex items-center justify-center flex-shrink-0">
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#2563EB" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-            </div>
-            <div>
-              <div class="font-semibold text-gray-800">Infraestructura / Servidores</div>
-              <div class="text-xs text-steel mt-0.5">¿Dónde se aloja la plataforma?</div>
-            </div>
-          </div>
-        </div>
-        <div class="mt-4 grid grid-cols-2 gap-3">
-          <button id="btn-srv-cliente" onclick="setServidores('cliente')"
-            class="flex items-center gap-3 p-3.5 rounded-xl border-2 border-sooft-300 bg-sooft-50 transition-all">
-            <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center flex-shrink-0">
-              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#2563EB" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-            </div>
-            <div class="text-left">
-              <div class="font-semibold text-gray-900 text-sm">Del Cliente</div>
-              <div class="text-xs text-steel">Infraestructura propia</div>
-            </div>
-          </button>
-          <button id="btn-srv-sooft" onclick="setServidores('sooft')"
-            class="flex items-center gap-3 p-3.5 rounded-xl border-2 border-slate-200 bg-white transition-all hover:border-slate-300">
-            <div class="w-8 h-8 rounded-lg bg-sooft-100 border border-sooft-200 flex items-center justify-center flex-shrink-0">
-              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#2563EB" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
-            </div>
-            <div class="text-left">
-              <div class="font-semibold text-gray-900 text-sm">SOOFT Cloud</div>
-              <div class="text-xs text-steel">+USD <span id="lbl-servidor">400</span>/mes</div>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      <!-- INTEGRACIÓN / IMPLEMENTACIÓN -->
-      <div class="card p-5 fade-up d4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-sooft-100 flex items-center justify-center flex-shrink-0">
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#2563EB" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-            </div>
-            <div>
-              <div class="font-semibold text-gray-800">Integración / Implementación</div>
-              <div class="text-xs text-steel mt-0.5">Desarrollo API, conectores, configuración — USD <span id="lbl-inthr">35</span>/hr</div>
-            </div>
-          </div>
-          <label class="toggle-wrap">
-            <input type="checkbox" id="tog-int" onchange="togglePanel('panel-int',this.checked);calcTotal()">
-            <span class="toggle-track"><span class="toggle-thumb"></span></span>
-          </label>
-        </div>
-        <div id="panel-int" class="sub-panel mt-4">
-          <div class="bg-slate-50 rounded-xl border border-slate-200 p-4 space-y-4">
-            <!-- Horas -->
-            <div>
-              <label class="text-xs font-bold text-steel uppercase tracking-wider block mb-2">Horas de desarrollo estimadas</label>
-              <div class="flex items-center gap-3">
-                <input type="number" id="inp-int-hrs" class="field field-mono text-center text-xl" min="0" max="9999" value="0" oninput="calcTotal()" style="max-width:120px">
-                <div class="flex-1">
-                  <div class="text-xs text-steel mb-1">Subtotal integración</div>
-                  <div class="font-mono font-bold text-sooft-400 text-lg" id="lbl-int-total">USD 0</div>
-                </div>
-              </div>
-            </div>
-            <!-- Cuotas -->
-            <div>
-              <label class="text-xs font-bold text-steel uppercase tracking-wider block mb-2">Dividir en cuotas mensuales</label>
-              <div class="grid grid-cols-6 gap-1.5" id="cuotas-grid">
-                <button class="cuotas-btn active" onclick="setCuotas(1)">1</button>
-                <button class="cuotas-btn" onclick="setCuotas(2)">2</button>
-                <button class="cuotas-btn" onclick="setCuotas(3)">3</button>
-                <button class="cuotas-btn" onclick="setCuotas(4)">4</button>
-                <button class="cuotas-btn" onclick="setCuotas(5)">5</button>
-                <button class="cuotas-btn" onclick="setCuotas(6)">6</button>
-                <button class="cuotas-btn" onclick="setCuotas(7)">7</button>
-                <button class="cuotas-btn" onclick="setCuotas(8)">8</button>
-                <button class="cuotas-btn" onclick="setCuotas(9)">9</button>
-                <button class="cuotas-btn" onclick="setCuotas(10)">10</button>
-                <button class="cuotas-btn" onclick="setCuotas(11)">11</button>
-                <button class="cuotas-btn" onclick="setCuotas(12)">12</button>
-                <button class="cuotas-btn" onclick="setCuotas(13)">13</button>
-                <button class="cuotas-btn" onclick="setCuotas(14)">14</button>
-                <button class="cuotas-btn" onclick="setCuotas(15)">15</button>
-                <button class="cuotas-btn" onclick="setCuotas(16)">16</button>
-                <button class="cuotas-btn" onclick="setCuotas(17)">17</button>
-                <button class="cuotas-btn" onclick="setCuotas(18)">18</button>
-                <button class="cuotas-btn" onclick="setCuotas(19)">19</button>
-                <button class="cuotas-btn" onclick="setCuotas(20)">20</button>
-                <button class="cuotas-btn" onclick="setCuotas(21)">21</button>
-                <button class="cuotas-btn" onclick="setCuotas(22)">22</button>
-                <button class="cuotas-btn" onclick="setCuotas(23)">23</button>
-                <button class="cuotas-btn" onclick="setCuotas(24)">24</button>
-              </div>
-              <div class="text-xs text-muted mt-1 text-center">meses</div>
-            </div>
-            <!-- Resultado cuota -->
-            <div class="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
-              <div>
-                <div class="text-xs font-bold text-amber-900">Cuota de Implementación (1 de <span id="lbl-cuotas-de">1</span>)</div>
-                <div class="text-xs text-amber-700 mt-0.5">Se suma al total mensual</div>
-              </div>
-              <div class="font-mono font-bold text-amber-700 text-xl" id="lbl-cuota-val">USD 0</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ENTREVISTADOR VIRTUAL -->
-      <div class="card p-5 fade-up d5">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-sooft-100 flex items-center justify-center flex-shrink-0">
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#2563EB" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.069A1 1 0 0121 8.82v6.36a1 1 0 01-1.447.893L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-            </div>
-            <div>
-              <div class="font-semibold text-gray-800">Entrevistador Virtual IA</div>
-              <div class="text-xs text-steel mt-0.5">USD <span id="lbl-ent">25</span> por entrevista completada</div>
-            </div>
-          </div>
-          <label class="toggle-wrap">
-            <input type="checkbox" id="tog-ent" onchange="togglePanel('panel-ent',this.checked);calcTotal()">
-            <span class="toggle-track"><span class="toggle-thumb"></span></span>
-          </label>
-        </div>
-        <div id="panel-ent" class="sub-panel mt-4">
-          <label class="text-xs font-bold text-steel uppercase tracking-wider block mb-2">Entrevistas por mes</label>
-          <div class="flex items-center gap-3">
-            <input type="number" id="inp-ent-qty" class="field field-mono" min="0" max="9999" value="0" oninput="calcTotal()">
-            <span class="text-sm text-steel whitespace-nowrap">× USD <span id="lbl-ent2">25</span> c/u</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- SOPORTE -->
-      <div class="card p-5 fade-up d6">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-sooft-100 flex items-center justify-center flex-shrink-0">
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#2563EB" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-            </div>
-            <div>
-              <div class="font-semibold text-gray-800">Soporte Premium</div>
-              <div class="text-xs text-steel mt-0.5">SLA garantizado — USD <span id="lbl-spthr">35</span>/hr</div>
-            </div>
-          </div>
-          <label class="toggle-wrap">
-            <input type="checkbox" id="tog-spt" onchange="togglePanel('panel-spt',this.checked);calcTotal()">
-            <span class="toggle-track"><span class="toggle-thumb"></span></span>
-          </label>
-        </div>
-        <div id="panel-spt" class="sub-panel mt-4">
-          <label class="text-xs font-bold text-steel uppercase tracking-wider block mb-2">Horas de soporte / mes</label>
-          <div class="flex items-center gap-3">
-            <input type="number" id="inp-spt-hrs" class="field field-mono" min="0" max="999" value="0" oninput="calcTotal()">
-            <span class="text-sm text-steel whitespace-nowrap">hrs × USD <span id="lbl-spthr2">35</span></span>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /left -->
-
-    <!-- ─── RIGHT SIDEBAR ─── -->
-    <div class="lg:col-span-1">
-      <div class="sidebar-sticky space-y-4">
-
-        <!-- TOTAL CARD -->
-        <div class="card p-6 fade-up" style="border-top:4px solid #2563EB">
-          <div class="text-xs font-bold text-steel uppercase tracking-widest mb-2">Total mensual estimado</div>
-          <div class="total-num text-sooft-400 mb-1" id="total-display">USD 0</div>
-          <div class="text-xs text-muted mb-4">Sin impuestos locales</div>
-          <div class="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent mb-4"></div>
-
-          <!-- MINI BREAKDOWN -->
-          <div id="breakdown-list" class="space-y-1 mb-4"></div>
-
-          <button onclick="abrirModal()"
-            class="w-full bg-sooft-400 hover:bg-sooft-500 active:scale-95 text-white font-bold py-3.5 rounded-xl transition-all text-sm shadow-lg shadow-blue-200 mt-2 flex items-center justify-center gap-2">
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            Ver resumen y guardar
-          </button>
-          <p class="text-center text-xs text-muted mt-2">Se registra automáticamente en Google Sheets</p>
-        </div>
-
-        <!-- PROPUESTA PDF -->
-        <div class="card px-5 py-4 fade-up" style="border-left: 3px solid #050E1F;">
-          <div class="text-xs font-bold text-slate-800 uppercase tracking-widest mb-1 flex items-center gap-2">
-            <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-            Template de propuesta
-          </div>
-          <p class="text-xs text-steel mb-3">Completá estos campos para generar el documento formal.</p>
-          <div class="space-y-2 mb-4">
-            <div>
-              <label class="text-xs font-medium text-steel block mb-1">Nombre del proyecto</label>
-              <input id="prop-proyecto" type="text" placeholder="Ej: Implementación ATS 2025" class="field text-sm">
-            </div>
-            <div>
-              <label class="text-xs font-medium text-steel block mb-1">Vigencia de la propuesta</label>
-              <select id="prop-vigencia" class="field text-sm" style="cursor:pointer">
-                <option value="15">15 días corridos</option>
-                <option value="30" selected>30 días corridos</option>
-                <option value="45">45 días corridos</option>
-                <option value="60">60 días corridos</option>
-              </select>
-            </div>
-          </div>
-          <button onclick="generarPropuestaPDF()" class="btn-proposal">
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-            Generar Propuesta PDF
-          </button>
-        </div>
-
-        <!-- DATOS CLIENTE -->
-        <div class="card px-5 py-4 fade-up">
-          <div class="text-xs font-bold text-steel uppercase tracking-widest mb-3">Datos del cliente</div>
-          <div class="space-y-2">
-            <input id="cli-empresa" type="text" placeholder="Empresa *" class="field text-sm">
-            <input id="cli-nombre" type="text" placeholder="Contacto *" class="field text-sm">
-            <input id="cli-email" type="email" placeholder="Email" class="field text-sm">
-            <input id="cli-tel" type="tel" placeholder="Teléfono" class="field text-sm">
-          </div>
-        </div>
-
-        <!-- COMERCIAL -->
-        <div class="card px-5 py-4 fade-up">
-          <div class="text-xs font-bold text-steel uppercase tracking-widest mb-3">Comercial responsable</div>
-          <div class="space-y-2">
-            <input id="com-nombre" type="text" placeholder="Tu nombre *" class="field text-sm">
-            <textarea id="com-notas" placeholder="Notas internas..." rows="3" class="field text-sm resize-none" style="height:auto;padding-top:9px"></textarea>
-          </div>
-        </div>
-
+  <!-- Fee Base -->
+  <div class="card fu">
+    <div class="card-title">Fee Base Mensual</div>
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div style="font-size:12px;color:var(--muted);max-width:60%">ATS completo · Panel admin · Reportes · Soporte email · Vacantes y usuarios ilimitados</div>
+      <div style="text-align:right">
+        <div style="font-family:'DM Mono',monospace;font-weight:900;font-size:22px;color:var(--orange)">USD <span id="lbl-base">800</span></div>
+        <div style="font-size:10px;color:var(--muted)">/mes · fijo</div>
       </div>
     </div>
-
   </div>
-</main>
 
-<!-- ═══════════════════════════════════════
-     MODAL — RESUMEN + TABLA
-═══════════════════════════════════════ -->
-<div id="modal-overlay" class="overlay" onclick="cerrarOverlay('modal-overlay',event)">
-  <div class="overlay-box" style="max-width:600px;padding:0">
-
-    <!-- Modal header -->
-    <div class="flex items-center justify-between px-7 pt-7 pb-5 border-b border-slate-100">
-      <div id="modal-logo"></div>
-      <div class="text-right">
-        <div class="font-bold text-gray-900">Resumen de Cotización</div>
-        <div class="text-xs text-steel mt-0.5" id="modal-fecha"></div>
+  <!-- Ilimitados -->
+  <div class="card fu fu1">
+    <div class="card-title">Incluido en el Plan Enterprise</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div style="background:#F0FDF4;border:1px solid #A7F3D0;border-radius:9px;padding:12px;display:flex;align-items:center;gap:10px">
+        <div style="font-size:22px">📌</div>
+        <div>
+          <div style="font-weight:700;font-size:13px;color:#065F46">Vacantes Activas</div>
+          <div class="badge-inf" style="margin-top:4px">✓ Ilimitadas</div>
+        </div>
       </div>
-      <button onclick="cerrarOverlay('modal-overlay',null,true)" class="text-muted hover:text-gray-700 p-1 ml-4">
-        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      <div style="background:#F0FDF4;border:1px solid #A7F3D0;border-radius:9px;padding:12px;display:flex;align-items:center;gap:10px">
+        <div style="font-size:22px">👤</div>
+        <div>
+          <div style="font-weight:700;font-size:13px;color:#065F46">Usuarios</div>
+          <div class="badge-inf" style="margin-top:4px">✓ Ilimitados</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Servidores -->
+  <div class="card fu fu2">
+    <div class="card-title">Infraestructura / Servidores</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <button id="btn-srv-cl" onclick="setSrv('cliente')" class="srv-btn active">
+        <div style="font-size:20px">🏢</div>
+        <div style="text-align:left">
+          <div style="font-weight:700;font-size:13px;color:var(--text)">Del Cliente</div>
+          <div style="font-size:11px;color:var(--muted)">Infraestructura propia</div>
+        </div>
+      </button>
+      <button id="btn-srv-so" onclick="setSrv('sooft')" class="srv-btn">
+        <div style="font-size:20px">☁️</div>
+        <div style="text-align:left">
+          <div style="font-weight:700;font-size:13px;color:var(--text)">SOOFT Cloud</div>
+          <div style="font-size:11px;color:var(--muted)">+USD <span id="lbl-srv">400</span>/mes</div>
+        </div>
       </button>
     </div>
-
-    <div class="px-7 py-5">
-      <!-- Cliente / Comercial strip -->
-      <div class="grid grid-cols-2 gap-4 mb-5 bg-slate-50 rounded-xl border border-slate-200 px-4 py-3">
-        <div>
-          <div class="text-xs text-muted mb-1">Cliente</div>
-          <div id="m-empresa" class="font-bold text-gray-900 text-sm">—</div>
-          <div id="m-contacto" class="text-xs text-steel mt-0.5">—</div>
-        </div>
-        <div>
-          <div class="text-xs text-muted mb-1">Comercial</div>
-          <div id="m-comercial" class="font-bold text-gray-900 text-sm">—</div>
-          <div id="m-notas" class="text-xs text-steel mt-0.5 italic">—</div>
-        </div>
-      </div>
-
-      <!-- TABLA DE RESUMEN -->
-      <div class="rounded-xl border border-slate-200 overflow-hidden mb-5">
-        <table class="summary-table">
-          <thead>
-            <tr>
-              <th style="width:55%">Concepto</th>
-              <th style="width:20%;text-align:center">Detalle</th>
-              <th>Subtotal / mes</th>
-            </tr>
-          </thead>
-          <tbody id="modal-tbody"></tbody>
-          <tfoot>
-            <tr class="total-row">
-              <td colspan="2" style="color:white">Total mensual estimado</td>
-              <td id="modal-total-cell" style="text-align:right"></td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-
-      <!-- Nota cuotas -->
-      <div id="nota-cuotas" class="hidden mb-4 flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-xs text-amber-800">
-        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#B45309" stroke-width="2" class="mt-0.5 flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        <span id="nota-cuotas-txt"></span>
-      </div>
-
-      <!-- Acciones -->
-      <div id="modal-acciones" class="space-y-2.5">
-        <button onclick="guardarCotizacion()"
-          class="w-full bg-sooft-400 hover:bg-sooft-500 active:scale-95 text-white font-bold py-3.5 rounded-xl transition-all text-sm shadow-md shadow-blue-200 flex items-center justify-center gap-2">
-          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
-          Guardar en Google Sheets
-        </button>
-        <button onclick="exportarPDF()"
-          class="w-full bg-white border border-slate-300 hover:bg-slate-50 active:scale-95 text-slate-700 font-bold py-3 rounded-xl transition-all text-sm flex items-center justify-center gap-2">
-          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-          Exportar PDF / Imprimir
-        </button>
-      </div>
-      <div id="msg-saving" class="hidden text-center text-sm text-steel py-2 animate-pulse">Guardando...</div>
-      <div id="msg-ok" class="hidden bg-green-50 border border-green-200 rounded-xl px-4 py-3 flex items-center gap-3 mt-2">
-        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#10B981" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        <div><div class="text-sm font-bold text-green-800">¡Guardado!</div><div id="msg-ok-txt" class="text-xs text-green-700 mt-0.5"></div></div>
-      </div>
-      <div id="msg-err" class="hidden bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700 mt-2"></div>
-      <p class="text-center text-xs text-muted mt-4">Valores estimados · La propuesta formal puede variar según auditoría técnica</p>
-    </div>
   </div>
-</div>
 
-<!-- ═══ LOGIN ADMIN ═══ -->
-<div id="login-overlay" class="overlay" onclick="cerrarOverlay('login-overlay',event)">
-  <div class="overlay-box" style="max-width:360px;padding:32px">
-    <div class="flex items-center justify-between mb-6">
+  <!-- Integración -->
+  <div class="card fu fu3">
+    <div style="display:flex;align-items:center;justify-content:space-between">
       <div>
-        <div class="font-bold text-gray-900">Acceso Administrador</div>
-        <div class="text-xs text-steel mt-0.5">Solo personal autorizado SOOFT</div>
+        <div class="card-title" style="margin-bottom:2px">Integración / Implementación</div>
+        <div style="font-size:11px;color:var(--muted)">API, conectores HR/ERP — USD <span id="lbl-inthr">35</span>/hr</div>
       </div>
-      <button onclick="cerrarOverlay('login-overlay',null,true)" class="text-muted hover:text-gray-700 p-1">
-        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-      </button>
+      <label class="tog-wrap">
+        <input type="checkbox" id="tog-int" onchange="toggleSub('sp-int',this.checked);calcP()">
+        <span class="tog-track"><span class="tog-thumb"></span></span>
+      </label>
     </div>
-    <label class="text-xs font-bold text-steel uppercase tracking-wider block mb-2">Contraseña</label>
-    <input id="admin-pwd" type="password" placeholder="••••••••" class="field mb-3" onkeydown="if(event.key==='Enter')verifyAdmin()">
-    <div id="login-err" class="hidden mb-3 text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">Contraseña incorrecta. Intentá de nuevo.</div>
-    <button onclick="verifyAdmin()" class="w-full bg-sooft-400 hover:bg-sooft-500 text-white font-bold py-3 rounded-xl text-sm transition-all">Ingresar</button>
+    <div id="sp-int" class="sub-panel" style="margin-top:12px">
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <div class="g2" style="margin-bottom:12px">
+          <div>
+            <div class="field-label">Horas estimadas</div>
+            <input type="number" id="inp-int-hrs" class="field" min="0" max="9999" value="0" oninput="calcP()">
+          </div>
+          <div>
+            <div class="field-label">Cuotas mensuales</div>
+            <div style="font-family:'DM Mono',monospace;font-size:22px;font-weight:700;color:var(--orange);margin-top:6px" id="lbl-cuotas-n">1 mes</div>
+          </div>
+        </div>
+        <div class="cuotas-grid" style="margin-bottom:12px">
+          <button class="cuota-btn active" onclick="setCuota(1)">1</button>
+          <button class="cuota-btn" onclick="setCuota(2)">2</button>
+          <button class="cuota-btn" onclick="setCuota(3)">3</button>
+          <button class="cuota-btn" onclick="setCuota(4)">4</button>
+          <button class="cuota-btn" onclick="setCuota(5)">5</button>
+          <button class="cuota-btn" onclick="setCuota(6)">6</button>
+          <button class="cuota-btn" onclick="setCuota(7)">7</button>
+          <button class="cuota-btn" onclick="setCuota(8)">8</button>
+          <button class="cuota-btn" onclick="setCuota(9)">9</button>
+          <button class="cuota-btn" onclick="setCuota(10)">10</button>
+          <button class="cuota-btn" onclick="setCuota(11)">11</button>
+          <button class="cuota-btn" onclick="setCuota(12)">12</button>
+          <button class="cuota-btn" onclick="setCuota(13)">13</button>
+          <button class="cuota-btn" onclick="setCuota(14)">14</button>
+          <button class="cuota-btn" onclick="setCuota(15)">15</button>
+          <button class="cuota-btn" onclick="setCuota(16)">16</button>
+          <button class="cuota-btn" onclick="setCuota(17)">17</button>
+          <button class="cuota-btn" onclick="setCuota(18)">18</button>
+          <button class="cuota-btn" onclick="setCuota(19)">19</button>
+          <button class="cuota-btn" onclick="setCuota(20)">20</button>
+          <button class="cuota-btn" onclick="setCuota(21)">21</button>
+          <button class="cuota-btn" onclick="setCuota(22)">22</button>
+          <button class="cuota-btn" onclick="setCuota(23)">23</button>
+          <button class="cuota-btn" onclick="setCuota(24)">24</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:#FFF3EB;border:1px solid #FFD4B3;border-radius:8px;padding:10px 14px">
+          <div>
+            <div style="font-size:10px;font-weight:800;color:#7A3800;text-transform:uppercase;letter-spacing:.5px">Cuota mensual (1 de <span id="lbl-cuotas-de">1</span>)</div>
+            <div style="font-size:10px;color:#A05010;margin-top:2px">Se suma al total mensual</div>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-weight:900;font-size:20px;color:var(--orange)" id="lbl-cuota-val">USD 0</div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
 
-<!-- ═══ PANEL ADMIN ═══ -->
-<div id="admin-overlay" class="overlay" onclick="cerrarOverlay('admin-overlay',event)">
-  <div class="overlay-box" style="max-width:560px;padding:0">
-    <div class="flex items-center justify-between px-7 pt-7 pb-5 border-b border-slate-100">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-sooft-900 flex items-center justify-center">
-          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+  <!-- Entrevistador Virtual -->
+  <div class="card fu fu4">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div class="card-title" style="margin-bottom:2px">Entrevistador Virtual IA</div>
+        <div style="font-size:11px;color:var(--muted)">USD <span id="lbl-ent">25</span> por entrevista completada</div>
+      </div>
+      <label class="tog-wrap">
+        <input type="checkbox" id="tog-ent" onchange="toggleSub('sp-ent',this.checked);calcP()">
+        <span class="tog-track"><span class="tog-thumb"></span></span>
+      </label>
+    </div>
+    <div id="sp-ent" class="sub-panel" style="margin-top:12px">
+      <div class="field-label">Entrevistas / mes</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
+        <input type="number" id="inp-ent" class="field" min="0" value="0" oninput="calcP()">
+        <span style="font-size:12px;color:var(--muted);white-space:nowrap">× USD <span id="lbl-ent2">25</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Soporte -->
+  <div class="card fu fu5">
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div class="card-title" style="margin-bottom:2px">Soporte Premium</div>
+        <div style="font-size:11px;color:var(--muted)">SLA garantizado — USD <span id="lbl-spthr">35</span>/hr</div>
+      </div>
+      <label class="tog-wrap">
+        <input type="checkbox" id="tog-spt" onchange="toggleSub('sp-spt',this.checked);calcP()">
+        <span class="tog-track"><span class="tog-thumb"></span></span>
+      </label>
+    </div>
+    <div id="sp-spt" class="sub-panel" style="margin-top:12px">
+      <div class="field-label">Horas de soporte / mes</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
+        <input type="number" id="inp-spt" class="field" min="0" value="0" oninput="calcP()">
+        <span style="font-size:12px;color:var(--muted);white-space:nowrap">× USD <span id="lbl-spthr2">35</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Total plataforma -->
+  <div class="card fu fu6" style="border-top:3px solid var(--orange)">
+    <div style="font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Total plataforma / mes</div>
+    <div style="font-family:'DM Mono',monospace;font-size:36px;font-weight:900;color:var(--orange);margin-bottom:4px" id="plat-total">USD 0</div>
+    <div style="font-size:10px;color:var(--muted)">Sin impuestos locales</div>
+    <div style="height:1px;background:var(--border);margin:12px 0"></div>
+    <div id="plat-breakdown" style="font-size:12px"></div>
+    <button class="btn-primary" style="margin-top:14px" onclick="goTab(2)">
+      Ver propuesta completa →
+    </button>
+  </div>
+
+</div><!-- /tp0 -->
+
+<!-- ════════════════════════════════════════
+     TAB 1 — EQUIPO (Staff Cotizador)
+════════════════════════════════════════ -->
+<div id="tp1" class="tab-panel">
+
+  <!-- Agregar persona -->
+  <div class="card fu">
+    <div class="card-title">Agregar persona</div>
+    <div class="g2" style="margin-bottom:10px">
+      <div>
+        <div class="field-label">Nombre</div>
+        <input id="nn" placeholder="Nombre y apellido" class="field" style="margin-top:4px">
+      </div>
+      <div>
+        <div class="field-label">Tipo</div>
+        <select id="ntipo" onchange="chgTipo()" class="field" style="margin-top:4px;cursor:pointer">
+          <option value="fl">Freelance / Honorarios</option>
+          <option value="emp">Empleado — Rel. Dependencia</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="fl-f" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div>
+        <div class="field-label">Honorario mensual ($)</div>
+        <input id="nhon" type="number" placeholder="550000" class="field" style="margin-top:4px">
+      </div>
+      <div>
+        <div class="field-label">Monotributo mensual</div>
+        <select id="nmono" class="field" style="margin-top:4px;cursor:pointer">
+          <option value="0">No aplica / Factura empresa</option>
+          <option value="3334.24">Cat. A</option>
+          <option value="3728.29">Cat. B</option>
+          <option value="4262.11">Cat. C</option>
+          <option value="5025.96">Cat. D</option>
+          <option value="6601.71">Cat. E</option>
+          <option value="7902.06">Cat. F</option>
+          <option value="9216.76">Cat. G</option>
+          <option value="16114.67">Cat. H</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="emp-f" style="display:none;margin-bottom:10px">
+      <div class="g2" style="margin-bottom:8px">
+        <div>
+          <div class="field-label">Sueldo bruto ($)</div>
+          <input id="nbruto" type="number" placeholder="400000" oninput="calcNeto()" class="field" style="margin-top:4px">
         </div>
         <div>
-          <div class="font-bold text-gray-900">Panel de Configuración</div>
-          <div class="text-xs text-steel mt-0.5">Tarifas y conexión al sistema</div>
+          <div class="field-label">O ingresá el neto ($)</div>
+          <input id="nneto" type="number" placeholder="Neto de bolsillo" oninput="calcBruto()" class="field field-gold" style="margin-top:4px">
         </div>
       </div>
-      <button onclick="cerrarOverlay('admin-overlay',null,true)" class="text-muted hover:text-gray-700 p-1">
-        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      <div id="neto-info" style="display:none;margin-bottom:8px"></div>
+      <div>
+        <div class="field-label">Swiss Medical</div>
+        <select id="nswiss" class="field" style="margin-top:4px;cursor:pointer">
+          <option value="0">No aplica</option>
+          <option value="8498.08">Individual — $8.498</option>
+          <option value="12407.52">Individual + Hijo — $12.408</option>
+          <option value="16996.15">Matrimonio — $16.996</option>
+          <option value="20905.59">Matrimonio + Hijo — $20.906</option>
+          <option value="2650.38">Hijo adicional — $2.650</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-bottom:10px">
+      <div class="field-label">Tarifa al cliente ($) — valor de venta</div>
+      <input id="ntar" type="number" placeholder="1200000" class="field field-green" style="margin-top:4px">
+    </div>
+
+    <div style="background:var(--bg);border-radius:8px;padding:8px 12px;margin-bottom:12px;display:flex;gap:20px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:12px">Plus vacacional</span>
+        <div id="tvac" onclick="toggl('tvac')" style="width:40px;height:22px;border-radius:11px;cursor:pointer;position:relative;background:var(--orange);flex-shrink:0">
+          <div style="position:absolute;top:3px;left:21px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:12px">Máquina</span>
+        <div id="tmaq" onclick="toggl('tmaq')" style="width:40px;height:22px;border-radius:11px;cursor:pointer;position:relative;background:#DDD9D0;flex-shrink:0">
+          <div style="position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="ferr" style="display:none;font-size:12px;color:var(--red);padding:7px 10px;background:var(--red-lt);border-radius:6px;margin-bottom:8px"></div>
+    <button onclick="agregarS()" class="btn-primary">+ Agregar al equipo</button>
+  </div>
+
+  <!-- Lista equipo -->
+  <div class="card fu fu1">
+    <div class="card-title">Equipo cotizado</div>
+    <div id="slist"><div style="text-align:center;padding:18px;color:var(--muted)">Sin personas agregadas</div></div>
+  </div>
+
+  <!-- Resumen staff -->
+  <div class="card fu fu2">
+    <div class="card-title">Resumen de rentabilidad</div>
+    <div class="g2" style="margin-bottom:12px">
+      <div>
+        <div class="field-label">Tarifa al cliente ($) total</div>
+        <input id="rven" type="number" placeholder="Precio de venta total" oninput="recalcS()" class="field" style="margin-top:4px">
+      </div>
+      <div>
+        <div class="field-label">Margen objetivo (%)</div>
+        <input id="rmrg" type="number" value="28" min="1" max="99" oninput="recalcS()" class="field" style="margin-top:4px;border-color:var(--orange);background:#FFF3EB;color:var(--orange);font-size:16px;font-weight:800">
+      </div>
+    </div>
+
+    <div class="g3" style="margin-bottom:14px">
+      <div class="kpi">
+        <div class="kpi-label">Costo total</div>
+        <div class="kpi-val" id="mc" style="font-size:18px">$0</div>
+      </div>
+      <div class="kpi" id="mr-box">
+        <div class="kpi-label">Rentabilidad</div>
+        <div class="kpi-val" id="mr" style="font-size:18px">—</div>
+      </div>
+      <div class="kpi" style="background:#FFF3EB;border-color:#FFD4B3">
+        <div class="kpi-label" style="color:var(--orange)" id="ms-lbl">Venta p/ 28% ★</div>
+        <div class="kpi-val" id="ms" style="color:var(--orange);font-size:18px">—</div>
+      </div>
+    </div>
+
+    <div id="dres" style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 13px;margin-bottom:14px">
+      <div style="text-align:center;color:var(--muted);padding:8px;font-size:12px">Agregá personas para ver el resumen</div>
+    </div>
+
+    <div class="field-label" style="margin-bottom:8px">Escenarios de precio de venta</div>
+    <div id="sctbl" style="margin-bottom:12px"></div>
+
+    <button onclick="togExp()" id="exp-btn" class="btn-secondary" style="margin-bottom:8px">▼ Ver desglose detallado por persona</button>
+    <div id="expbody" style="display:none"></div>
+    <button onclick="goTab(2)" class="btn-primary" style="margin-top:4px">Ver propuesta completa →</button>
+  </div>
+
+</div><!-- /tp1 -->
+
+<!-- ════════════════════════════════════════
+     TAB 2 — PROPUESTA FINAL (Unificada)
+════════════════════════════════════════ -->
+<div id="tp2" class="tab-panel">
+
+  <!-- TIPO DE SERVICIO -->
+  <div class="card fu">
+    <div class="card-title">Tipo de servicio</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <button id="ts-staff" onclick="setTipo('staff')"
+        class="srv-btn active" style="flex-direction:column;align-items:flex-start;gap:6px">
+        <div style="font-size:22px">👥</div>
+        <div>
+          <div style="font-weight:800;font-size:12px;color:var(--text)">Staff Augmentation</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px">SOOFT provee · Cliente gestiona</div>
+        </div>
+      </button>
+      <button id="ts-celula" onclick="setTipo('celula')"
+        class="srv-btn" style="flex-direction:column;align-items:flex-start;gap:6px">
+        <div style="font-size:22px">⚡</div>
+        <div>
+          <div style="font-weight:800;font-size:12px;color:var(--text)">Célula Ágil</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px">SOOFT provee y gestiona · DM incluido</div>
+        </div>
+      </button>
+      <button id="ts-saas" onclick="setTipo('saas')"
+        class="srv-btn" style="flex-direction:column;align-items:flex-start;gap:6px">
+        <div style="font-size:22px">🏢</div>
+        <div>
+          <div style="font-weight:800;font-size:12px;color:var(--text)">Plataforma SaaS</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px">ATS Enterprise · Licencia mensual</div>
+        </div>
       </button>
     </div>
-    <div class="px-7 py-6 space-y-5">
+    <!-- Badge tipo activo -->
+    <div id="tipo-badge" style="margin-top:12px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--orange);font-weight:700">
+      <div style="width:8px;height:8px;border-radius:50%;background:var(--orange)"></div>
+      <span id="tipo-badge-txt">Staff Augmentation seleccionado</span>
+    </div>
+  </div>
 
-      <div class="bg-sooft-50 border border-sooft-200 rounded-xl p-4">
-        <div class="text-xs font-bold text-sooft-600 uppercase tracking-wider mb-4">Tarifas mensuales (USD)</div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="text-xs text-steel block mb-1">Fee Base (USD/mes)</label>
-            <input type="number" id="cfg-base" class="admin-field" value="800" min="0">
-          </div>
-          <div>
-            <label class="text-xs text-steel block mb-1">Servidor SOOFT (USD/mes)</label>
-            <input type="number" id="cfg-srv" class="admin-field" value="400" min="0">
-          </div>
-          <div>
-            <label class="text-xs text-steel block mb-1">Integración (USD/hr)</label>
-            <input type="number" id="cfg-int" class="admin-field" value="35" min="0">
-          </div>
-          <div>
-            <label class="text-xs text-steel block mb-1">Soporte (USD/hr)</label>
-            <input type="number" id="cfg-spt" class="admin-field" value="35" min="0">
-          </div>
-          <div>
-            <label class="text-xs text-steel block mb-1">Entrevista IA (USD/c/u)</label>
-            <input type="number" id="cfg-ent" class="admin-field" value="25" min="0">
-          </div>
-        </div>
+  <!-- Datos del cliente / proyecto -->
+  <div class="card fu fu1">
+    <div class="card-title">Datos de la propuesta</div>
+    <div class="g2" style="margin-bottom:10px">
+      <div>
+        <div class="field-label">Empresa cliente *</div>
+        <input id="cli-empresa" type="text" placeholder="Nombre de la empresa" class="field" style="margin-top:4px">
       </div>
-
-      <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
-        <div class="text-xs font-bold text-steel uppercase tracking-wider mb-3">Conexión Google Sheets</div>
-        <label class="text-xs text-steel block mb-1">URL del Webhook (Apps Script)</label>
-        <input type="text" id="cfg-webhook" class="admin-field" placeholder="https://script.google.com/macros/s/.../exec">
-      </div>
-
-      <div class="flex gap-3">
-        <button onclick="guardarConfig()" class="flex-1 bg-sooft-400 hover:bg-sooft-500 text-white font-bold py-3 rounded-xl text-sm transition-all">
-          Guardar configuración
-        </button>
-        <button onclick="cerrarOverlay('admin-overlay',null,true)" class="px-5 bg-white border border-slate-300 text-slate-600 font-semibold py-3 rounded-xl text-sm hover:bg-slate-50 transition-all">
-          Cancelar
-        </button>
-      </div>
-      <div id="admin-ok" class="hidden text-center text-xs text-green-700 bg-green-50 border border-green-200 rounded-lg py-2.5">
-        ✓ Configuración guardada y aplicada
+      <div>
+        <div class="field-label">Nombre del proyecto / período</div>
+        <input id="cli-proyecto" type="text" placeholder="Ej: Implementación ATS Q1 2026" class="field" style="margin-top:4px">
       </div>
     </div>
+    <div class="g2" style="margin-bottom:10px">
+      <div>
+        <div class="field-label">Contacto cliente</div>
+        <input id="cli-contacto" type="text" placeholder="Nombre y apellido" class="field" style="margin-top:4px">
+      </div>
+      <div>
+        <div class="field-label">Email</div>
+        <input id="cli-email" type="email" placeholder="email@empresa.com" class="field" style="margin-top:4px">
+      </div>
+    </div>
+    <div class="g2">
+      <div>
+        <div class="field-label">Comercial responsable *</div>
+        <input id="cli-comercial" type="text" placeholder="Tu nombre completo" class="field" style="margin-top:4px">
+      </div>
+      <div>
+        <div class="field-label">Cargo del comercial</div>
+        <input id="cli-cargo" type="text" placeholder="Account Manager" class="field" style="margin-top:4px" value="Account Manager">
+      </div>
+    </div>
+    <div class="g2" style="margin-top:10px">
+      <div>
+        <div class="field-label">Vigencia de la propuesta</div>
+        <select id="cli-vigencia" class="field" style="margin-top:4px;cursor:pointer">
+          <option value="15">15 días corridos</option>
+          <option value="30" selected>30 días corridos</option>
+          <option value="45">45 días corridos</option>
+          <option value="60">60 días corridos</option>
+        </select>
+      </div>
+      <div>
+        <div class="field-label">Ciudad de emisión</div>
+        <input id="cli-ciudad" type="text" placeholder="Buenos Aires" class="field" style="margin-top:4px" value="Buenos Aires">
+      </div>
+    </div>
+  </div>
+
+  <!-- Carta de presentación editable -->
+  <div class="card fu fu2">
+    <div class="card-title">Carta de presentación <span style="font-size:9px;font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0">· Editable · Se incluye en el PPTX</span></div>
+    <textarea id="cli-carta" rows="7" class="field" style="height:auto;padding-top:9px;resize:vertical;font-size:13px;line-height:1.6"></textarea>
+    <div style="margin-top:8px;display:flex;gap:8px">
+      <button onclick="resetCarta()" class="btn-secondary" style="width:auto;padding:7px 14px;font-size:12px">↺ Resetear plantilla</button>
+    </div>
+  </div>
+
+  <!-- Resumen inversión (dinámico según tipo) -->
+  <div class="card fu fu3">
+    <div class="card-title" id="resumen-inv-title">Resumen de Inversión</div>
+    <div id="resumen-inv-content">
+      <div style="text-align:center;padding:12px;color:var(--muted);font-size:12px">Cargá datos en las pestañas Equipo o Plataforma</div>
+    </div>
+  </div>
+
+  <!-- Notas internas -->
+  <div class="card fu fu4">
+    <div class="card-title">Notas internas <span style="font-size:9px;font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0">· No se incluyen en el documento</span></div>
+    <textarea id="cli-notas" placeholder="Contexto de la oportunidad, necesidades específicas, próximos pasos..." rows="3"
+      class="field" style="height:auto;padding-top:9px;resize:none"></textarea>
+  </div>
+
+  <!-- Acciones -->
+  <div class="card fu fu5">
+    <div class="card-title">Generar documentos</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <button class="btn-primary" onclick="generarPPTX()" style="flex-direction:column;gap:4px;padding:14px 10px">
+        <div style="font-size:20px">📊</div>
+        <div style="font-size:13px">Generar PowerPoint</div>
+        <div style="font-size:10px;opacity:.8;font-weight:400">Propuesta editable .pptx</div>
+      </button>
+      <button class="btn-primary" onclick="generarPDF()" style="background:var(--dark);flex-direction:column;gap:4px;padding:14px 10px;box-shadow:none">
+        <div style="font-size:20px">🖨</div>
+        <div style="font-size:13px">Vista previa PDF</div>
+        <div style="font-size:10px;opacity:.8;font-weight:400">Imprimir desde el navegador</div>
+      </button>
+    </div>
+    <button class="btn-secondary btn-blue" onclick="guardarSheets()">
+      💾 Guardar registro en Google Sheets
+    </button>
+    <div id="msg-save" class="bridge-notice" style="display:none;margin-top:10px"></div>
+  </div>
+
+</div><!-- /tp2 -->
+
+<!-- ════ ADMIN LOGIN ════ -->
+<div id="login-ov" class="overlay" onclick="closeLoginOv(event)">
+  <div class="overlay-box" style="max-width:340px">
+    <div style="font-weight:800;font-size:15px;margin-bottom:4px">Acceso Administrador</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:16px">Solo personal autorizado SOOFT</div>
+    <div class="field-label" style="margin-bottom:4px">Contraseña</div>
+    <input id="admin-pwd" type="password" placeholder="••••••••" class="field" style="margin-bottom:10px" onkeydown="if(event.key==='Enter')checkPwd()">
+    <div id="login-err" style="display:none;font-size:12px;color:var(--red);background:var(--red-lt);padding:6px 10px;border-radius:6px;margin-bottom:10px">Contraseña incorrecta.</div>
+    <button onclick="checkPwd()" class="btn-primary">Ingresar</button>
   </div>
 </div>
 
-<div id="print-area" style="display:none"></div>
-
-<!-- ═══ PROPOSAL TEMPLATE (solo visible al imprimir) ═══ -->
-<div id="proposal-template">
-<div class="prop-page">
-
-  <!-- ── ORANGE HEADER BANNER ── -->
-  <div class="prop-header-banner">
-    <div class="prop-header-logo">
-      <div class="prop-header-logo-name">SOOFT</div>
-      <div class="prop-header-logo-sub">Technology</div>
+<!-- ════ ADMIN PANEL ════ -->
+<div id="admin-ov" class="overlay" onclick="closeAdminOv(event)">
+  <div class="overlay-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div>
+        <div style="font-weight:800;font-size:15px">Panel de Configuración</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">Tarifas plataforma · Webhook</div>
+      </div>
+      <button onclick="closeAdminOv(null,true)" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted)">×</button>
     </div>
-    <div class="prop-header-tagline"><span>#CREAR</span>ES<span>INFINITO</span></div>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px">
+      <div class="field-label" style="color:var(--orange);margin-bottom:12px">Tarifas mensuales (USD)</div>
+      <div class="g2" style="gap:8px">
+        <div><div class="field-label" style="margin-bottom:3px">Fee Base (USD/mes)</div><input type="number" id="cfg-base" class="field" value="800"></div>
+        <div><div class="field-label" style="margin-bottom:3px">Servidor SOOFT (USD/mes)</div><input type="number" id="cfg-srv" class="field" value="400"></div>
+        <div><div class="field-label" style="margin-bottom:3px">Integración (USD/hr)</div><input type="number" id="cfg-int" class="field" value="35"></div>
+        <div><div class="field-label" style="margin-bottom:3px">Soporte (USD/hr)</div><input type="number" id="cfg-spt" class="field" value="35"></div>
+        <div><div class="field-label" style="margin-bottom:3px">Entrevista IA (USD/c/u)</div><input type="number" id="cfg-ent" class="field" value="25"></div>
+      </div>
+    </div>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px">
+      <div class="field-label" style="color:var(--orange);margin-bottom:8px">Conexión Google Sheets</div>
+      <input type="text" id="cfg-wh" class="field" placeholder="https://script.google.com/macros/s/.../exec">
+    </div>
+    <div style="display:flex;gap:8px">
+      <button onclick="saveConfig()" class="btn-primary" style="flex:1">Guardar</button>
+      <button onclick="closeAdminOv(null,true)" class="btn-secondary" style="width:auto;padding:11px 18px">Cancelar</button>
+    </div>
+    <div id="cfg-ok" style="display:none;margin-top:10px;text-align:center;font-size:12px;color:var(--green);background:var(--green-lt);padding:8px;border-radius:6px">✓ Configuración guardada</div>
   </div>
+</div>
 
-  <!-- ── META STRIP ── -->
-  <div class="prop-meta-strip">
-    <div class="prop-meta-strip-label">Propuesta Comercial Enterprise</div>
-    <div class="prop-meta-strip-items">
+<!-- ════ PRINT TEMPLATE ════ -->
+<div id="proposal-print">
+<div class="pp">
+  <div class="pp-hdr">
+    <div><svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" height="32" viewBox="0 0 1653.32 504.33" style="fill:white;display:block;shape-rendering:geometricPrecision"><g><g><path d="M338.65 240.63c-1.2,-36.35 -24.53,-77.76 -105.87,-91.27 -46.95,-6.87 -103.21,-8.96 -132.21,-17.91 -63.42,-19.52 -43.78,-54.04 -20.64,-70.97 17.42,-13.09 48.35,-22.47 89.85,-22.47 102.41,0 112.05,54.84 112.05,60.83 0,4.64 0,13.66 -8.62,25.14l37.4 14.68c6.4,-9.67 11.95,-22.57 12.46,-38.65 1.34,-41.16 -44.36,-100.01 -153.68,-100.01 -109.32,0 -151.82,52.69 -152.32,96.15 -0.1,27.14 18.79,54.33 64.32,70.28 50.81,17.78 133.94,13.75 170.2,28.41 68.79,26.43 51.79,77.54 -8.35,100.33 -19.08,6.84 -42.65,11.99 -74.73,11.99 -72.8,-1.34 -110.86,-21.47 -124.47,-51.84 -9.45,-21.15 -2.57,-44.05 15.12,-60.58l-32.03 -17.76c-9.33,8.26 -25.36,29.29 -27.07,62.66 -2.1,47.59 45.97,108.54 169.68,107.19 123.71,-1.34 170.32,-62.71 168.85,-106.19l0.05 -0.03z"/><path d="M1325.54 44.95l0 -40.33 -154.39 0c-69.55,0 -125.91,56.38 -125.91,125.91l0 206.96 40.36 0 0 -166.6 239.94 0 0 -40.36 -239.94 0c0,-49.91 40.46,-85.57 90.36,-85.57l149.58 0z"/><rect x="1482.04" y="11.13" width="40.36" height="326.16"/><path d="M1653.32 44.95l0 -40.33 -172.36 0c-26.75,-0 -27.23,40.32 6.4,40.33l165.96 0z"/><path d="M1351.11 44.95l0 -40.33 172.36 0c26.75,-0 27.23,40.32 -6.4,40.33l-165.96 0z"/><path d="M523.29 338.7c-3.91,0 -7.87,-0.12 -11.85,-0.37 -39.94,-2.44 -73.95,-16.83 -95.71,-40.53 -44.19,-48.08 -44.53,-113.55 -44.49,-118.6l0 -15c-0.1,-5.11 -0.07,-70.55 43.87,-118.82 21.67,-23.79 55.58,-38.35 95.52,-40.99 35.49,-2.34 69.6,5.18 91.22,20.1 7.38,5.08 13.88,9.94 20.15,14.63 22.79,16.98 37.99,28.29 66.06,30.05 28.07,-1.88 43.19,-13.26 65.91,-30.36 6.28,-4.72 12.75,-9.6 20.1,-14.73 21.55,-15.05 55.62,-22.72 91.12,-20.54 39.94,2.44 73.95,16.83 95.71,40.53 44.19,48.08 44.53,113.55 44.49,118.6l0.05 15c0.07,5.08 0.05,70.53 -43.92,118.82 -21.67,23.79 -55.58,38.35 -95.52,40.99 -35.49,2.34 -69.6,-5.18 -91.22,-20.1 -7.38,-5.08 -13.88,-9.94 -20.15,-14.61 -22.79,-16.98 -37.99,-28.29 -66.06,-30.05 -28.07,1.88 -43.19,13.26 -65.89,30.36 -6.25,4.72 -12.75,9.6 -20.08,14.7 -19.15,13.36 -48.15,20.91 -79.27,20.91l-0.05 0zm-0.1 -295.22c-3.3,0 -6.62,0.1 -9.97,0.32 -29.27,1.93 -54.38,12.19 -68.94,28.17 -34.3,37.67 -33.64,91.12 -33.61,91.66l0 0.34 0.05 15.44 0 0.17c0,0.49 -0.1,54.33 34.08,91.49 14.61,15.9 39.79,26.04 69.06,27.83 26.12,1.59 52.06,-3.71 66.1,-13.51 6.77,-4.72 12.95,-9.38 18.96,-13.9 24.65,-18.54 47.93,-36.06 88.87,-38.33l0.22 3.91 0.1 -3.93 0.71 0 0.12 4.54 0.22 -4.52c40.94,2.05 64.32,19.47 89.04,37.89 6.01,4.47 12.21,9.11 19,13.8 14.09,9.75 40.06,14.93 66.18,13.19 29.27,-1.93 54.38,-12.19 68.91,-28.17 33.98,-37.33 33.64,-91.17 33.61,-91.73l0 -0.29 -0.05 -15.44 0 -0.17c0,-0.49 0.1,-54.33 -34.05,-91.49 -14.61,-15.9 -39.79,-26.04 -69.06,-27.83 -26.09,-1.59 -52.06,3.71 -66.1,13.51 -6.77,4.72 -12.97,9.38 -18.96,13.9 -24.65,18.54 -47.93,36.06 -88.87,38.33l-0.25 -4.32 -0.1 4.35 -0.71 0 -0.12 -4.13 -0.19 4.1c-40.94,-2.05 -64.32,-19.47 -89.04,-37.89 -6.01,-4.47 -12.21,-9.11 -19,-13.8 -12.31,-8.5 -33.64,-13.53 -56.21,-13.53l0 0.05z"/></g><path fill-rule="nonzero" d="M180.07 440.72l-24.33 0 0 62.99 -11.55 0 0 -62.99 -24.44 0 0 -10.21 60.32 0 0 10.21zm139.79 52.79l0 10.2 -50.21 0 0 -73.21 49.28 0 0 10.21 -37.74 0 0 20.82 32.69 0 0 9.59 -32.69 0 0 22.38 38.67 0zm87.41 -26.92c0,-4.4 0.79,-8.78 2.37,-13.14 1.58,-4.37 3.87,-8.29 6.86,-11.76 2.99,-3.47 6.65,-6.27 10.98,-8.4 4.33,-2.13 9.25,-3.2 14.75,-3.2 6.53,0 12.15,1.48 16.85,4.43 4.71,2.96 8.23,6.81 10.57,11.55l-9.07 6.08c-0.97,-2.2 -2.17,-4.06 -3.61,-5.57 -1.44,-1.51 -3.01,-2.71 -4.69,-3.61 -1.69,-0.89 -3.42,-1.53 -5.21,-1.91 -1.78,-0.38 -3.54,-0.57 -5.25,-0.57 -3.72,0 -7,0.77 -9.85,2.32 -2.85,1.55 -5.24,3.59 -7.17,6.13 -1.93,2.54 -3.37,5.4 -4.33,8.56 -0.96,3.17 -1.45,6.33 -1.45,9.49 0,3.58 0.57,6.98 1.7,10.21 1.13,3.23 2.74,6.09 4.8,8.56 2.06,2.48 4.5,4.45 7.32,5.93 2.82,1.47 5.91,2.21 9.28,2.21 1.72,0 3.52,-0.22 5.42,-0.67 1.89,-0.45 3.67,-1.16 5.36,-2.16 1.69,-1 3.25,-2.25 4.69,-3.76 1.44,-1.51 2.65,-3.33 3.61,-5.47l9.59 5.47c-1.17,2.75 -2.8,5.18 -4.9,7.27 -2.1,2.1 -4.45,3.87 -7.06,5.31 -2.61,1.44 -5.4,2.55 -8.35,3.3 -2.96,0.76 -5.88,1.14 -8.77,1.14 -5.09,0 -9.73,-1.1 -13.92,-3.3 -4.2,-2.2 -7.82,-5.06 -10.88,-8.61 -3.06,-3.54 -5.43,-7.56 -7.11,-12.06 -1.68,-4.5 -2.52,-9.09 -2.52,-13.77zm214.03 -36.09l0 73.21 -11.65 0 0 -32.27 -36.91 0 0 32.27 -11.55 0 0 -73.21 11.55 0 0 30.63 36.91 0 0 -30.63 11.65 0zm107.62 21.66l0 51.55 -11.55 0 0 -73.21 9.07 0 41.86 52.8 0 -52.69 11.65 0 0 73.1 -9.59 0 -41.45 -51.55zm177.22 52.07c-5.15,0 -9.85,-1.05 -14.07,-3.14 -4.23,-2.1 -7.87,-4.88 -10.93,-8.36 -3.06,-3.47 -5.41,-7.44 -7.06,-11.91 -1.65,-4.47 -2.47,-9.04 -2.47,-13.71 0,-4.88 0.88,-9.56 2.63,-14.02 1.75,-4.47 4.17,-8.42 7.27,-11.86 3.09,-3.44 6.77,-6.17 11.03,-8.2 4.26,-2.03 8.9,-3.04 13.92,-3.04 5.15,0 9.85,1.08 14.07,3.25 4.23,2.16 7.86,5 10.88,8.5 3.03,3.51 5.36,7.48 7.01,11.91 1.65,4.43 2.47,8.95 2.47,13.56 0,4.88 -0.88,9.56 -2.63,14.02 -1.75,4.47 -4.17,8.4 -7.27,11.81 -3.1,3.4 -6.76,6.12 -10.98,8.15 -4.23,2.03 -8.85,3.04 -13.87,3.04zm-22.78 -37.12c0,3.44 0.53,6.77 1.6,10 1.07,3.23 2.6,6.08 4.59,8.56 1.99,2.47 4.4,4.45 7.22,5.93 2.82,1.48 5.98,2.22 9.49,2.22 3.58,0 6.79,-0.77 9.65,-2.32 2.85,-1.55 5.25,-3.59 7.21,-6.13 1.96,-2.54 3.45,-5.4 4.49,-8.56 1.03,-3.16 1.54,-6.39 1.54,-9.69 0,-3.51 -0.55,-6.86 -1.65,-10.06 -1.1,-3.19 -2.65,-6.01 -4.64,-8.45 -1.99,-2.44 -4.4,-4.4 -7.22,-5.88 -2.82,-1.48 -5.94,-2.22 -9.38,-2.22 -3.57,0 -6.79,0.77 -9.64,2.32 -2.85,1.55 -5.26,3.56 -7.21,6.03 -1.96,2.48 -3.46,5.32 -4.49,8.51 -1.04,3.2 -1.55,6.45 -1.55,9.75zm149.17 36.6l0 -73.21 11.55 0 0 63 39.28 0 0 10.2 -50.83 0zm167.01 0.52c-5.15,0 -9.84,-1.05 -14.07,-3.14 -4.23,-2.1 -7.87,-4.88 -10.93,-8.36 -3.06,-3.47 -5.41,-7.44 -7.06,-11.91 -1.65,-4.47 -2.48,-9.04 -2.48,-13.71 0,-4.88 0.88,-9.56 2.64,-14.02 1.75,-4.47 4.17,-8.42 7.26,-11.86 3.1,-3.44 6.77,-6.17 11.04,-8.2 4.27,-2.03 8.9,-3.04 13.92,-3.04 5.16,0 9.84,1.08 14.08,3.25 4.22,2.16 7.85,5 10.88,8.5 3.03,3.51 5.36,7.48 7,11.91 1.66,4.43 2.49,8.95 2.49,13.56 0,4.88 -0.88,9.56 -2.64,14.02 -1.74,4.47 -4.17,8.4 -7.27,11.81 -3.09,3.4 -6.75,6.12 -10.98,8.15 -4.22,2.03 -8.85,3.04 -13.87,3.04zm-22.78 -37.12c0,3.44 0.53,6.77 1.6,10 1.06,3.23 2.59,6.08 4.59,8.56 1.99,2.47 4.41,4.45 7.22,5.93 2.82,1.48 5.98,2.22 9.49,2.22 3.58,0 6.78,-0.77 9.64,-2.32 2.85,-1.55 5.25,-3.59 7.22,-6.13 1.96,-2.54 3.46,-5.4 4.49,-8.56 1.02,-3.16 1.54,-6.39 1.54,-9.69 0,-3.51 -0.55,-6.86 -1.65,-10.06 -1.1,-3.19 -2.65,-6.01 -4.64,-8.45 -1.99,-2.44 -4.39,-4.4 -7.22,-5.88 -2.81,-1.48 -5.94,-2.22 -9.38,-2.22 -3.58,0 -6.79,0.77 -9.64,2.32 -2.86,1.55 -5.25,3.56 -7.21,6.03 -1.96,2.48 -3.46,5.32 -4.49,8.51 -1.03,3.2 -1.55,6.45 -1.55,9.75zm199.7 27.53c-5.98,6.39 -12.96,9.59 -20.93,9.59 -4.75,0 -9.2,-1.05 -13.36,-3.14 -4.16,-2.1 -7.76,-4.88 -10.82,-8.36 -3.06,-3.47 -5.46,-7.46 -7.22,-11.96 -1.76,-4.5 -2.64,-9.16 -2.64,-13.97 0,-4.95 0.88,-9.66 2.64,-14.12 1.76,-4.47 4.16,-8.38 7.22,-11.75 3.06,-3.37 6.68,-6.03 10.87,-7.99 4.2,-1.96 8.78,-2.94 13.72,-2.94 6.87,0 12.64,1.46 17.32,4.38 4.67,2.92 8.22,6.79 10.62,11.6l-8.87 6.39c-2,-3.99 -4.7,-6.98 -8.1,-8.97 -3.4,-1.99 -7.16,-2.99 -11.29,-2.99 -3.37,0 -6.43,0.74 -9.18,2.22 -2.75,1.47 -5.11,3.44 -7.06,5.87 -1.96,2.44 -3.48,5.28 -4.55,8.51 -1.07,3.23 -1.59,6.6 -1.59,10.11 0,3.71 0.58,7.18 1.76,10.41 1.16,3.23 2.8,6.05 4.89,8.45 2.1,2.41 4.56,4.31 7.38,5.72 2.81,1.4 5.87,2.11 9.18,2.11 7.42,0 14.09,-3.61 20,-10.82l0 -7.74 -15.37 0 0 -8.55 25.06 0 0 37.01 -9.69 0 0 -9.07zm103.8 -64.13l20.32 36.71 20.41 -36.71 12.58 0 -27.22 47.02 0 26.19 -11.64 0 0 -26.4 -27.12 -46.81 12.68 0z"/></g></svg></div>
+    <div class="pp-hdr-tag">#CREARESINFINITO</div>
+  </div>
+  <div class="pp-meta">
+    <div class="pp-meta-lbl">Propuesta Comercial Enterprise</div>
+    <div class="pp-meta-items">
       <span>Fecha: <strong id="pt-fecha">—</strong></span>
-      <span>Ref: <strong id="pt-ref">COT-001</strong></span>
-      <span>Vigencia: <strong id="pt-vigencia">30 días</strong></span>
+      <span>Ref: <strong id="pt-ref">—</strong></span>
+      <span>Vigencia: <strong id="pt-vig">30 días</strong></span>
     </div>
   </div>
-
-  <!-- ── BODY ── -->
-  <div class="prop-body">
-
-    <!-- Badge + título -->
-    <div class="prop-title-section">
-      <div class="prop-badge">Propuesta Enterprise · Confidencial</div>
-      <h1 class="prop-title" id="pt-titulo">Propuesta de Implementación</h1>
-      <p class="prop-subtitle">Plataforma ATS + Módulos Enterprise personalizados</p>
+  <div class="pp-body">
+    <div class="pp-badge">Propuesta Enterprise · Confidencial</div>
+    <h1 class="pp-title" id="pt-titulo">—</h1>
+    <p class="pp-subtitle">Plataforma ATS + Módulos Enterprise personalizados</p>
+    <div class="pp-client">
+      <div><div class="pp-cl-lbl">Dirigida a</div><div class="pp-cl-val" id="pt-empresa">—</div><div class="pp-cl-sub" id="pt-ctc">—</div></div>
+      <div><div class="pp-cl-lbl">Proyecto</div><div class="pp-cl-val" id="pt-proyecto">—</div></div>
+      <div><div class="pp-cl-lbl">Preparado por</div><div class="pp-cl-val" id="pt-comercial">—</div><div class="pp-cl-sub">SOOFT · Equipo Comercial</div></div>
     </div>
 
-    <!-- Cliente info -->
-    <div class="prop-client-box">
-      <div>
-        <div class="prop-client-label">Dirigida a</div>
-        <div class="prop-client-value" id="pt-empresa">—</div>
-        <div class="prop-client-sub" id="pt-contacto">—</div>
-      </div>
-      <div>
-        <div class="prop-client-label">Proyecto</div>
-        <div class="prop-client-value" id="pt-proyecto">—</div>
-      </div>
-      <div>
-        <div class="prop-client-label">Preparado por</div>
-        <div class="prop-client-value" id="pt-comercial">—</div>
-        <div class="prop-client-sub">SOOFT · Equipo Comercial</div>
-      </div>
-    </div>
-
-    <!-- Plan Enterprise -->
-    <div class="prop-section">
-      <div class="prop-section-title">Plan Enterprise — Descripción</div>
-      <table class="prop-table">
-        <thead>
-          <tr>
-            <th style="width:46%">Componente</th>
-            <th style="width:28%">Condición</th>
-            <th>Valor mensual</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Fee Base Mensual</strong><br><span style="font-size:10px;color:#888">ATS completo · Panel admin · Reportes · Soporte email</span></td>
-            <td>Fijo mensual</td>
-            <td id="pt-base">USD 0</td>
-          </tr>
-          <tr class="prop-ilimitado-row">
-            <td><strong>Vacantes Activas</strong><br><span style="font-size:10px;color:#888">Publicaciones simultáneas sin restricción</span></td>
-            <td><span class="prop-badge-green">Ilimitadas</span></td>
-            <td style="color:#065F46;font-weight:800">Incluido</td>
-          </tr>
-          <tr class="prop-ilimitado-row">
-            <td><strong>Usuarios en Plataforma</strong><br><span style="font-size:10px;color:#888">Reclutadores, managers y administradores</span></td>
-            <td><span class="prop-badge-green">Ilimitados</span></td>
-            <td style="color:#065F46;font-weight:800">Incluido</td>
-          </tr>
-          <tr id="pt-row-srv" style="display:none">
-            <td><strong>Infraestructura SOOFT Cloud</strong><br><span style="font-size:10px;color:#888">Alta disponibilidad · Backups automáticos · SLA 99.9%</span></td>
-            <td>Fijo mensual</td>
-            <td id="pt-srv">USD 0</td>
-          </tr>
-        </tbody>
+    <!-- Plataforma section -->
+    <div style="margin-bottom:20px">
+      <div class="pp-sec-title">Plan Enterprise — Plataforma SaaS</div>
+      <table class="pp-tbl">
+        <thead><tr><th style="width:46%">Componente</th><th style="width:28%">Condición</th><th>Valor (USD/mes)</th></tr></thead>
+        <tbody id="pt-plat-tbody"></tbody>
       </table>
     </div>
 
-    <!-- Implementación -->
-    <div class="prop-section" id="pt-section-impl" style="display:none">
-      <div class="prop-section-title">Implementación e Integración</div>
-      <table class="prop-table">
-        <thead>
-          <tr>
-            <th>Detalle</th>
-            <th style="text-align:center">Horas / Tarifa</th>
-            <th>Importe</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Desarrollo e integración custom</strong><br><span style="font-size:10px;color:#888">API, conectores de sistemas, configuración inicial</span></td>
-            <td style="text-align:center;font-family:monospace;font-size:11px" id="pt-impl-det">—</td>
-            <td id="pt-impl-total">USD 0</td>
-          </tr>
-          <tr class="highlight-row">
-            <td>
-              <strong id="pt-cuota-label">Cuota de Implementación (1 de 1)</strong><br>
-              <span style="font-size:10px;color:#888" id="pt-cuota-note">Monto que se suma al total mensual</span>
-            </td>
-            <td style="text-align:center"><span class="prop-badge-amber" id="pt-cuota-badge">1 cuota</span></td>
-            <td id="pt-cuota-val">USD 0</td>
-          </tr>
-        </tbody>
+    <!-- Equipo section -->
+    <div id="pt-equipo-section" style="margin-bottom:20px;display:none">
+      <div class="pp-sec-title">Costo de Equipo</div>
+      <table class="pp-tbl">
+        <thead><tr><th style="width:46%">Integrante</th><th style="width:28%">Tipo</th><th>Costo real (ARS/mes)</th></tr></thead>
+        <tbody id="pt-staff-tbody"></tbody>
       </table>
-      <div class="prop-cuota-note" id="pt-cuota-explain" style="display:none"></div>
+      <div class="pp-note" id="pt-equipo-note"></div>
     </div>
 
-    <!-- Módulos adicionales -->
-    <div class="prop-section" id="pt-section-mod">
-      <div class="prop-section-title">Módulos Adicionales</div>
-      <table class="prop-table">
-        <thead>
-          <tr>
-            <th>Módulo</th>
-            <th style="text-align:center">Detalle</th>
-            <th>Subtotal / mes</th>
-          </tr>
-        </thead>
-        <tbody id="pt-mod-tbody">
-          <tr><td colspan="3" style="color:#aaa;text-align:center;padding:16px;font-size:11px">Sin módulos adicionales seleccionados</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Soporte -->
-    <div class="prop-section" id="pt-section-spt" style="display:none">
-      <div class="prop-section-title">Soporte Premium</div>
-      <table class="prop-table">
-        <thead>
-          <tr>
-            <th>Servicio</th>
-            <th style="text-align:center">Condición</th>
-            <th>Subtotal / mes</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Soporte técnico dedicado</strong><br><span style="font-size:10px;color:#888">Atención prioritaria · SLA garantizado · Canal exclusivo</span></td>
-            <td style="text-align:center;font-family:monospace;font-size:11px" id="pt-spt-det">—</td>
-            <td id="pt-spt-val">USD 0</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <!-- Cuota note -->
+    <div class="pp-note" id="pt-cuota-note" style="display:none"></div>
 
     <!-- Total -->
-    <div class="prop-total-bar">
-      <div>
-        <div class="prop-total-label">Total Mensual Estimado</div>
-        <div style="color:rgba(255,255,255,0.5);font-size:10px;margin-top:3px;font-weight:500;letter-spacing:0.5px" id="pt-total-note">Precio base + módulos activos</div>
-      </div>
-      <div class="prop-total-value" id="pt-total">USD 0</div>
+    <div class="pp-total">
+      <div><div class="pp-total-lbl">Total Mensual Estimado (Plataforma)</div><div style="color:rgba(255,255,255,.5);font-size:9px;margin-top:2px" id="pt-total-note">—</div></div>
+      <div class="pp-total-val" id="pt-total">USD 0</div>
     </div>
 
-    <!-- Vigencia -->
-    <div class="prop-validity">
-      <div class="prop-validity-dot"></div>
-      <span>Esta propuesta tiene una vigencia de <strong id="pt-validity-txt">30 días corridos</strong> a partir de la fecha de emisión. Los valores están expresados en dólares estadounidenses (USD) y no incluyen impuestos locales.</span>
+    <div class="pp-validity">
+      <div class="pp-dot"></div>
+      <span>Esta propuesta tiene una vigencia de <strong id="pt-validity">30 días corridos</strong> a partir de la fecha de emisión. Los valores de plataforma están en USD. Los costos de equipo están en ARS y varían según condiciones laborales vigentes.</span>
     </div>
-
-  </div><!-- /prop-body -->
-
-  <!-- ── DARK FOOTER BANNER ── -->
-  <div class="prop-footer-banner">
-    <div>
-      <div class="prop-footer-logo-name">SOOFT</div>
-      <div class="prop-footer-logo-sub">Technology</div>
-    </div>
-    <div class="prop-footer-web">/Sooft<span>.tech</span></div>
   </div>
+  <div class="pp-ftr">
+    <div><svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" height="22" viewBox="0 0 1653.32 504.33" style="fill:white;display:block;shape-rendering:geometricPrecision"><g><g><path d="M338.65 240.63c-1.2,-36.35 -24.53,-77.76 -105.87,-91.27 -46.95,-6.87 -103.21,-8.96 -132.21,-17.91 -63.42,-19.52 -43.78,-54.04 -20.64,-70.97 17.42,-13.09 48.35,-22.47 89.85,-22.47 102.41,0 112.05,54.84 112.05,60.83 0,4.64 0,13.66 -8.62,25.14l37.4 14.68c6.4,-9.67 11.95,-22.57 12.46,-38.65 1.34,-41.16 -44.36,-100.01 -153.68,-100.01 -109.32,0 -151.82,52.69 -152.32,96.15 -0.1,27.14 18.79,54.33 64.32,70.28 50.81,17.78 133.94,13.75 170.2,28.41 68.79,26.43 51.79,77.54 -8.35,100.33 -19.08,6.84 -42.65,11.99 -74.73,11.99 -72.8,-1.34 -110.86,-21.47 -124.47,-51.84 -9.45,-21.15 -2.57,-44.05 15.12,-60.58l-32.03 -17.76c-9.33,8.26 -25.36,29.29 -27.07,62.66 -2.1,47.59 45.97,108.54 169.68,107.19 123.71,-1.34 170.32,-62.71 168.85,-106.19l0.05 -0.03z"/><path d="M1325.54 44.95l0 -40.33 -154.39 0c-69.55,0 -125.91,56.38 -125.91,125.91l0 206.96 40.36 0 0 -166.6 239.94 0 0 -40.36 -239.94 0c0,-49.91 40.46,-85.57 90.36,-85.57l149.58 0z"/><rect x="1482.04" y="11.13" width="40.36" height="326.16"/><path d="M1653.32 44.95l0 -40.33 -172.36 0c-26.75,-0 -27.23,40.32 6.4,40.33l165.96 0z"/><path d="M1351.11 44.95l0 -40.33 172.36 0c26.75,-0 27.23,40.32 -6.4,40.33l-165.96 0z"/><path d="M523.29 338.7c-3.91,0 -7.87,-0.12 -11.85,-0.37 -39.94,-2.44 -73.95,-16.83 -95.71,-40.53 -44.19,-48.08 -44.53,-113.55 -44.49,-118.6l0 -15c-0.1,-5.11 -0.07,-70.55 43.87,-118.82 21.67,-23.79 55.58,-38.35 95.52,-40.99 35.49,-2.34 69.6,5.18 91.22,20.1 7.38,5.08 13.88,9.94 20.15,14.63 22.79,16.98 37.99,28.29 66.06,30.05 28.07,-1.88 43.19,-13.26 65.91,-30.36 6.28,-4.72 12.75,-9.6 20.1,-14.73 21.55,-15.05 55.62,-22.72 91.12,-20.54 39.94,2.44 73.95,16.83 95.71,40.53 44.19,48.08 44.53,113.55 44.49,118.6l0.05 15c0.07,5.08 0.05,70.53 -43.92,118.82 -21.67,23.79 -55.58,38.35 -95.52,40.99 -35.49,2.34 -69.6,-5.18 -91.22,-20.1 -7.38,-5.08 -13.88,-9.94 -20.15,-14.61 -22.79,-16.98 -37.99,-28.29 -66.06,-30.05 -28.07,1.88 -43.19,13.26 -65.89,30.36 -6.25,4.72 -12.75,9.6 -20.08,14.7 -19.15,13.36 -48.15,20.91 -79.27,20.91l-0.05 0zm-0.1 -295.22c-3.3,0 -6.62,0.1 -9.97,0.32 -29.27,1.93 -54.38,12.19 -68.94,28.17 -34.3,37.67 -33.64,91.12 -33.61,91.66l0 0.34 0.05 15.44 0 0.17c0,0.49 -0.1,54.33 34.08,91.49 14.61,15.9 39.79,26.04 69.06,27.83 26.12,1.59 52.06,-3.71 66.1,-13.51 6.77,-4.72 12.95,-9.38 18.96,-13.9 24.65,-18.54 47.93,-36.06 88.87,-38.33l0.22 3.91 0.1 -3.93 0.71 0 0.12 4.54 0.22 -4.52c40.94,2.05 64.32,19.47 89.04,37.89 6.01,4.47 12.21,9.11 19,13.8 14.09,9.75 40.06,14.93 66.18,13.19 29.27,-1.93 54.38,-12.19 68.91,-28.17 33.98,-37.33 33.64,-91.17 33.61,-91.73l0 -0.29 -0.05 -15.44 0 -0.17c0,-0.49 0.1,-54.33 -34.05,-91.49 -14.61,-15.9 -39.79,-26.04 -69.06,-27.83 -26.09,-1.59 -52.06,3.71 -66.1,13.51 -6.77,4.72 -12.97,9.38 -18.96,13.9 -24.65,18.54 -47.93,36.06 -88.87,38.33l-0.25 -4.32 -0.1 4.35 -0.71 0 -0.12 -4.13 -0.19 4.1c-40.94,-2.05 -64.32,-19.47 -89.04,-37.89 -6.01,-4.47 -12.21,-9.11 -19,-13.8 -12.31,-8.5 -33.64,-13.53 -56.21,-13.53l0 0.05z"/></g><path fill-rule="nonzero" d="M180.07 440.72l-24.33 0 0 62.99 -11.55 0 0 -62.99 -24.44 0 0 -10.21 60.32 0 0 10.21zm139.79 52.79l0 10.2 -50.21 0 0 -73.21 49.28 0 0 10.21 -37.74 0 0 20.82 32.69 0 0 9.59 -32.69 0 0 22.38 38.67 0zm87.41 -26.92c0,-4.4 0.79,-8.78 2.37,-13.14 1.58,-4.37 3.87,-8.29 6.86,-11.76 2.99,-3.47 6.65,-6.27 10.98,-8.4 4.33,-2.13 9.25,-3.2 14.75,-3.2 6.53,0 12.15,1.48 16.85,4.43 4.71,2.96 8.23,6.81 10.57,11.55l-9.07 6.08c-0.97,-2.2 -2.17,-4.06 -3.61,-5.57 -1.44,-1.51 -3.01,-2.71 -4.69,-3.61 -1.69,-0.89 -3.42,-1.53 -5.21,-1.91 -1.78,-0.38 -3.54,-0.57 -5.25,-0.57 -3.72,0 -7,0.77 -9.85,2.32 -2.85,1.55 -5.24,3.59 -7.17,6.13 -1.93,2.54 -3.37,5.4 -4.33,8.56 -0.96,3.17 -1.45,6.33 -1.45,9.49 0,3.58 0.57,6.98 1.7,10.21 1.13,3.23 2.74,6.09 4.8,8.56 2.06,2.48 4.5,4.45 7.32,5.93 2.82,1.47 5.91,2.21 9.28,2.21 1.72,0 3.52,-0.22 5.42,-0.67 1.89,-0.45 3.67,-1.16 5.36,-2.16 1.69,-1 3.25,-2.25 4.69,-3.76 1.44,-1.51 2.65,-3.33 3.61,-5.47l9.59 5.47c-1.17,2.75 -2.8,5.18 -4.9,7.27 -2.1,2.1 -4.45,3.87 -7.06,5.31 -2.61,1.44 -5.4,2.55 -8.35,3.3 -2.96,0.76 -5.88,1.14 -8.77,1.14 -5.09,0 -9.73,-1.1 -13.92,-3.3 -4.2,-2.2 -7.82,-5.06 -10.88,-8.61 -3.06,-3.54 -5.43,-7.56 -7.11,-12.06 -1.68,-4.5 -2.52,-9.09 -2.52,-13.77zm214.03 -36.09l0 73.21 -11.65 0 0 -32.27 -36.91 0 0 32.27 -11.55 0 0 -73.21 11.55 0 0 30.63 36.91 0 0 -30.63 11.65 0zm107.62 21.66l0 51.55 -11.55 0 0 -73.21 9.07 0 41.86 52.8 0 -52.69 11.65 0 0 73.1 -9.59 0 -41.45 -51.55zm177.22 52.07c-5.15,0 -9.85,-1.05 -14.07,-3.14 -4.23,-2.1 -7.87,-4.88 -10.93,-8.36 -3.06,-3.47 -5.41,-7.44 -7.06,-11.91 -1.65,-4.47 -2.47,-9.04 -2.47,-13.71 0,-4.88 0.88,-9.56 2.63,-14.02 1.75,-4.47 4.17,-8.42 7.27,-11.86 3.09,-3.44 6.77,-6.17 11.03,-8.2 4.26,-2.03 8.9,-3.04 13.92,-3.04 5.15,0 9.85,1.08 14.07,3.25 4.23,2.16 7.86,5 10.88,8.5 3.03,3.51 5.36,7.48 7.01,11.91 1.65,4.43 2.47,8.95 2.47,13.56 0,4.88 -0.88,9.56 -2.63,14.02 -1.75,4.47 -4.17,8.4 -7.27,11.81 -3.1,3.4 -6.76,6.12 -10.98,8.15 -4.23,2.03 -8.85,3.04 -13.87,3.04zm-22.78 -37.12c0,3.44 0.53,6.77 1.6,10 1.07,3.23 2.6,6.08 4.59,8.56 1.99,2.47 4.4,4.45 7.22,5.93 2.82,1.48 5.98,2.22 9.49,2.22 3.58,0 6.79,-0.77 9.65,-2.32 2.85,-1.55 5.25,-3.59 7.21,-6.13 1.96,-2.54 3.45,-5.4 4.49,-8.56 1.03,-3.16 1.54,-6.39 1.54,-9.69 0,-3.51 -0.55,-6.86 -1.65,-10.06 -1.1,-3.19 -2.65,-6.01 -4.64,-8.45 -1.99,-2.44 -4.4,-4.4 -7.22,-5.88 -2.82,-1.48 -5.94,-2.22 -9.38,-2.22 -3.57,0 -6.79,0.77 -9.64,2.32 -2.85,1.55 -5.26,3.56 -7.21,6.03 -1.96,2.48 -3.46,5.32 -4.49,8.51 -1.04,3.2 -1.55,6.45 -1.55,9.75zm149.17 36.6l0 -73.21 11.55 0 0 63 39.28 0 0 10.2 -50.83 0zm167.01 0.52c-5.15,0 -9.84,-1.05 -14.07,-3.14 -4.23,-2.1 -7.87,-4.88 -10.93,-8.36 -3.06,-3.47 -5.41,-7.44 -7.06,-11.91 -1.65,-4.47 -2.48,-9.04 -2.48,-13.71 0,-4.88 0.88,-9.56 2.64,-14.02 1.75,-4.47 4.17,-8.42 7.26,-11.86 3.1,-3.44 6.77,-6.17 11.04,-8.2 4.27,-2.03 8.9,-3.04 13.92,-3.04 5.16,0 9.84,1.08 14.08,3.25 4.22,2.16 7.85,5 10.88,8.5 3.03,3.51 5.36,7.48 7,11.91 1.66,4.43 2.49,8.95 2.49,13.56 0,4.88 -0.88,9.56 -2.64,14.02 -1.74,4.47 -4.17,8.4 -7.27,11.81 -3.09,3.4 -6.75,6.12 -10.98,8.15 -4.22,2.03 -8.85,3.04 -13.87,3.04zm-22.78 -37.12c0,3.44 0.53,6.77 1.6,10 1.06,3.23 2.59,6.08 4.59,8.56 1.99,2.47 4.41,4.45 7.22,5.93 2.82,1.48 5.98,2.22 9.49,2.22 3.58,0 6.78,-0.77 9.64,-2.32 2.85,-1.55 5.25,-3.59 7.22,-6.13 1.96,-2.54 3.46,-5.4 4.49,-8.56 1.02,-3.16 1.54,-6.39 1.54,-9.69 0,-3.51 -0.55,-6.86 -1.65,-10.06 -1.1,-3.19 -2.65,-6.01 -4.64,-8.45 -1.99,-2.44 -4.39,-4.4 -7.22,-5.88 -2.81,-1.48 -5.94,-2.22 -9.38,-2.22 -3.58,0 -6.79,0.77 -9.64,2.32 -2.86,1.55 -5.25,3.56 -7.21,6.03 -1.96,2.48 -3.46,5.32 -4.49,8.51 -1.03,3.2 -1.55,6.45 -1.55,9.75zm199.7 27.53c-5.98,6.39 -12.96,9.59 -20.93,9.59 -4.75,0 -9.2,-1.05 -13.36,-3.14 -4.16,-2.1 -7.76,-4.88 -10.82,-8.36 -3.06,-3.47 -5.46,-7.46 -7.22,-11.96 -1.76,-4.5 -2.64,-9.16 -2.64,-13.97 0,-4.95 0.88,-9.66 2.64,-14.12 1.76,-4.47 4.16,-8.38 7.22,-11.75 3.06,-3.37 6.68,-6.03 10.87,-7.99 4.2,-1.96 8.78,-2.94 13.72,-2.94 6.87,0 12.64,1.46 17.32,4.38 4.67,2.92 8.22,6.79 10.62,11.6l-8.87 6.39c-2,-3.99 -4.7,-6.98 -8.1,-8.97 -3.4,-1.99 -7.16,-2.99 -11.29,-2.99 -3.37,0 -6.43,0.74 -9.18,2.22 -2.75,1.47 -5.11,3.44 -7.06,5.87 -1.96,2.44 -3.48,5.28 -4.55,8.51 -1.07,3.23 -1.59,6.6 -1.59,10.11 0,3.71 0.58,7.18 1.76,10.41 1.16,3.23 2.8,6.05 4.89,8.45 2.1,2.41 4.56,4.31 7.38,5.72 2.81,1.4 5.87,2.11 9.18,2.11 7.42,0 14.09,-3.61 20,-10.82l0 -7.74 -15.37 0 0 -8.55 25.06 0 0 37.01 -9.69 0 0 -9.07zm103.8 -64.13l20.32 36.71 20.41 -36.71 12.58 0 -27.22 47.02 0 26.19 -11.64 0 0 -26.4 -27.12 -46.81 12.68 0z"/></g></svg></div>
+    <div class="pp-ftr-web">/Sooft<span>.tech</span></div>
+  </div>
+</div>
+</div>
 
-</div><!-- /prop-page -->
-</div><!-- /proposal-template -->
-
-<!-- ═══ SCRIPT ═══ -->
 <script>
-/* ─── Config (editable via admin) ─── */
-let P = { base:800, servidor:400, intHr:35, sptHr:35, entrevista:25 };
-let WEBHOOK = 'TU_URL_GOOGLE_APPS_SCRIPT_AQUI';
-const PWD = '$ooft2026';
+/* ════ CONFIG ════ */
+let P={base:800,srv:400,intHr:35,sptHr:35,ent:25};
+let WEBHOOK='TU_URL_GOOGLE_APPS_SCRIPT_AQUI';
+const PWD='$ooft2026';
 
-/* ─── State ─── */
-const S = {
-  servidores:'cliente',
-  int:false, intHrs:0, cuotas:1,
-  ent:false, entQty:0,
-  spt:false, sptHrs:0,
+/* ════ PLATFORM STATE ════ */
+const SP={srv:'cliente',int:false,intHrs:0,cuotas:1,ent:false,entQty:0,spt:false,sptHrs:0};
+
+/* ════ STAFF STATE (compañero) ════ */
+var CF={est:120000,maq:48922.68,sipa:.1077,inssjp:.0159,asig:.047,fondo:.0094,os:.06,lrt:.0084,lrtf:82.28,faecys:.005,agec:.02,seg:243,ap:.17,umbral:330000,gni:252564.84,dedEsp:1212311.24,
+tabG:[{d:0,h:97202,f:0,p:.05,e:0},{d:97202,h:194404.01,f:4960.1,p:.09,e:97202},{d:194404.01,h:291606.01,f:13608.28,p:.12,e:194404.01},{d:291606.01,h:388808.02,f:25727.52,p:.15,e:291606.01},{d:388808.02,h:583212.02,f:39852.82,p:.19,e:388808.02},{d:583212.02,h:777616.02,f:76789.58,p:.23,e:583212.02},{d:777616.02,h:1166424.03,f:121502.5,p:.27,e:777616.02},{d:1166424.03,h:1555232.07,f:226480.66,p:.31,e:1166424.03},{d:1555232.07,h:1e15,f:347011.16,p:.35,e:1555232.07}]};
+var staff=[];var expO=false;
+
+/* ════ HELPERS ════ */
+const $=id=>document.getElementById(id);
+const fU=n=>'USD '+Math.round(n).toLocaleString('es-AR');
+const fA=n=>'$\u202F'+Math.round(n).toLocaleString('es-AR');
+const fP=n=>(n*100).toFixed(1)+'%';
+
+/* ════ TAB NAVIGATION ════ */
+function goTab(i){
+  [0,1,2].forEach(j=>{
+    $('tp'+j).classList.toggle('active',j===i);
+    $('nt'+j).classList.toggle('active',j===i);
+  });
+  if(i===2){ refreshProposal(); refreshResumenInv(); }
+}
+
+/* ════ PLATFORM FUNCTIONS ════ */
+function toggleSub(id,open){$(id).classList.toggle('open',open)}
+
+function setSrv(v){
+  SP.srv=v;
+  $('btn-srv-cl').classList.toggle('active',v==='cliente');
+  $('btn-srv-so').classList.toggle('active',v==='sooft');
+  calcP();
+}
+
+let cuotaSel=1;
+function setCuota(n){
+  cuotaSel=n; SP.cuotas=n;
+  $('lbl-cuotas-n').textContent=n+' mes'+(n>1?'es':'');
+  $('lbl-cuotas-de').textContent=n;
+  document.querySelectorAll('.cuota-btn').forEach(b=>b.classList.toggle('active',parseInt(b.textContent)===n));
+  calcP();
+}
+
+function calcP(){
+  SP.intHrs=Math.max(0,parseInt($('inp-int-hrs').value)||0);
+  SP.entQty=Math.max(0,parseInt($('inp-ent').value)||0);
+  SP.sptHrs=Math.max(0,parseInt($('inp-spt').value)||0);
+  SP.int=$('tog-int').checked;
+  SP.ent=$('tog-ent').checked;
+  SP.spt=$('tog-spt').checked;
+  SP.cuotas=cuotaSel;
+
+  const totalInt=SP.int?SP.intHrs*P.intHr:0;
+  const cuota=SP.int&&SP.cuotas>0?totalInt/SP.cuotas:0;
+
+  const items={
+    base:{l:'Fee Base Mensual',v:P.base},
+    srv:{l:'Servidores SOOFT Cloud',v:SP.srv==='sooft'?P.srv:0},
+    cuota:{l:`Cuota Implementación (1 de ${SP.cuotas})`,v:cuota},
+    ent:{l:`Entrevistador Virtual IA (${SP.entQty} entrev.)`,v:SP.ent?SP.entQty*P.ent:0},
+    spt:{l:`Soporte Premium (${SP.sptHrs} hrs)`,v:SP.spt?SP.sptHrs*P.sptHr:0},
+  };
+  const total=Object.values(items).reduce((a,b)=>a+b.v,0);
+
+  $('plat-total').textContent=fU(total);
+  $('lbl-cuota-val').textContent=fU(cuota);
+
+  const bd=$('plat-breakdown');
+  bd.innerHTML='';
+  Object.values(items).filter(({v})=>v>0).forEach(({l,v})=>{
+    const r=document.createElement('div');
+    r.style.cssText='display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #F4F4F2;font-size:12px';
+    r.innerHTML=`<span style="color:var(--muted)">${l}</span><span style="font-family:'DM Mono',monospace;font-weight:700">${fU(v)}</span>`;
+    bd.appendChild(r);
+  });
+  const tr=document.createElement('div');
+  tr.style.cssText='display:flex;justify-content:space-between;padding:6px 0;border-top:1.5px solid var(--border);margin-top:4px';
+  tr.innerHTML=`<span style="font-weight:700">Total</span><span style="font-family:'DM Mono',monospace;font-weight:900;color:var(--orange)">${fU(total)}</span>`;
+  bd.appendChild(tr);
+
+  return {items,total,cuota,totalInt};
+}
+
+/* ════ STAFF FUNCTIONS (del compañero, adaptadas) ════ */
+function ganC(b){
+  if(b<CF.umbral)return{paga:false,anual:0,mens:0};
+  var s=(b-b*CF.ap)*12-(CF.gni+CF.dedEsp);if(s<=0)return{paga:false,anual:0,mens:0};
+  var tr=null;for(var i=0;i<CF.tabG.length;i++){if(s>CF.tabG[i].d&&s<=CF.tabG[i].h){tr=CF.tabG[i];break;}}
+  if(!tr)return{paga:false,anual:0,mens:0};var a=tr.f+(s-tr.e)*tr.p;
+  return a>0?{paga:true,anual:a,mens:a/12}:{paga:false,anual:0,mens:0};
+}
+function calcNeto(){
+  $('nneto').value='';var b=parseFloat($('nbruto').value);var box=$('neto-info');
+  if(!b||b<=0){box.style.display='none';return;}
+  var gn=ganC(b),ap=b*CF.ap,neto=b-ap-gn.mens,paga=gn.paga;
+  var col=paga?'#6B21A8':'var(--green)';var bgH=paga?'#F3E8FF':'var(--green-lt)';
+  box.innerHTML='<div style="background:'+bgH+';border-radius:8px;padding:10px 13px">'
+    +'<div style="font-size:12px;font-weight:700;color:'+col+';">'+(paga?'⚠ Paga Impuesto a las Ganancias':'✓ No paga Impuesto a las Ganancias')+'</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px">'
+    +'<div><div class="kpi-label">Aportes (17%)</div><div style="font-weight:800;font-size:14px">'+fA(ap)+'</div></div>'
+    +(paga?'<div><div class="kpi-label" style="color:#6B21A8">Ganancias/mes</div><div style="font-weight:800;font-size:14px;color:#6B21A8">'+fA(gn.mens)+'</div></div>':'<div></div>')
+    +'<div><div class="kpi-label" style="color:var(--green)">Neto de bolsillo</div><div style="font-weight:800;font-size:15px;color:var(--green)">'+fA(neto)+'</div></div>'
+    +'</div></div>';
+  box.style.display='block';
+}
+function calcBruto(){
+  $('nbruto').value='';$('neto-info').style.display='none';
+  var n=parseFloat($('nneto').value);if(!n||n<=0)return;
+  var b=n/(1-CF.ap);for(var i=0;i<15;i++){var gn=ganC(b),ap=b*CF.ap,nc=b-ap-gn.mens,d=n-nc;if(Math.abs(d)<0.5)break;b+=d;}
+  $('nbruto').value=Math.round(b);calcNeto();
+}
+function chgTipo(){
+  var t=$('ntipo').value;
+  $('fl-f').style.display=t==='fl'?'grid':'none';
+  $('emp-f').style.display=t==='emp'?'block':'none';
+  $('neto-info').style.display='none';
+}
+function toggl(id){
+  var el=$(id),on=el.style.background.includes('102');
+  el.style.background=on?'#DDD9D0':'var(--orange)';
+  el.querySelector('div').style.left=on?'3px':'21px';
+}
+function togV(id){return $(id).style.background.includes('102')}
+
+function cFL(hon,mono,vac,maq){
+  var d9=vac?((hon/25)-(hon/30))*14:0,e9=hon,f9=(hon*1.18)/6,j9=hon/2;
+  var c10=((d9+e9+j9)/12)+f9+CF.est,maqC=maq?CF.maq:0;
+  return{tipo:'fl',hon:hon,mono:mono,vac:d9,agM:e9/12,pd:f9,tiM:j9/12,est:CF.est,maqC:maqC,total:hon+mono+c10+maqC,
+  des:[['Honorario',hon],['Monotributo',mono],['Estructura',CF.est],['Plus vacacional',d9],['Aguinaldo (1/12)',e9/12],['Tarifa int.(1/12)',j9/12],['Prev. despido',f9],['Máquina',maqC]].filter(x=>x[1]>0)};
+}
+function cEMP(bruto,swiss,vac,maq){
+  var sipa=bruto*CF.sipa,inssjp=bruto*CF.inssjp,asig=bruto*CF.asig,fondo=bruto*CF.fondo;
+  var os=bruto*CF.os,lrt=bruto*CF.lrt+CF.lrtf,fae=bruto*CF.faecys,age=bruto*CF.agec;
+  var contrib=sipa+inssjp+asig+fondo+os+lrt+fae+age+CF.seg+swiss,mens=bruto+contrib;
+  var d9=vac?((bruto/25)-(bruto/30))*14:0,e9=bruto,f9=(bruto*1.18)/6,j9=bruto/2;
+  var c10=((d9+e9+j9)/12)+f9+CF.est,maqC=maq?CF.maq:0;
+  return{tipo:'emp',bruto:bruto,swiss:swiss,contrib:contrib,mens:mens,vac:d9,agM:e9/12,pd:f9,tiM:j9/12,est:CF.est,maqC:maqC,total:mens+c10+maqC,
+  des:[['Sueldo bruto',bruto],['SIPA 10.77%',sipa],['INSSJP 1.59%',inssjp],['Asig. Fam. 4.7%',asig],['Fondo Empleo 0.94%',fondo],['OS pat. 6%',os],['LRT',lrt],['Faecys 0.5%',fae],['Agec 2%',age],['Seg. Mercantil',CF.seg],['Swiss Medical',swiss],['Estructura',CF.est],['Plus vacacional',d9],['Aguinaldo (1/12)',e9/12],['Tarifa int.(1/12)',j9/12],['Prev. despido',f9],['Máquina',maqC]].filter(x=>x[1]>0)};
+}
+
+function agregarS(){
+  var err=$('ferr');err.style.display='none';
+  var nom=$('nn').value.trim()||'Persona',tipo=$('ntipo').value;
+  var vac=togV('tvac'),maq=togV('tmaq'),tar=parseFloat($('ntar').value)||0;
+  var costo;
+  if(tipo==='fl'){
+    var hon=parseFloat($('nhon').value);
+    if(!hon||hon<=0){err.textContent='Ingresá el honorario mensual.';err.style.display='block';return;}
+    costo=cFL(hon,parseFloat($('nmono').value)||0,vac,maq);
+  }else{
+    var bruto=parseFloat($('nbruto').value);
+    if(!bruto||bruto<=0){err.textContent='Ingresá el sueldo bruto.';err.style.display='block';return;}
+    costo=cEMP(bruto,parseFloat($('nswiss').value)||0,vac,maq);
+  }
+  staff.push({nom:nom,costo:costo,tarifa:tar});
+  $('nn').value='';$('nhon').value='';$('nbruto').value='';$('nneto').value='';$('ntar').value='';
+  $('nmono').selectedIndex=0;$('nswiss').selectedIndex=0;$('neto-info').style.display='none';
+  $('tvac').style.background='var(--orange)';$('tvac').querySelector('div').style.left='21px';
+  $('tmaq').style.background='#DDD9D0';$('tmaq').querySelector('div').style.left='3px';
+  renderStaff();recalcS();
+}
+
+function renderStaff(){
+  var c=$('slist');
+  if(!staff.length){c.innerHTML='<div style="text-align:center;padding:18px;color:var(--muted);font-size:12px">Sin personas agregadas</div>';return;}
+  c.innerHTML=staff.map((p,i)=>{
+    var co=p.costo,det=co.tipo==='fl'?'Hon. '+fA(co.hon)+(co.mono?' · Mono '+fA(co.mono):''):'Bruto '+fA(co.bruto)+(co.swiss?' · Swiss '+fA(co.swiss):'');
+    return '<div class="staff-item">'
+      +'<div style="display:flex;flex-direction:column;gap:3px">'
+      +'<div style="font-weight:700;font-size:13px">'+p.nom+'</div>'
+      +'<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--muted)">'
+      +'<span style="display:inline-block;font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;background:'+(co.tipo==='fl'?'var(--green-lt)':'var(--blue-lt)')+';color:'+(co.tipo==='fl'?'var(--green)':'var(--blue)')+'">'+(co.tipo==='fl'?'Freelance':'Empleado')+'</span>'
+      +'<span>'+det+'</span>'+(p.tarifa>0?'<span style="color:var(--green);font-weight:600">· Tarifa '+fA(p.tarifa)+'</span>':'')+'</div></div>'
+      +'<div style="display:flex;align-items:center;gap:8px">'
+      +'<div style="font-family:\'DM Mono\',monospace;font-size:14px;font-weight:800">'+fA(co.total)+'<span style="font-size:10px;font-weight:400;color:var(--muted)">/mes</span></div>'
+      +'<button onclick="delS('+i+')" class="del-btn">×</button>'
+      +'</div></div>';
+  }).join('');
+}
+function delS(i){staff.splice(i,1);renderStaff();recalcS();}
+
+function recalcS(){
+  var costoT=staff.reduce((s,p)=>s+p.costo.total,0);
+  var tarA=staff.reduce((s,p)=>s+p.tarifa,0);
+  var venI=parseFloat($('rven').value)||0;
+  var ven=venI>0?venI:tarA;
+  var mrg=parseFloat($('rmrg').value)||28;
+  if(tarA>0&&!venI)$('rven').placeholder=fA(tarA)+' (suma tarifas)';
+  $('mc').textContent=fA(costoT);
+  var rEl=$('mr'),rBox=$('mr-box');
+  if(ven>0&&costoT>0){
+    var rent=(ven-costoT)/ven;
+    rEl.textContent=fP(rent);
+    var col=rent>=.30?'var(--green)':rent>=.20?'var(--gold)':'var(--red)';
+    var bg=rent>=.30?'var(--green-lt)':rent>=.20?'var(--gold-lt)':'var(--red-lt)';
+    rEl.style.color=col;rBox.style.background=bg;
+  }else{rEl.textContent='—';rEl.style.color='var(--text)';rBox.style.background='var(--bg)';}
+  var sug=costoT>0?costoT/(1-mrg/100):0;
+  $('ms-lbl').textContent='Venta p/ '+Math.round(mrg)+'% ★';
+  $('ms').textContent=costoT>0?fA(sug):'—';
+  // Desglose
+  if(costoT>0){
+    var honT=staff.reduce((s,p)=>s+(p.costo.tipo==='fl'?p.costo.hon+p.costo.mono:p.costo.mens),0);
+    var provT=staff.reduce((s,p)=>s+p.costo.vac+p.costo.agM+p.costo.tiM+p.costo.pd,0);
+    var estT=staff.reduce((s,p)=>s+p.costo.est,0);
+    var maqT=staff.reduce((s,p)=>s+p.costo.maqC,0);
+    var gan=ven>0?ven-costoT:null;
+    var rows=[['Honorarios / sueldos + contrib.',honT],['Provisiones',provT],['Costo estructura',estT]];
+    if(maqT>0)rows.push(['Máquina',maqT]);
+    $('dres').innerHTML='<div style="background:var(--bg);border-radius:8px;padding:10px">'
+      +rows.map(r=>'<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px"><span style="color:var(--muted)">'+r[0]+'</span><span style="font-weight:700">'+fA(r[1])+'</span></div>').join('')
+      +'<div style="display:flex;justify-content:space-between;padding:6px 0;border-top:1.5px solid var(--blue-lt);font-size:13px;font-weight:800;margin-top:4px"><span>Costo total</span><span>'+fA(costoT)+'</span></div>'
+      +(gan!==null?'<div style="display:flex;justify-content:space-between;padding:5px 0;font-size:12px"><span style="color:var(--muted)">Ganancia estimada</span><span style="font-weight:700;color:'+(gan<0?'var(--red)':'var(--green)')+'">'+fA(gan)+'</span></div>':'')
+      +'</div>';
+    // Escenarios
+    var base=[20,25,30,35,40],all=[...base];
+    if(!all.includes(Math.round(mrg)))all.push(Math.round(mrg));
+    all.sort((a,b)=>a-b);
+    $('sctbl').innerHTML=all.map(p=>{
+      var v=costoT/(1-p/100),ga=v-costoT,isT=Math.round(mrg)===p;
+      var col=isT?'var(--orange)':p>=30?'var(--green)':p>=25?'var(--gold)':'var(--red)';
+      var bg=isT?'#FFF3EB':p>=30?'var(--green-lt)':p>=25?'var(--gold-lt)':'var(--red-lt)';
+      return '<div class="sc-row" style="background:'+bg+';border:1.5px solid '+(isT?'var(--orange)':'transparent')+'">'
+        +'<span style="font-weight:900;font-size:14px;color:'+col+';width:48px">'+p+'%'+(isT?' ★':'')+'</span>'
+        +'<span style="font-weight:700;font-size:13px">'+fA(v)+'</span>'
+        +'<span style="font-size:11px;color:var(--muted)">gan. '+fA(ga)+'</span>'
+        +(ven>0&&Math.abs(v-ven)/v<.015?'<span style="font-size:10px;font-weight:800;color:var(--blue)">← actual</span>':'')
+        +'</div>';
+    }).join('');
+  }else{$('dres').innerHTML='<div style="text-align:center;color:var(--muted);padding:8px;font-size:12px">Agregá personas para ver el resumen</div>';}
+  if(expO)renderExp();
+}
+function togExp(){expO=!expO;$('expbody').style.display=expO?'block':'none';$('exp-btn').textContent=expO?'▲ Ocultar desglose':'▼ Ver desglose detallado por persona';if(expO)renderExp();}
+function renderExp(){
+  $('expbody').innerHTML=staff.map(p=>{
+    var co=p.costo;
+    return '<div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 13px;margin-bottom:8px">'
+      +'<div style="font-weight:800;font-size:13px;color:var(--blue);margin-bottom:8px">'+p.nom+' <span style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;background:'+(co.tipo==='fl'?'var(--green-lt)':'var(--blue-lt)')+';color:'+(co.tipo==='fl'?'var(--green)':'var(--blue)')+'">'+(co.tipo==='fl'?'Freelance':'Empleado')+'</span></div>'
+      +co.des.map(d=>'<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:11px"><span style="color:var(--muted)">'+d[0]+'</span><span style="font-weight:700">'+fA(d[1])+'</span></div>').join('')
+      +'<div style="display:flex;justify-content:space-between;padding:6px 0;border-top:1.5px solid var(--blue-lt);font-size:13px;font-weight:800"><span>Total</span><span style="color:var(--blue)">'+fA(co.total)+'</span></div></div>';
+  }).join('');
+}
+
+/* ════ PROPOSAL REFRESH ════ */
+function refreshProposal(){
+  const {items,total}=calcP();
+  // Platform block
+  const pc=$('prop-plat-content');
+  pc.innerHTML='<table class="summary-table"><thead><tr><th>Módulo</th><th>Condición</th><th style="text-align:right">USD/mes</th></tr></thead><tbody>'
+    +'<tr><td><strong>Fee Base Mensual</strong><br><small style="color:var(--muted)">Vacantes y usuarios ilimitados</small></td><td><span class="badge-inf">incluido</span></td><td style="text-align:right">'+fU(P.base)+'</td></tr>'
+    +'<tr style="background:#F5FFF8"><td>Vacantes Activas</td><td><span class="badge-inf">✓ Ilimitadas</span></td><td style="text-align:right;color:var(--green)">Incluido</td></tr>'
+    +'<tr style="background:#F5FFF8"><td>Usuarios en Plataforma</td><td><span class="badge-inf">✓ Ilimitados</span></td><td style="text-align:right;color:var(--green)">Incluido</td></tr>'
+    +(SP.srv==='sooft'?'<tr><td>Infraestructura SOOFT Cloud</td><td>Fijo mensual</td><td style="text-align:right">'+fU(P.srv)+'</td></tr>':'')
+    +(SP.int&&SP.intHrs>0?'<tr><td>Cuota Implementación (1 de '+SP.cuotas+')</td><td>'+SP.intHrs+' hrs × USD '+P.intHr+'</td><td style="text-align:right">'+fU(items.cuota.v)+'</td></tr>':'')
+    +(SP.ent&&SP.entQty>0?'<tr><td>Entrevistador Virtual IA</td><td>'+SP.entQty+' × USD '+P.ent+'</td><td style="text-align:right">'+fU(items.ent.v)+'</td></tr>':'')
+    +(SP.spt&&SP.sptHrs>0?'<tr><td>Soporte Premium</td><td>'+SP.sptHrs+' hrs × USD '+P.sptHr+'</td><td style="text-align:right">'+fU(items.spt.v)+'</td></tr>':'')
+    +'</tbody></table>'
+    +'<div class="total-bar" style="margin-top:10px"><div class="total-bar-label">Total Plataforma</div><div class="total-bar-val">'+fU(total)+'</div></div>';
+
+  // Staff block
+  const sc=$('prop-staff-content');
+  const costoT=staff.reduce((s,p)=>s+p.costo.total,0);
+  if(!staff.length){
+    sc.innerHTML='<div style="text-align:center;padding:12px;color:var(--muted);font-size:12px">Sin equipo cargado — opcional para propuestas solo de plataforma</div>';
+  } else {
+    sc.innerHTML='<table class="summary-table"><thead><tr><th>Integrante</th><th>Tipo</th><th style="text-align:right">Costo real ARS/mes</th></tr></thead><tbody>'
+      +staff.map(p=>'<tr><td><strong>'+p.nom+'</strong></td><td>'+(p.costo.tipo==='fl'?'Freelance':'Empleado')+'</td><td style="text-align:right">'+fA(p.costo.total)+'</td></tr>').join('')
+      +'<tr><td colspan="2" style="font-weight:800">Total equipo</td><td style="text-align:right;font-weight:900">'+fA(costoT)+'</td></tr>'
+      +'</tbody></table>'
+      +'<div style="background:#F5FFF8;border-left:3px solid var(--green);padding:9px 12px;margin-top:8px;font-size:11px;color:var(--green)">El costo de equipo está en ARS y se presenta como referencia interna. La tarifa de plataforma es en USD.</div>';
+  }
+}
+
+/* ════ PDF / PRINT ════ */
+function generarPDF(){
+  const empresa=$('cli-empresa').value.trim();
+  const comercial=$('cli-comercial').value.trim();
+  if(!empresa){alert('Completá la empresa cliente.');$('cli-empresa').focus();return;}
+  if(!comercial){alert('Completá tu nombre.');$('cli-comercial').focus();return;}
+
+  const {items,total,cuota,totalInt}=calcP();
+  const fecha=new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
+  const vig=$('cli-vigencia').value;
+  const proyecto=$('cli-proyecto').value.trim()||'Implementación Plataforma SOOFT';
+
+  $('pt-fecha').textContent=fecha;
+  $('pt-ref').textContent='COT-'+String(Date.now()).slice(-5);
+  $('pt-vig').textContent=vig+' días';
+  $('pt-titulo').textContent=proyecto;
+  $('pt-empresa').textContent=empresa;
+  const ctc=[$('cli-contacto').value.trim(),$('cli-email').value.trim()].filter(Boolean).join(' · ');
+  $('pt-ctc').textContent=ctc||'—';
+  $('pt-proyecto').textContent=proyecto;
+  $('pt-comercial').textContent=comercial;
+  $('pt-validity').textContent=vig+' días corridos';
+
+  // Platform table
+  const pb=$('pt-plat-tbody');
+  pb.innerHTML='<tr><td><strong>Fee Base Mensual</strong><br><span style="font-size:9px;color:#888">ATS completo · Panel admin · Reportes · Soporte email</span></td><td>Fijo mensual</td><td>'+fU(P.base)+'</td></tr>'
+    +'<tr class="il-row"><td><strong>Vacantes Activas</strong></td><td><span style="background:#D1FAE5;color:#065F46;font-size:8px;font-weight:800;padding:2px 7px;border-radius:3px">ILIMITADAS</span></td><td style="color:#065F46;font-weight:800">Incluido</td></tr>'
+    +'<tr class="il-row"><td><strong>Usuarios en Plataforma</strong></td><td><span style="background:#D1FAE5;color:#065F46;font-size:8px;font-weight:800;padding:2px 7px;border-radius:3px">ILIMITADOS</span></td><td style="color:#065F46;font-weight:800">Incluido</td></tr>'
+    +(SP.srv==='sooft'?'<tr><td><strong>Infraestructura SOOFT Cloud</strong><br><span style="font-size:9px;color:#888">Alta disponibilidad · Backups · SLA 99.9%</span></td><td>Fijo mensual</td><td>'+fU(P.srv)+'</td></tr>':'')
+    +(SP.int&&SP.intHrs>0?'<tr style="background:#FFF8F0"><td><strong>Cuota de Implementación (1 de '+SP.cuotas+')</strong><br><span style="font-size:9px;color:#888">'+SP.intHrs+' hrs de desarrollo e integración</span></td><td><span style="background:#FEF3C7;color:#92400E;font-size:8px;font-weight:800;padding:2px 7px;border-radius:3px">'+SP.cuotas+' CUOTA'+(SP.cuotas>1?'S':'')+'</span></td><td>'+fU(cuota)+'</td></tr>':'')
+    +(SP.ent&&SP.entQty>0?'<tr><td><strong>Entrevistador Virtual IA</strong></td><td>'+SP.entQty+' entrev. × USD '+P.ent+'</td><td>'+fU(items.ent.v)+'</td></tr>':'')
+    +(SP.spt&&SP.sptHrs>0?'<tr><td><strong>Soporte Premium</strong><br><span style="font-size:9px;color:#888">Atención prioritaria · SLA garantizado</span></td><td>'+SP.sptHrs+' hrs × USD '+P.sptHr+'</td><td>'+fU(items.spt.v)+'</td></tr>':'');
+
+  // Staff table
+  const costoT=staff.reduce((s,p)=>s+p.costo.total,0);
+  if(staff.length>0){
+    $('pt-equipo-section').style.display='';
+    const sb=$('pt-staff-tbody');
+    sb.innerHTML=staff.map(p=>'<tr><td><strong>'+p.nom+'</strong></td><td>'+(p.costo.tipo==='fl'?'Freelance':'Empleado en Relación Dep.')+'</td><td>'+fA(p.costo.total)+'</td></tr>').join('')
+      +'<tr><td colspan="2" style="font-weight:800">Total equipo</td><td style="font-weight:900">'+fA(costoT)+'</td></tr>';
+    $('pt-equipo-note').textContent='Los costos de equipo están expresados en ARS. Se presentan como referencia interna para la rentabilidad del proyecto. La tarifa de plataforma facturada al cliente es en USD.';
+  } else {
+    $('pt-equipo-section').style.display='none';
+  }
+
+  // Cuota note
+  if(SP.int&&SP.intHrs>0&&SP.cuotas>1){
+    $('pt-cuota-note').style.display='';
+    $('pt-cuota-note').textContent='Financiación implementación: Costo total '+fU(totalInt)+', dividido en '+SP.cuotas+' cuotas de '+fU(cuota)+'/mes. La cuota se suma al fee mensual durante el período acordado.';
+  } else {
+    $('pt-cuota-note').style.display='none';
+  }
+
+  $('pt-total').textContent=fU(total);
+  const notes=['Fee Base'];
+  if(SP.srv==='sooft')notes.push('Servidores');
+  if(SP.int&&SP.intHrs>0)notes.push('Cuota Impl.');
+  if(SP.ent&&SP.entQty>0)notes.push('Entrevistas IA');
+  if(SP.spt&&SP.sptHrs>0)notes.push('Soporte');
+  $('pt-total-note').textContent=notes.join(' + ');
+
+  $('proposal-print').style.display='block';
+  setTimeout(()=>{window.print();setTimeout(()=>$('proposal-print').style.display='none',600);},350);
+}
+
+/* ════ SAVE TO SHEETS ════ */
+async function guardarSheets(){
+  const empresa=$('cli-empresa').value.trim();
+  const comercial=$('cli-comercial').value.trim();
+  if(!empresa||!comercial){alert('Completá empresa y comercial.');return;}
+
+  const {items,total,cuota,totalInt}=calcP();
+  const costoT=staff.reduce((s,p)=>s+p.costo.total,0);
+
+  const payload={
+    timestamp:new Date().toISOString(),
+    comercial,notas:$('cli-notas').value.trim(),
+    cliente:{empresa,nombre:$('cli-contacto').value.trim(),email:$('cli-email').value.trim()},
+    plataforma:{servidores:SP.srv,integracion:SP.int,horasIntegracion:SP.intHrs,totalIntegracion:Math.round(totalInt),cuotas:SP.cuotas,cuotaMensual:Math.round(cuota),entrevistas:SP.ent,cantEntrevistas:SP.entQty,soporte:SP.spt,horasSoporte:SP.sptHrs},
+    equipo:{cantidad:staff.length,costoTotalARS:Math.round(costoT),personas:staff.map(p=>({nombre:p.nom,tipo:p.costo.tipo,costo:Math.round(p.costo.total)}))},
+    tarifas:P,
+    totalPlataformaUSD:Math.round(total),
+  };
+
+  const msg=$('msg-save');
+  msg.innerHTML='<div class="bridge-dot"></div><span>Guardando...</span>';
+  msg.style.display='flex';
+
+  try{
+    if(WEBHOOK==='TU_URL_GOOGLE_APPS_SCRIPT_AQUI'){
+      await new Promise(r=>setTimeout(r,1200));
+      msg.innerHTML='<div class="bridge-dot" style="background:var(--green)"></div><span style="color:var(--green)">✓ Guardado correctamente · '+empresa+'</span>';
+      msg.style.background='var(--green-lt)';msg.style.borderColor='#A7F3D0';
+    }else{
+      await fetch(WEBHOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),mode:'no-cors'});
+      msg.innerHTML='<div class="bridge-dot" style="background:var(--green)"></div><span style="color:var(--green)">✓ Guardado en Google Sheets · '+empresa+'</span>';
+      msg.style.background='var(--green-lt)';msg.style.borderColor='#A7F3D0';
+    }
+  }catch(e){
+    msg.innerHTML='<div class="bridge-dot" style="background:var(--red)"></div><span style="color:var(--red)">Error: '+e.message+'</span>';
+    msg.style.background='var(--red-lt)';msg.style.borderColor='#FECACA';
+  }
+}
+
+/* ════ ADMIN ════ */
+function openLogin(){$('login-ov').classList.add('active');setTimeout(()=>$('admin-pwd').focus(),300)}
+function closeLoginOv(e,f){if(f||(e&&e.target===$('login-ov'))){$('login-ov').classList.remove('active');$('admin-pwd').value='';$('login-err').style.display='none';}}
+function checkPwd(){
+  if($('admin-pwd').value===PWD){closeLoginOv(null,true);openAdmin();}
+  else{$('login-err').style.display='block';$('admin-pwd').value='';$('admin-pwd').focus();}
+}
+function openAdmin(){
+  $('cfg-base').value=P.base;$('cfg-srv').value=P.srv;$('cfg-int').value=P.intHr;
+  $('cfg-spt').value=P.sptHr;$('cfg-ent').value=P.ent;
+  $('cfg-wh').value=WEBHOOK!=='TU_URL_GOOGLE_APPS_SCRIPT_AQUI'?WEBHOOK:'';
+  $('cfg-ok').style.display='none';
+  $('admin-ov').classList.add('active');
+}
+function closeAdminOv(e,f){if(f||(e&&e.target===$('admin-ov')))$('admin-ov').classList.remove('active');}
+function saveConfig(){
+  P.base=parseFloat($('cfg-base').value)||800;P.srv=parseFloat($('cfg-srv').value)||400;
+  P.intHr=parseFloat($('cfg-int').value)||35;P.sptHr=parseFloat($('cfg-spt').value)||35;
+  P.ent=parseFloat($('cfg-ent').value)||25;
+  const wh=$('cfg-wh').value.trim();if(wh)WEBHOOK=wh;
+  // Refresh labels
+  $('lbl-base').textContent=P.base.toLocaleString('es-AR');
+  $('lbl-srv').textContent=P.srv;$('lbl-inthr').textContent=P.intHr;
+  $('lbl-spthr').textContent=P.sptHr;$('lbl-spthr2').textContent=P.sptHr;
+  $('lbl-ent').textContent=P.ent;$('lbl-ent2').textContent=P.ent;
+  calcP();
+  $('cfg-ok').style.display='block';
+  setTimeout(()=>{$('cfg-ok').style.display='none';closeAdminOv(null,true);},1600);
+}
+
+/* ════ TIPO DE SERVICIO ════ */
+let tipoActivo = 'staff';
+
+const CARTAS = {
+  staff: (empresa, ciudad, comercial) =>
+`${ciudad}, ${new Date().toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'})}
+
+De nuestra consideración:
+
+Nos dirigimos a ustedes con el objeto de presentarles nuestra propuesta de Servicios Profesionales de Staff Augmentation para ${empresa||'su organización'}, según se describe en los puntos siguientes.
+
+Agradecemos poder acompañar a ${empresa||'su equipo'} en esta oportunidad, aportando toda la experiencia de SOOFT Technology en provisión de talento IT especializado.
+
+Nuestros profesionales se adaptan a las necesidades del proyecto, garantizando rapidez en la entrega, flexibilidad en los equipos y perfiles técnicos especializados, todo respaldado por procesos robustos orientados a la mejora continua.
+
+Esperamos que la presente sea de su interés. Quedamos a disposición para cualquier consulta.
+
+Saludo atentamente,
+
+${comercial||'[Nombre del Comercial]'}
+Account Manager
+SOOFT Technology`,
+
+  celula: (empresa, ciudad, comercial) =>
+`${ciudad}, ${new Date().toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'})}
+
+De nuestra consideración:
+
+Nos dirigimos a ustedes con el objeto de presentarles nuestra propuesta de Célula Ágil de Desarrollo para ${empresa||'su organización'}.
+
+La modalidad de Célula Ágil implica que SOOFT Technology no solo provee los perfiles técnicos, sino que asume la gestión integral del equipo. Esto incluye la figura de un Delivery Manager y el área de People Care, sin costo adicional para ${empresa||'el cliente'}.
+
+Nuestro modelo garantiza equipos alineados, motivados y productivos, con seguimiento mensual de desempeño técnico y bienestar del colaborador.
+
+Esperamos que la presente sea de su interés. Quedamos a disposición para cualquier consulta.
+
+Saludo atentamente,
+
+${comercial||'[Nombre del Comercial]'}
+Account Manager
+SOOFT Technology`,
+
+  saas: (empresa, ciudad, comercial) =>
+`${ciudad}, ${new Date().toLocaleDateString('es-AR',{day:'numeric',month:'long',year:'numeric'})}
+
+De nuestra consideración:
+
+Nos dirigimos a ustedes con el objeto de presentarles nuestra propuesta de Plataforma ATS Enterprise para ${empresa||'su organización'}.
+
+SOOFT Technology ofrece una plataforma de gestión de talento diseñada para organizaciones que buscan optimizar sus procesos de reclutamiento y selección. La solución incluye vacantes y usuarios ilimitados dentro del plan Enterprise, garantizando escalabilidad sin costos adicionales.
+
+Agradecemos el interés de ${empresa||'su organización'} y quedamos a disposición para agendar una demostración personalizada.
+
+Saludo atentamente,
+
+${comercial||'[Nombre del Comercial]'}
+Account Manager
+SOOFT Technology`
 };
 
-const $ = id => document.getElementById(id);
-const fmtU = n => 'USD ' + Math.round(n).toLocaleString('es-AR');
-
-/* ─── Logo ─── */
-function cloneLogo(targetId, h=32) {
-  const src = $('sooft-svg-src');
-  const cl = src.cloneNode(true);
-  cl.removeAttribute('id');
-  cl.removeAttribute('style');
-  cl.setAttribute('height', h);
-  cl.style.display = 'block';
-  $(targetId).appendChild(cl);
-}
-cloneLogo('hdr-logo', 34);
-
-/* ─── Panel toggling ─── */
-function togglePanel(id, open) { $(id).classList.toggle('open', open); }
-
-/* ─── Servidores ─── */
-function setServidores(val) {
-  S.servidores = val;
-  const bSooft  = $('btn-srv-sooft');
-  const bClient = $('btn-srv-cliente');
-  const activeC = 'flex items-center gap-3 p-3.5 rounded-xl border-2 border-sooft-300 bg-sooft-50 transition-all';
-  const inactC  = 'flex items-center gap-3 p-3.5 rounded-xl border-2 border-slate-200 bg-white transition-all hover:border-slate-300';
-  bSooft.className  = val==='sooft'   ? activeC : inactC;
-  bClient.className = val==='cliente' ? activeC : inactC;
-  calcTotal();
-}
-
-/* ─── Cuotas ─── */
-let cuotasSel = 1;
-function setCuotas(n) {
-  cuotasSel = n;
-  S.cuotas = n;
-  document.querySelectorAll('#cuotas-grid .cuotas-btn').forEach(b => {
-    b.classList.toggle('active', parseInt(b.textContent) === n);
+function setTipo(t) {
+  tipoActivo = t;
+  ['staff','celula','saas'].forEach(k => {
+    const el = $('ts-'+k);
+    if(el) el.classList.toggle('active', k===t);
   });
-  calcTotal();
+  const labels = {staff:'Staff Augmentation seleccionado',celula:'Célula Ágil seleccionada',saas:'Plataforma SaaS seleccionada'};
+  if($('tipo-badge-txt')) $('tipo-badge-txt').textContent = labels[t];
+  resetCarta();
+  refreshResumenInv();
 }
 
-/* ─── Cálculo ─── */
-function calcTotal() {
-  S.intHrs = Math.max(0, parseInt($('inp-int-hrs').value)||0);
-  S.entQty = Math.max(0, parseInt($('inp-ent-qty').value)||0);
-  S.sptHrs = Math.max(0, parseInt($('inp-spt-hrs').value)||0);
-  S.int    = $('tog-int').checked;
-  S.ent    = $('tog-ent').checked;
-  S.spt    = $('tog-spt').checked;
-  S.cuotas = cuotasSel;
-
-  const totalInt = S.int ? S.intHrs * P.intHr : 0;
-  const cuota    = S.int && S.cuotas > 0 ? totalInt / S.cuotas : 0;
-
-  const items = {
-    base:    { label:'Fee Base Mensual',      val: P.base,                                   detail:'Incluido' },
-    srv:     { label:'Servidores SOOFT Cloud', val: S.servidores==='sooft' ? P.servidor : 0, detail:'Fijo mensual' },
-    cuota:   { label:`Cuota de Implementación (1 de ${S.cuotas})`, val: cuota,               detail:`${S.intHrs} hrs × USD ${P.intHr}` },
-    ent:     { label:'Entrevistador Virtual IA',val: S.ent ? S.entQty * P.entrevista : 0,    detail:`${S.entQty} × USD ${P.entrevista}` },
-    spt:     { label:'Soporte Premium',         val: S.spt ? S.sptHrs * P.sptHr : 0,         detail:`${S.sptHrs} hrs × USD ${P.sptHr}` },
-  };
-
-  const total = Object.values(items).reduce((a,b)=>a+b.val,0);
-
-  /* Update total */
-  $('total-display').textContent = fmtU(total);
-
-  /* Update integration labels */
-  $('lbl-int-total').textContent = fmtU(totalInt);
-  $('lbl-cuotas-de').textContent = S.cuotas;
-  $('lbl-cuota-val').textContent = fmtU(cuota);
-
-  /* Mini breakdown */
-  const list = $('breakdown-list');
-  list.innerHTML = '';
-  Object.values(items).forEach(({label, val}) => {
-    if (val === 0) return;
-    const r = document.createElement('div');
-    r.style.cssText = 'display:flex;justify-content:space-between;align-items:baseline;padding:3px 0;border-bottom:1px solid #F8FAFC';
-    r.innerHTML = `<span style="font-size:11px;color:#64748B;max-width:65%">${label}</span><span style="font-family:monospace;font-size:12px;font-weight:600;color:#0F172A">${fmtU(val)}</span>`;
-    list.appendChild(r);
-  });
-  // Total row
-  const tr = document.createElement('div');
-  tr.style.cssText = 'display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-top:1.5px solid #E2E8F0;margin-top:4px';
-  tr.innerHTML = `<span style="font-size:12px;font-weight:700;color:#0F172A">Total</span><span style="font-family:monospace;font-size:14px;font-weight:700;color:#2563EB">${fmtU(total)}</span>`;
-  list.appendChild(tr);
-
-  return { items, total, cuota, totalInt };
+function resetCarta() {
+  const e = $('cli-empresa'), co = $('cli-comercial'), ci = $('cli-ciudad');
+  if($('cli-carta')) $('cli-carta').value = CARTAS[tipoActivo](
+    e?e.value.trim():'', ci?ci.value.trim()||'Buenos Aires':'Buenos Aires', co?co.value.trim():''
+  );
 }
 
-/* ─── Modal resumen ─── */
-function abrirModal() {
-  const empresa   = $('cli-empresa').value.trim();
-  const comercial = $('com-nombre').value.trim();
-  if (!empresa)   { alert('Completá el nombre de la empresa.'); $('cli-empresa').focus(); return; }
-  if (!comercial) { alert('Completá tu nombre como comercial.'); $('com-nombre').focus(); return; }
+function refreshResumenInv() {
+  const ri = $('resumen-inv-content');
+  if (!ri) return;
+  const title = {staff:'Equipo — Inversión',celula:'Célula Ágil — Inversión',saas:'Plataforma — Inversión'};
+  const rit = $('resumen-inv-title');
+  if(rit) rit.textContent = title[tipoActivo];
 
-  const { items, total, cuota } = calcTotal();
-
-  $('modal-fecha').textContent = new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
-  $('m-empresa').textContent   = empresa;
-  const ctc = [$('cli-nombre').value.trim(), $('cli-email').value.trim()].filter(Boolean).join(' · ');
-  $('m-contacto').textContent  = ctc || '—';
-  $('m-comercial').textContent = comercial;
-  $('m-notas').textContent     = $('com-notas').value.trim() || '—';
-
-  // Tabla
-  const tbody = $('modal-tbody');
-  tbody.innerHTML = '';
-  Object.values(items).forEach(({label, val, detail}) => {
-    if (val === 0 && label !== 'Fee Base Mensual') return;
-    const tr = document.createElement('tr');
-    const isBase = label === 'Fee Base Mensual';
-    const isCuota = label.includes('Cuota de Implementación');
-    const badge = isCuota
-      ? `<span class="tag tag-amber">${S.cuotas} cuota${S.cuotas>1?'s':''}</span>`
-      : isBase ? `<span class="tag tag-green">incluido</span>` : '';
-    tr.innerHTML = `
-      <td>${label}${badge}</td>
-      <td style="text-align:center;color:#94A3B8;font-size:12px">${detail}</td>
-      <td>${fmtU(val)}</td>`;
-    tbody.appendChild(tr);
-  });
-  $('modal-total-cell').textContent = fmtU(total);
-
-  // Nota cuotas
-  if (S.int && S.cuotas > 1) {
-    const tInt = S.intHrs * P.intHr;
-    $('nota-cuotas-txt').textContent = `La implementación total es ${fmtU(tInt)}. Dividida en ${S.cuotas} cuotas de ${fmtU(cuota)}/mes. Se suma ${fmtU(cuota)} al total mensual durante ${S.cuotas} meses.`;
-    $('nota-cuotas').classList.remove('hidden');
-    $('nota-cuotas').style.display = 'flex';
+  if (tipoActivo === 'saas') {
+    const {items,total} = calcP();
+    ri.innerHTML = '<table class="summary-table"><thead><tr><th>Módulo</th><th>Condición</th><th style="text-align:right">USD/mes</th></tr></thead><tbody>'
+      +'<tr><td>Fee Base Mensual</td><td><span class="badge-inf">Incluido</span></td><td style="text-align:right">'+fU(P.base)+'</td></tr>'
+      +'<tr style="background:#F5FFF8"><td>Vacantes + Usuarios</td><td><span class="badge-inf">✓ Ilimitados</span></td><td style="color:var(--green);text-align:right">Incluido</td></tr>'
+      +(SP.srv==='sooft'?'<tr><td>Infraestructura SOOFT Cloud</td><td>Fijo mensual</td><td style="text-align:right">'+fU(P.srv)+'</td></tr>':'')
+      +(SP.int&&SP.intHrs>0?'<tr><td>Cuota Implementación (1/'+SP.cuotas+')</td><td>'+SP.intHrs+' hrs</td><td style="text-align:right">'+fU(items.cuota.v)+'</td></tr>':'')
+      +(SP.ent&&SP.entQty>0?'<tr><td>Entrevistador Virtual IA</td><td>'+SP.entQty+' c/u</td><td style="text-align:right">'+fU(items.ent.v)+'</td></tr>':'')
+      +(SP.spt&&SP.sptHrs>0?'<tr><td>Soporte Premium</td><td>'+SP.sptHrs+' hrs</td><td style="text-align:right">'+fU(items.spt.v)+'</td></tr>':'')
+      +'</tbody></table>'
+      +'<div class="total-bar" style="margin-top:10px"><div class="total-bar-label">Total mensual</div><div class="total-bar-val">'+fU(total)+'</div></div>';
   } else {
-    $('nota-cuotas').classList.add('hidden');
-    $('nota-cuotas').style.display = '';
-  }
-
-  ['msg-saving','msg-ok','msg-err'].forEach(id => $(id).classList.add('hidden'));
-  $('modal-acciones').classList.remove('hidden');
-
-  // Modal logo
-  $('modal-logo').innerHTML = '';
-  cloneLogo('modal-logo', 28);
-
-  $('modal-overlay').classList.add('active');
-}
-
-/* ─── Guardar ─── */
-async function guardarCotizacion() {
-  const { items, total, cuota, totalInt } = calcTotal();
-  const payload = {
-    timestamp: new Date().toISOString(),
-    comercial: $('com-nombre').value.trim(),
-    notas:     $('com-notas').value.trim(),
-    cliente: {
-      empresa:  $('cli-empresa').value.trim(),
-      nombre:   $('cli-nombre').value.trim(),
-      email:    $('cli-email').value.trim(),
-      telefono: $('cli-tel').value.trim(),
-    },
-    configuracion: {
-      servidores: S.servidores,
-      integracion: S.int, horasIntegracion: S.intHrs,
-      totalIntegracion: Math.round(totalInt),
-      cuotasIntegracion: S.cuotas, cuotaMensual: Math.round(cuota),
-      entrevistadorVirtual: S.ent, cantidadEntrevistas: S.entQty,
-      soporte: S.spt, horasSoporte: S.sptHrs,
-    },
-    tarifas: P,
-    totalMensualUSD: Math.round(total),
-    desglose: Object.fromEntries(Object.entries(items).map(([k,v])=>[k,Math.round(v.val)])),
-  };
-
-  $('modal-acciones').classList.add('hidden');
-  $('msg-saving').classList.remove('hidden');
-
-  try {
-    if (WEBHOOK === 'TU_URL_GOOGLE_APPS_SCRIPT_AQUI') {
-      await new Promise(r => setTimeout(r, 1200));
+    const costoT = staff.reduce((s,p)=>s+p.costo.total,0);
+    const incluye = tipoActivo==='celula' ? '<tr style="background:#F0FDF4"><td colspan="2" style="color:var(--green);font-weight:700">✓ Delivery Manager + People Care</td><td style="text-align:right;color:var(--green);font-weight:800">SIN COSTO</td></tr>' : '';
+    if (!staff.length) {
+      ri.innerHTML='<div style="text-align:center;padding:12px;color:var(--muted);font-size:12px">Agregá personas en la pestaña 👥 Equipo</div>';
     } else {
-      await fetch(WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload), mode:'no-cors' });
+      ri.innerHTML = '<table class="summary-table"><thead><tr><th>Integrante</th><th>Modalidad</th><th style="text-align:right">Costo ARS/mes</th></tr></thead><tbody>'
+        +staff.map(p=>`<tr><td><strong>${p.nom}</strong></td><td>${p.costo.tipo==='fl'?'Freelance':'Empleado'}</td><td style="text-align:right">${fA(p.costo.total)}</td></tr>`).join('')
+        +incluye
+        +'<tr><td colspan="2" style="font-weight:800">Total equipo</td><td style="text-align:right;font-weight:900">'+fA(costoT)+'</td></tr>'
+        +'</tbody></table>';
     }
-    $('msg-saving').classList.add('hidden');
-    $('msg-ok').classList.remove('hidden');
-    $('msg-ok-txt').textContent = `Cotización registrada · ${payload.cliente.empresa} · ${fmtU(total)}/mes`;
-  } catch(err) {
-    $('msg-saving').classList.add('hidden');
-    $('msg-err').textContent = 'Error: ' + err.message;
-    $('msg-err').classList.remove('hidden');
-    $('modal-acciones').classList.remove('hidden');
   }
 }
 
-/* ─── PDF ─── */
-function exportarPDF() {
-  const { items, total } = calcTotal();
-  const empresa   = $('cli-empresa').value.trim() || 'Cliente';
-  const contacto  = $('cli-nombre').value.trim();
-  const email     = $('cli-email').value.trim();
-  const comercial = $('com-nombre').value.trim();
-  const fecha     = new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
-
-  const rows = Object.values(items).filter(({val,label})=>val>0||label==='Fee Base Mensual').map(({label,val,detail})=>`
-    <tr>
-      <td style="padding:9px 0;border-bottom:1px solid #E2E8F0;color:#334155;font-size:12px">${label}</td>
-      <td style="padding:9px 0;border-bottom:1px solid #E2E8F0;color:#94A3B8;font-size:11px;text-align:center">${detail}</td>
-      <td style="padding:9px 0;border-bottom:1px solid #E2E8F0;text-align:right;font-weight:700;font-family:monospace;font-size:12px;color:#0F172A">${fmtU(val)}</td>
-    </tr>`).join('');
-
-  $('print-area').innerHTML = `
-  <div style="font-family:Arial,sans-serif;max-width:700px;margin:0 auto">
-    <div style="background:#050E1F;padding:24px 30px;border-radius:12px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center">
-      <div>
-        <div style="color:white;font-size:22px;font-weight:900;letter-spacing:-0.5px">SOOFT Technology</div>
-        <div style="color:#60A5FA;font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-top:4px">Portal Enterprise · Cotización</div>
-      </div>
-      <div style="text-align:right;color:#94A3B8;font-size:11px">
-        <div>${fecha}</div>
-        <div style="margin-top:2px;color:#CBD5E1;font-weight:600">${comercial}</div>
-      </div>
-    </div>
-    <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:16px 20px;margin-bottom:20px">
-      <div style="font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#94A3B8;margin-bottom:6px">Cliente</div>
-      <div style="font-size:18px;font-weight:800;color:#0F172A">${empresa}</div>
-      ${contacto?`<div style="color:#64748B;font-size:12px;margin-top:3px">${contacto}${email?' · '+email:''}</div>`:''}
-    </div>
-    <table style="width:100%;border-collapse:collapse;margin-bottom:12px">
-      <thead>
-        <tr style="background:#EFF6FF">
-          <th style="padding:8px 0;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:#1D4ED8;border-bottom:2px solid #BFDBFE">Concepto</th>
-          <th style="padding:8px 0;text-align:center;font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:#1D4ED8;border-bottom:2px solid #BFDBFE">Detalle</th>
-          <th style="padding:8px 0;text-align:right;font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:#1D4ED8;border-bottom:2px solid #BFDBFE">Subtotal / mes</th>
-        </tr>
-      </thead>
-      <tbody>${rows}</tbody>
-    </table>
-    <div style="background:#050E1F;border-radius:10px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
-      <span style="color:white;font-size:14px;font-weight:600">Total mensual estimado</span>
-      <span style="color:#60A5FA;font-size:24px;font-weight:900;font-family:monospace">${fmtU(total)}</span>
-    </div>
-    ${S.int && S.cuotas>1 ? `<div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:10px 14px;margin-bottom:20px;font-size:11px;color:#92400E">Nota: Implementación total ${fmtU(S.intHrs*P.intHr)} dividida en ${S.cuotas} cuotas de ${fmtU(S.intHrs*P.intHr/S.cuotas)}/mes.</div>` : ''}
-    <div style="color:#94A3B8;font-size:10px;text-align:center;border-top:1px solid #E2E8F0;padding-top:14px">Valores estimados en USD · Sujeto a auditoría técnica · SOOFT Technology</div>
-  </div>`;
-  $('print-area').style.display = 'block';
-  setTimeout(()=>{ window.print(); $('print-area').style.display='none'; }, 200);
-}
-
-/* ─── Overlay helpers ─── */
-function cerrarOverlay(id, e, force) {
-  if (force || (e && e.target === $(id))) $(id).classList.remove('active');
-}
-
-/* ─── Admin login ─── */
-function abrirLogin() { $('login-overlay').classList.add('active'); setTimeout(()=>$('admin-pwd').focus(),300); }
-function verifyAdmin() {
-  if ($('admin-pwd').value === PWD) {
-    cerrarOverlay('login-overlay',null,true);
-    $('admin-pwd').value='';
-    $('login-err').classList.add('hidden');
-    abrirAdmin();
-  } else {
-    $('login-err').classList.remove('hidden');
-    $('admin-pwd').value='';
-    $('admin-pwd').focus();
-  }
-}
-
-/* ─── Admin panel ─── */
-function abrirAdmin() {
-  $('cfg-base').value    = P.base;
-  $('cfg-srv').value     = P.servidor;
-  $('cfg-int').value     = P.intHr;
-  $('cfg-spt').value     = P.sptHr;
-  $('cfg-ent').value     = P.entrevista;
-  $('cfg-webhook').value = WEBHOOK !== 'TU_URL_GOOGLE_APPS_SCRIPT_AQUI' ? WEBHOOK : '';
-  $('admin-ok').classList.add('hidden');
-  $('admin-overlay').classList.add('active');
-}
-
-function guardarConfig() {
-  P.base       = parseFloat($('cfg-base').value)||800;
-  P.servidor   = parseFloat($('cfg-srv').value)||400;
-  P.intHr      = parseFloat($('cfg-int').value)||35;
-  P.sptHr      = parseFloat($('cfg-spt').value)||35;
-  P.entrevista = parseFloat($('cfg-ent').value)||25;
-  const wh = $('cfg-webhook').value.trim();
-  if (wh) WEBHOOK = wh;
-
-  // Refresh labels
-  $('lbl-base').textContent  = P.base.toLocaleString('es-AR');
-  $('lbl-servidor').textContent = P.servidor;
-  $('lbl-inthr').textContent = P.intHr;
-  $('lbl-spthr').textContent = P.sptHr;
-  $('lbl-spthr2').textContent= P.sptHr;
-  $('lbl-ent').textContent   = P.entrevista;
-  $('lbl-ent2').textContent  = P.entrevista;
-
-  calcTotal();
-  $('admin-ok').classList.remove('hidden');
-  setTimeout(()=>{ $('admin-ok').classList.add('hidden'); cerrarOverlay('admin-overlay',null,true); }, 1600);
-}
-
-/* ─── Generar Propuesta PDF ─── */
-function generarPropuestaPDF() {
+/* ════ PPTX GENERATOR ════ */
+function generarPPTX() {
   const empresa   = $('cli-empresa').value.trim();
-  const comercial = $('com-nombre').value.trim();
-  if (!empresa)   { alert('Completá el nombre de la empresa cliente.'); $('cli-empresa').focus(); return; }
-  if (!comercial) { alert('Completá tu nombre como comercial.'); $('com-nombre').focus(); return; }
+  const comercial = $('cli-comercial').value.trim();
+  if (!empresa)   { alert('Completá la empresa cliente.'); $('cli-empresa').focus(); return; }
+  if (!comercial) { alert('Completá tu nombre como comercial.'); $('cli-comercial').focus(); return; }
 
-  const { items, total, cuota, totalInt } = calcTotal();
-  const proyecto  = $('prop-proyecto').value.trim() || 'Implementación Plataforma SOOFT';
-  const vigDias   = $('prop-vigencia').value;
-  const fecha     = new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
-  const nombre    = $('cli-nombre').value.trim();
-  const email     = $('cli-email').value.trim();
-  const fmtU2 = n => 'USD ' + Math.round(n).toLocaleString('es-AR');
+  const proyecto = $('cli-proyecto').value.trim() || 'Propuesta de Servicios';
+  const ciudad   = $('cli-ciudad').value.trim() || 'Buenos Aires';
+  const vigencia = $('cli-vigencia').value;
+  const cargo    = $('cli-cargo').value.trim() || 'Account Manager';
+  const carta    = $('cli-carta').value.trim();
+  const fecha    = new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
+  const fmtA     = n => '$ ' + Math.round(n).toLocaleString('es-AR');
+  const fmtU2    = n => 'USD ' + Math.round(n).toLocaleString('es-AR');
 
-  $('pt-fecha').textContent     = fecha;
-  $('pt-ref').textContent       = 'COT-' + String(Date.now()).slice(-5);
-  $('pt-vigencia').textContent  = vigDias + ' días';
-  $('pt-titulo').textContent    = proyecto;
-  $('pt-empresa').textContent   = empresa;
-  $('pt-contacto').textContent  = [nombre, email].filter(Boolean).join(' · ') || '—';
-  $('pt-proyecto').textContent  = proyecto;
-  $('pt-comercial').textContent = comercial;
-  $('pt-validity-txt').textContent = vigDias + ' días corridos';
-  $('pt-base').textContent = fmtU2(P.base);
+  const tipoLabels = {staff:'DESARROLLO DE STAFF',celula:'CÉLULA ÁGIL',saas:'PLATAFORMA SaaS ENTERPRISE'};
+  const tipoLabel  = tipoLabels[tipoActivo];
 
-  if (S.servidores === 'sooft') {
-    $('pt-row-srv').style.display = '';
-    $('pt-srv').textContent = fmtU2(P.servidor);
-  } else { $('pt-row-srv').style.display = 'none'; }
+  const pptx = new PptxGenJS();
+  pptx.layout = 'LAYOUT_16x9';
+  pptx.title  = `Propuesta ${tipoLabel} - ${empresa}`;
 
-  if (S.int && S.intHrs > 0) {
-    $('pt-section-impl').style.display = '';
-    $('pt-impl-det').textContent   = S.intHrs + ' hrs × USD ' + P.intHr;
-    $('pt-impl-total').textContent = fmtU2(totalInt);
-    $('pt-cuota-label').textContent = 'Cuota de Implementación (1 de ' + S.cuotas + ')';
-    $('pt-cuota-badge').textContent = S.cuotas + ' cuota' + (S.cuotas>1?'s':'');
-    $('pt-cuota-val').textContent   = fmtU2(cuota);
-    if (S.cuotas > 1) {
-      $('pt-cuota-note').textContent = 'Se suma al total mensual durante ' + S.cuotas + ' meses';
-      $('pt-cuota-explain').style.display = '';
-      $('pt-cuota-explain').innerHTML = '<strong>Financiación:</strong> Costo total de implementación <strong>' + fmtU2(totalInt) + '</strong>, dividido en <strong>' + S.cuotas + ' cuotas iguales de ' + fmtU2(cuota) + '/mes</strong>. Esta cuota se suma al fee mensual durante el período acordado.';
-    } else {
-      $('pt-cuota-note').textContent = 'Pago único — incluido en el primer mes';
-      $('pt-cuota-explain').style.display = 'none';
-    }
-  } else { $('pt-section-impl').style.display = 'none'; }
+  const OR='FF6600', DK='2D2D2D', WH='FFFFFF', MU='595959';
 
-  const tbody = $('pt-mod-tbody');
-  tbody.innerHTML = '';
-  const mods = [];
-  if (S.ent && S.entQty > 0) mods.push({ name:'Entrevistador Virtual IA', sub:'Evaluaciones automatizadas con IA generativa', det: S.entQty+' entrevistas × USD '+P.entrevista, val: S.entQty*P.entrevista });
-  if (mods.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="3" style="color:#94A3B8;text-align:center;padding:16px;font-size:12px">Sin módulos adicionales seleccionados</td></tr>';
-  } else {
-    mods.forEach(m => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td><strong>${m.name}</strong><br><span style="font-size:11px;color:#94A3B8">${m.sub}</span></td><td style="text-align:center;font-family:monospace;font-size:12px">${m.det}</td><td style="text-align:right;font-family:monospace;font-weight:700">${fmtU2(m.val)}</td>`;
-      tbody.appendChild(tr);
-    });
+  function addHeaderFooter(slide, sectionTitle) {
+    // Top orange bar
+    slide.addShape(pptx.shapes.RECTANGLE, {x:0,y:0,w:10,h:.5,fill:{color:OR},line:{color:OR}});
+    slide.addText('SOOFT Technology', {x:.25,y:.06,w:3.5,h:.38,fontSize:12,bold:true,color:WH,fontFace:'Arial',valign:'middle'});
+    slide.addText('#CREARESINFINITO', {x:6,y:.06,w:3.75,h:.38,fontSize:9,color:WH,fontFace:'Arial',align:'right',charSpacing:2,valign:'middle'});
+    // Section title dark bar
+    slide.addShape(pptx.shapes.RECTANGLE, {x:0,y:.5,w:10,h:.5,fill:{color:DK},line:{color:DK}});
+    slide.addText(sectionTitle, {x:.3,y:.53,w:9.4,h:.44,fontSize:15,bold:true,color:WH,fontFace:'Arial Black',valign:'middle'});
+    // Bottom footer dark bar
+    slide.addShape(pptx.shapes.RECTANGLE, {x:0,y:5.3,w:10,h:.325,fill:{color:DK},line:{color:DK}});
+    slide.addText('www.sooft.tech', {x:.25,y:5.33,w:4,h:.28,fontSize:9,color:OR,fontFace:'Arial',valign:'middle'});
+    slide.addText('#CREARESINFINITO', {x:5.75,y:5.33,w:4,h:.28,fontSize:9,color:WH,fontFace:'Arial',align:'right',charSpacing:2,valign:'middle'});
   }
 
-  if (S.spt && S.sptHrs > 0) {
-    $('pt-section-spt').style.display = '';
-    $('pt-spt-det').textContent = S.sptHrs + ' hrs/mes × USD ' + P.sptHr;
-    $('pt-spt-val').textContent = fmtU2(S.sptHrs * P.sptHr);
-  } else { $('pt-section-spt').style.display = 'none'; }
+  // ─ Slide 1: Portada ─
+  const s1 = pptx.addSlide();
+  s1.addShape(pptx.shapes.RECTANGLE, {x:0,y:0,w:4,h:5.625,fill:{color:OR},line:{color:OR}});
+  s1.addText('SOOFT', {x:.25,y:.35,w:3.5,h:.75,fontSize:44,bold:true,color:WH,fontFace:'Arial Black'});
+  s1.addText('TECHNOLOGY', {x:.25,y:1.05,w:3.5,h:.3,fontSize:10,color:WH,fontFace:'Arial',charSpacing:6});
+  s1.addText('#CREARESINFINITO', {x:.25,y:5.15,w:3.5,h:.3,fontSize:9,color:WH,fontFace:'Arial',charSpacing:3});
+  s1.addText('www.sooft.tech', {x:.25,y:5.35,w:3.5,h:.2,fontSize:8,color:'FFCC99',fontFace:'Arial'});
+  s1.addShape(pptx.shapes.RECTANGLE, {x:4,y:0,w:6,h:5.625,fill:{color:WH},line:{color:WH}});
+  s1.addText('Servicio:', {x:4.3,y:.55,w:5.5,h:.3,fontSize:13,bold:true,color:OR,fontFace:'Arial Black'});
+  s1.addText(tipoLabel, {x:4.3,y:.82,w:5.5,h:.5,fontSize:18,bold:true,color:OR,fontFace:'Arial Black'});
+  s1.addText(proyecto, {x:4.3,y:1.38,w:5.5,h:.4,fontSize:14,bold:true,color:DK,fontFace:'Arial Black'});
+  s1.addShape(pptx.shapes.RECTANGLE, {x:4.3,y:1.92,w:5.3,h:.03,fill:{color:'DDDDDD'},line:{color:'DDDDDD'}});
+  s1.addText('Para la firma:', {x:4.3,y:2.05,w:5.5,h:.28,fontSize:11,bold:true,color:DK,fontFace:'Arial'});
+  s1.addText(empresa, {x:4.3,y:2.35,w:5.5,h:.48,fontSize:22,bold:true,color:DK,fontFace:'Arial Black'});
+  if($('cli-contacto').value.trim()) s1.addText($('cli-contacto').value.trim(), {x:4.3,y:2.88,w:5.5,h:.28,fontSize:11,color:MU,fontFace:'Arial'});
+  s1.addText([{text:'Fecha de Propuesta:  ',options:{bold:true}},{text:fecha}], {x:4.3,y:4.55,w:5.5,h:.28,fontSize:11,color:DK,fontFace:'Arial'});
 
-  $('pt-total').textContent = fmtU2(total);
-  const notesParts2 = ['Fee Base'];
-  if (S.servidores === 'sooft') notesParts2.push('Servidores');
-  if (S.int) notesParts2.push('Cuota Implementación');
-  if (S.ent) notesParts2.push('Entrevistas IA');
-  if (S.spt) notesParts2.push('Soporte');
-  $('pt-total-note').textContent = notesParts2.join(' + ');
+  // ─ Slide 2: Carta ─
+  const s2 = pptx.addSlide();
+  addHeaderFooter(s2,'Resumen de PROPUESTA DE SERVICIOS');
+  s2.addShape(pptx.shapes.RECTANGLE, {x:0,y:1.0,w:3.4,h:4.15,fill:{color:'EEEEEE'},line:{color:'CCCCCC'}});
+  s2.addText('[ Imagen ]', {x:0,y:2.7,w:3.4,h:.3,fontSize:10,color:'BBBBBB',fontFace:'Arial',align:'center'});
+  // Carta text
+  const lines = carta.split('\n');
+  let cy = 1.05;
+  lines.forEach(line => {
+    if (cy > 5.1) return;
+    const isSig = line===comercial||line===cargo||line==='SOOFT Technology';
+    s2.addText(line||' ', {x:3.55,y:cy,w:6.2,h:.28,fontSize:isSig?12:10.5,bold:isSig,color:isSig?DK:MU,fontFace:'Arial',valign:'top'});
+    cy += isSig ? .24 : .27;
+  });
 
-  $('proposal-template').classList.add('visible');
-  setTimeout(() => {
-    window.print();
-    setTimeout(() => $('proposal-template').classList.remove('visible'), 600);
-  }, 350);
+  // ─ Slide 3: Detalle ─
+  const s3 = pptx.addSlide();
+  addHeaderFooter(s3,'Detalle de PROPUESTA DE SERVICIOS');
+  const items3 = tipoActivo==='celula'
+    ? ['SOOFT Technology provee Y gestiona el equipo de trabajo completo.','Incluye Delivery Manager sin costo adicional.','People Care realiza seguimiento mensual técnico y de bienestar.','Disponibilización del perfil: máximo 30 días corridos.','Preaviso de baja: 30 días corridos.','Habla hispana fluida en todos los perfiles.']
+    : tipoActivo==='staff'
+    ? ['SOOFT provee los perfiles; el cliente gestiona el equipo.','Disponibilización del perfil: máximo 30 días corridos.','Preaviso de baja: 30 días corridos.','SOOFT asegura equipamiento, registro laboral y confidencialidad.','Todos los perfiles con habla hispana fluida.']
+    : ['Licencia mensual del ATS Enterprise — vacantes y usuarios ilimitados.','Panel de administración, reportes avanzados y soporte por email.','Integración con sistemas HR/ERP según módulo seleccionado.','Entrevistador Virtual IA disponible como módulo adicional.','Infraestructura en la nube del cliente o SOOFT Cloud (opcional).'];
+  s3.addText('1. OBJETIVO', {x:.35,y:1.1,w:9.3,h:.3,fontSize:12,bold:true,color:DK,fontFace:'Arial'});
+  s3.addText(tipoActivo==='saas'
+    ? 'SOOFT Technology ofrece a '+empresa+' una plataforma ATS Enterprise para gestión integral de reclutamiento y selección, con escalabilidad sin costos adicionales por usuarios o vacantes.'
+    : 'SOOFT TECHNOLOGY ofrece a '+empresa+' servicios de '+tipoLabel+'. Nuestros profesionales altamente calificados se adaptan a las necesidades específicas del proyecto, garantizando calidad y rapidez.',
+    {x:.35,y:1.42,w:9.3,h:.5,fontSize:11,color:MU,fontFace:'Arial'});
+  s3.addText('2. ALCANCE — MODALIDAD DE PRESTACIÓN', {x:.35,y:2.0,w:9.3,h:.3,fontSize:12,bold:true,color:DK,fontFace:'Arial'});
+  items3.forEach((item,i)=>{
+    s3.addText([{text:'',options:{bullet:true}},{text:item}], {x:.5,y:2.35+i*.38,w:9.1,h:.35,fontSize:11,color:MU,fontFace:'Arial',valign:'top',bullet:{color:OR}});
+  });
+
+  // ─ Slide 4: Inversión ─
+  const s4 = pptx.addSlide();
+  addHeaderFooter(s4,'Inversión en el Servicio');
+  s4.addText('3. DETALLE DE INVERSIÓN', {x:.35,y:1.1,w:9.3,h:.3,fontSize:12,bold:true,color:DK,fontFace:'Arial'});
+
+  const hdrFill = {fill:{color:OR}};
+  const totFill = {fill:{color:DK}};
+  const mkH = t => ({text:t,options:{bold:true,color:WH,...hdrFill}});
+  const mkT = (t,c) => ({text:t,options:{bold:true,color:c||OR,...totFill}});
+
+  if (tipoActivo==='saas') {
+    const {items,total} = calcP();
+    const rows = [
+      [mkH('Módulo / Servicio'),mkH('Condición'),{text:'USD / mes',options:{bold:true,color:WH,...hdrFill,align:'right'}}],
+      ['Fee Base Mensual — Vacantes y Usuarios ILIMITADOS','Fijo mensual',{text:fmtU2(P.base),options:{align:'right',bold:true}}],
+    ];
+    if (SP.srv==='sooft') rows.push(['Infraestructura SOOFT Cloud','Fijo mensual',{text:fmtU2(P.srv),options:{align:'right'}}]);
+    if (SP.int&&SP.intHrs>0) rows.push([`Cuota Implementación (1 de ${SP.cuotas})`,`${SP.intHrs} hrs × USD ${P.intHr}`,{text:fmtU2(items.cuota.v),options:{align:'right'}}]);
+    if (SP.ent&&SP.entQty>0) rows.push(['Entrevistador Virtual IA',`${SP.entQty} × USD ${P.ent}`,{text:fmtU2(items.ent.v),options:{align:'right'}}]);
+    if (SP.spt&&SP.sptHrs>0) rows.push(['Soporte Premium',`${SP.sptHrs} hrs × USD ${P.sptHr}`,{text:fmtU2(items.spt.v),options:{align:'right'}}]);
+    rows.push([mkT('TOTAL MENSUAL ESTIMADO',WH),mkT('',WH),{text:fmtU2(total),options:{bold:true,color:OR,...totFill,align:'right'}}]);
+    s4.addTable(rows,{x:.35,y:1.5,w:9.3,border:{pt:1,color:'DDDDDD'},fontSize:11,fontFace:'Arial',colW:[4.3,2.7,2.3]});
+    s4.addText(`* USD. No incluyen impuestos. Vigencia: ${vigencia} días.`,{x:.35,y:5.0,w:9.3,h:.22,fontSize:9,color:MU,fontFace:'Arial',italic:true});
+  } else {
+    const costoT = staff.reduce((s,p)=>s+p.costo.total,0);
+    if (!staff.length) {
+      s4.addText('Sin perfiles cargados. Agregá personas en la pestaña Equipo.',{x:.35,y:2.5,w:9.3,h:.4,fontSize:13,color:MU,fontFace:'Arial',align:'center'});
+    } else {
+      const rows = [
+        [mkH('Perfil'),mkH('País'),mkH('Moneda'),{text:'Costo mensual',options:{bold:true,color:WH,...hdrFill,align:'right'}}],
+        ...staff.map(p=>[p.nom,'Argentina','Pesos',{text:fmtA(p.costo.total),options:{align:'right'}}]),
+      ];
+      if (tipoActivo==='celula') {
+        rows.push([{text:'Delivery Manager + People Care',options:{italic:true,color:OR,colspan:3}},{text:'SIN COSTO',options:{align:'right',bold:true,color:OR}}]);
+      }
+      rows.push([mkT('TOTAL MENSUAL',WH),mkT('',WH),mkT('',WH),{text:fmtA(costoT),options:{bold:true,color:OR,...totFill,align:'right'}}]);
+      s4.addTable(rows,{x:.35,y:1.5,w:9.3,border:{pt:1,color:'DDDDDD'},fontSize:11,fontFace:'Arial',colW:[3.8,1.5,1.5,2.5]});
+      s4.addText(`* Pesos argentinos. No incluyen impuestos. Revisión trimestral IPC INDEC.`,{x:.35,y:5.0,w:9.3,h:.22,fontSize:9,color:MU,fontFace:'Arial',italic:true});
+    }
+  }
+
+  // ─ Slide 5: Condiciones ─
+  const s5 = pptx.addSlide();
+  addHeaderFooter(s5,'Forma de Pago y Condiciones Comerciales');
+  const conds = [
+    'Facturación mensual a período vencido.',
+    'Forma de pago: Transferencia bancaria.',
+    'Fecha de pago: 15 días corridos de la fecha de factura.',
+    `Validez de la propuesta: ${vigencia} días.`,
+    tipoActivo==='saas'
+      ? 'El precio del plan es fijo mensual. Módulos adicionales se facturan según uso.'
+      : 'Revisión de tarifas trimestralmente según IPC INDEC.',
+    tipoActivo==='celula'
+      ? 'Delivery Manager y People Care incluidos sin costo adicional durante toda la vigencia.'
+      : tipoActivo==='staff'
+      ? 'Traspaso de profesionales: fee equivalente a 1 mes de servicio (a partir del 6to mes).'
+      : 'Implementación financiable en cuotas mensuales según acuerdo.',
+    'Rescisión sin expresión de causa con 30 días de preaviso fehaciente.',
+    'Competencia: Tribunales ordinarios de la ciudad de Córdoba, Argentina.',
+    'Contacto: info@sooft.tech  ·  www.sooft.tech',
+  ];
+  s5.addText('4. FORMA DE PAGO Y CONDICIONES COMERCIALES', {x:.35,y:1.1,w:9.3,h:.3,fontSize:12,bold:true,color:DK,fontFace:'Arial'});
+  conds.forEach((c,i)=>{
+    s5.addText([{text:'',options:{bullet:true}},{text:c}],
+      {x:.5,y:1.5+i*.38,w:9.1,h:.35,fontSize:11,color:MU,fontFace:'Arial',valign:'top',bullet:{color:OR}});
+  });
+
+  // Download
+  const fileName = `SOOFT_${tipoLabel.replace(/ /g,'_')}_${empresa.replace(/[^a-zA-Z0-9]/g,'_')}.pptx`;
+  pptx.writeFile({fileName}).then(()=>{
+    const msg=$('msg-save');
+    msg.innerHTML='<div class="bridge-dot" style="background:var(--green)"></div><span style="color:var(--green)">✓ PowerPoint generado: '+fileName+'</span>';
+    msg.style.cssText='display:flex;background:var(--green-lt);border-color:#A7F3D0';
+  });
 }
 
-/* ─── Init ─── */
-setServidores('cliente');
-calcTotal();
+/* ════ INIT ════ */
+setSrv('cliente');
+calcP();
+// Init tipo after DOM is ready
+setTimeout(()=>{ setTipo('staff'); }, 100);
+// Refresh resumen when switching to propuesta tab
+
 </script>
 </body>
 </html>
