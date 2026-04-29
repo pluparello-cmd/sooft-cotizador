@@ -46,39 +46,46 @@ body{font-family:'Montserrat',sans-serif;background:#F4F4F2;min-height:100vh;fon
   display:flex;align-items:center;justify-content:space-between;
 }
 .site-header-nav{
-  background:#1A1A1A;
-  display:flex;
-  border-top:1px solid rgba(255,102,0,.3);
+  background:white;
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  border-bottom:2px solid #EEEEEE;
+  box-shadow:0 2px 6px rgba(0,0,0,.06);
 }
 .svc-btn{
-  flex:1;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:3px;padding:11px 8px 10px;
+  display:flex;flex-direction:row;align-items:center;justify-content:center;
+  gap:12px;padding:13px 16px;
   border:none;background:transparent;
   cursor:pointer;
-  color:rgba(255,255,255,.45);
   font-family:'Montserrat',sans-serif;
   border-bottom:3px solid transparent;
+  margin-bottom:-2px;
   transition:all .18s;
-  position:relative;
 }
-.svc-btn + .svc-btn { border-left:1px solid rgba(255,255,255,.07); }
-.svc-btn:hover{ background:rgba(255,255,255,.06); color:rgba(255,255,255,.8); }
-.svc-btn.active{
-  color:#FFFFFF;
-  border-bottom-color:var(--orange);
-  background:rgba(255,102,0,.18);
+.svc-btn + .svc-btn { border-left:1px solid #EEEEEE; }
+.svc-btn:hover{ background:#F9F9F7; }
+.svc-btn.active{ border-bottom-color:#FF6600; background:#FFF8F5; }
+.svc-btn-icon{
+  width:38px;height:38px;border-radius:8px;
+  background:#F0F0EE;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+  transition:background .18s;
 }
-.svc-btn-icon{ font-size:17px; line-height:1; }
+.svc-btn.active .svc-btn-icon{ background:#FFF3EB; }
+.svc-btn-info{ text-align:left; }
 .svc-btn-name{
-  font-size:10.5px; font-weight:800;
-  letter-spacing:.4px; text-transform:uppercase; line-height:1.2;
+  font-size:11px;font-weight:800;
+  letter-spacing:.3px;text-transform:uppercase;line-height:1.3;
+  color:#1A1A1A;
 }
+.svc-btn.active .svc-btn-name{ color:#FF6600; }
+.svc-btn:hover:not(.active) .svc-btn-name{ color:#333; }
 .svc-btn-desc{
-  font-size:8.5px; font-weight:400;
-  opacity:.6; line-height:1.3; text-align:center;
+  font-size:9px;font-weight:400;
+  color:#888;line-height:1.4;margin-top:1px;
 }
-.svc-btn.active .svc-btn-desc{ opacity:.85; }
+.svc-btn.active .svc-btn-desc{ color:#B35000; }
 .hdr-logo{display:flex;flex-direction:column;line-height:1}
 
 
@@ -140,7 +147,7 @@ body{font-family:'Montserrat',sans-serif;background:#F4F4F2;min-height:100vh;fon
   color:var(--orange);
   font-family:'Montserrat',sans-serif;
   letter-spacing:.3px;
-  position:sticky;top:100px;z-index:39;
+  position:sticky;top:120px;z-index:39;
 }
 .context-bar-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);flex-shrink:0}
 .context-bar-sep{flex:1}
@@ -148,7 +155,7 @@ body{font-family:'Montserrat',sans-serif;background:#F4F4F2;min-height:100vh;fon
 /* ── Sub-tabs ── */
 .sub-tabs{
   background:var(--card);border-bottom:1.5px solid var(--border);
-  display:flex;position:sticky;top:132px;z-index:38;
+  display:flex;position:sticky;top:152px;z-index:38;
   box-shadow:0 1px 3px rgba(0,0,0,.05);
 }
 .sub-tab{
@@ -356,18 +363,24 @@ body{font-family:'Montserrat',sans-serif;background:#F4F4F2;min-height:100vh;fon
   <div class="site-header-nav">
     <button class="svc-btn active" id="tb-staff" onclick="setTipoNav('staff')">
       <div class="svc-btn-icon">👥</div>
-      <div class="svc-btn-name">Staff Augmentation</div>
-      <div class="svc-btn-desc">SOOFT provee · Cliente gestiona</div>
+      <div class="svc-btn-info">
+        <div class="svc-btn-name">Staff Augmentation</div>
+        <div class="svc-btn-desc">SOOFT provee · Cliente gestiona</div>
+      </div>
     </button>
     <button class="svc-btn" id="tb-celula" onclick="setTipoNav('celula')">
       <div class="svc-btn-icon">⚡</div>
-      <div class="svc-btn-name">Célula Ágil</div>
-      <div class="svc-btn-desc">SOOFT provee y gestiona · DM incluido</div>
+      <div class="svc-btn-info">
+        <div class="svc-btn-name">Célula Ágil</div>
+        <div class="svc-btn-desc">SOOFT gestiona · DM incluido</div>
+      </div>
     </button>
     <button class="svc-btn" id="tb-saas" onclick="setTipoNav('saas')">
       <div class="svc-btn-icon">🏢</div>
-      <div class="svc-btn-name">Plataforma SaaS</div>
-      <div class="svc-btn-desc">ATS Enterprise · Licencia mensual</div>
+      <div class="svc-btn-info">
+        <div class="svc-btn-name">Plataforma SaaS</div>
+        <div class="svc-btn-desc">ATS Enterprise · Licencia mensual</div>
+      </div>
     </button>
   </div>
 </header>
