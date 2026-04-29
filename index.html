@@ -37,11 +37,48 @@ body{font-family:'Montserrat',sans-serif;background:#F4F4F2;min-height:100vh;fon
 /* ══ HEADER ══ */
 .site-header{
   background:var(--orange);
-  padding:0 20px;
-  height:56px;
-  display:flex;align-items:center;justify-content:space-between;
   position:sticky;top:0;z-index:50;
+  box-shadow:0 2px 8px rgba(0,0,0,.2);
 }
+.site-header-top{
+  padding:0 20px;
+  height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.site-header-nav{
+  background:#1A1A1A;
+  display:flex;
+  border-top:1px solid rgba(255,102,0,.3);
+}
+.svc-btn{
+  flex:1;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;padding:11px 8px 10px;
+  border:none;background:transparent;
+  cursor:pointer;
+  color:rgba(255,255,255,.45);
+  font-family:'Montserrat',sans-serif;
+  border-bottom:3px solid transparent;
+  transition:all .18s;
+  position:relative;
+}
+.svc-btn + .svc-btn { border-left:1px solid rgba(255,255,255,.07); }
+.svc-btn:hover{ background:rgba(255,255,255,.06); color:rgba(255,255,255,.8); }
+.svc-btn.active{
+  color:#FFFFFF;
+  border-bottom-color:var(--orange);
+  background:rgba(255,102,0,.18);
+}
+.svc-btn-icon{ font-size:17px; line-height:1; }
+.svc-btn-name{
+  font-size:10.5px; font-weight:800;
+  letter-spacing:.4px; text-transform:uppercase; line-height:1.2;
+}
+.svc-btn-desc{
+  font-size:8.5px; font-weight:400;
+  opacity:.6; line-height:1.3; text-align:center;
+}
+.svc-btn.active .svc-btn-desc{ opacity:.85; }
 .hdr-logo{display:flex;flex-direction:column;line-height:1}
 
 
@@ -58,19 +95,71 @@ body{font-family:'Montserrat',sans-serif;background:#F4F4F2;min-height:100vh;fon
 .btn-admin:hover{background:rgba(255,255,255,.3)}
 
 /* ══ NAV TABS ══ */
-.nav-tabs{
-  background:var(--card);border-bottom:2px solid var(--border);
-  display:flex;position:sticky;top:56px;z-index:40;
+/* ── Tipo selector strip ── */
+.tipo-strip{
+  background:var(--dark);
+  padding:0 20px;
+  display:flex;align-items:stretch;gap:0;
+  position:sticky;top:56px;z-index:40;
+  border-bottom:3px solid var(--orange);
+  overflow-x:auto;
+  box-shadow:0 2px 8px rgba(0,0,0,.25);
 }
-.nav-tab{
-  flex:1;padding:13px 0;border:none;background:none;
-  font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;
-  cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;
+.tipo-strip::-webkit-scrollbar{height:3px}
+.tipo-strip::-webkit-scrollbar-thumb{background:var(--orange)}
+.tipo-btn{
+  flex:1;min-width:160px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  padding:12px 16px 10px;
+  border:none;background:transparent;
+  cursor:pointer;color:rgba(255,255,255,.45);
+  font-family:'Montserrat',sans-serif;
+  border-bottom:3px solid transparent;margin-bottom:-3px;
+  transition:all .2s;
+}
+.tipo-btn:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
+.tipo-btn.active{
+  color:white;
+  border-bottom-color:var(--orange);
+  background:rgba(255,102,0,.15);
+}
+.tipo-btn-icon{font-size:20px;line-height:1;margin-bottom:1px}
+.tipo-btn-label{font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;line-height:1.2}
+.tipo-btn-sub{font-size:9px;font-weight:400;opacity:.65;line-height:1.3;text-align:center;max-width:150px}
+.tipo-btn.active .tipo-btn-sub{opacity:.85}
+.tipo-btn.active .tipo-btn-label{color:white}
+.tipo-sep{width:1px;background:rgba(255,255,255,.08);height:36px;flex-shrink:0;align-self:center}
+
+/* ── Context bar — shows active tipo label ── */
+.context-bar{
+  background:rgba(255,102,0,.08);
+  border-bottom:1px solid rgba(255,102,0,.2);
+  padding:7px 20px;
+  display:flex;align-items:center;gap:8px;
+  font-size:11px;font-weight:700;
+  color:var(--orange);
+  font-family:'Montserrat',sans-serif;
+  letter-spacing:.3px;
+  position:sticky;top:100px;z-index:39;
+}
+.context-bar-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);flex-shrink:0}
+.context-bar-sep{flex:1}
+
+/* ── Sub-tabs ── */
+.sub-tabs{
+  background:var(--card);border-bottom:1.5px solid var(--border);
+  display:flex;position:sticky;top:132px;z-index:38;
+  box-shadow:0 1px 3px rgba(0,0,0,.05);
+}
+.sub-tab{
+  flex:1;padding:11px 0;border:none;background:none;
+  font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;
+  cursor:pointer;color:var(--muted);border-bottom:2.5px solid transparent;
   transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px;
   letter-spacing:.3px;text-transform:uppercase;
 }
-.nav-tab.active{color:var(--orange);border-bottom-color:var(--orange)}
-.nav-tab:hover:not(.active){color:var(--dark)}
+.sub-tab.active{color:var(--orange);border-bottom-color:var(--orange);background:#FFF8F5}
+.sub-tab:hover:not(.active){color:var(--dark);background:var(--bg)}
 .tab-icon{font-size:14px}
 
 /* ══ LAYOUT ══ */
@@ -255,25 +344,51 @@ body{font-family:'Montserrat',sans-serif;background:#F4F4F2;min-height:100vh;fon
 
 <!-- ══ HEADER ══ -->
 <header class="site-header">
-  <div class="hdr-logo"><svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" height="36" viewBox="0 0 1653.32 504.33" style="fill:white;display:block;shape-rendering:geometricPrecision"><g><g><path d="M338.65 240.63c-1.2,-36.35 -24.53,-77.76 -105.87,-91.27 -46.95,-6.87 -103.21,-8.96 -132.21,-17.91 -63.42,-19.52 -43.78,-54.04 -20.64,-70.97 17.42,-13.09 48.35,-22.47 89.85,-22.47 102.41,0 112.05,54.84 112.05,60.83 0,4.64 0,13.66 -8.62,25.14l37.4 14.68c6.4,-9.67 11.95,-22.57 12.46,-38.65 1.34,-41.16 -44.36,-100.01 -153.68,-100.01 -109.32,0 -151.82,52.69 -152.32,96.15 -0.1,27.14 18.79,54.33 64.32,70.28 50.81,17.78 133.94,13.75 170.2,28.41 68.79,26.43 51.79,77.54 -8.35,100.33 -19.08,6.84 -42.65,11.99 -74.73,11.99 -72.8,-1.34 -110.86,-21.47 -124.47,-51.84 -9.45,-21.15 -2.57,-44.05 15.12,-60.58l-32.03 -17.76c-9.33,8.26 -25.36,29.29 -27.07,62.66 -2.1,47.59 45.97,108.54 169.68,107.19 123.71,-1.34 170.32,-62.71 168.85,-106.19l0.05 -0.03z"/><path d="M1325.54 44.95l0 -40.33 -154.39 0c-69.55,0 -125.91,56.38 -125.91,125.91l0 206.96 40.36 0 0 -166.6 239.94 0 0 -40.36 -239.94 0c0,-49.91 40.46,-85.57 90.36,-85.57l149.58 0z"/><rect x="1482.04" y="11.13" width="40.36" height="326.16"/><path d="M1653.32 44.95l0 -40.33 -172.36 0c-26.75,-0 -27.23,40.32 6.4,40.33l165.96 0z"/><path d="M1351.11 44.95l0 -40.33 172.36 0c26.75,-0 27.23,40.32 -6.4,40.33l-165.96 0z"/><path d="M523.29 338.7c-3.91,0 -7.87,-0.12 -11.85,-0.37 -39.94,-2.44 -73.95,-16.83 -95.71,-40.53 -44.19,-48.08 -44.53,-113.55 -44.49,-118.6l0 -15c-0.1,-5.11 -0.07,-70.55 43.87,-118.82 21.67,-23.79 55.58,-38.35 95.52,-40.99 35.49,-2.34 69.6,5.18 91.22,20.1 7.38,5.08 13.88,9.94 20.15,14.63 22.79,16.98 37.99,28.29 66.06,30.05 28.07,-1.88 43.19,-13.26 65.91,-30.36 6.28,-4.72 12.75,-9.6 20.1,-14.73 21.55,-15.05 55.62,-22.72 91.12,-20.54 39.94,2.44 73.95,16.83 95.71,40.53 44.19,48.08 44.53,113.55 44.49,118.6l0.05 15c0.07,5.08 0.05,70.53 -43.92,118.82 -21.67,23.79 -55.58,38.35 -95.52,40.99 -35.49,2.34 -69.6,-5.18 -91.22,-20.1 -7.38,-5.08 -13.88,-9.94 -20.15,-14.61 -22.79,-16.98 -37.99,-28.29 -66.06,-30.05 -28.07,1.88 -43.19,13.26 -65.89,30.36 -6.25,4.72 -12.75,9.6 -20.08,14.7 -19.15,13.36 -48.15,20.91 -79.27,20.91l-0.05 0zm-0.1 -295.22c-3.3,0 -6.62,0.1 -9.97,0.32 -29.27,1.93 -54.38,12.19 -68.94,28.17 -34.3,37.67 -33.64,91.12 -33.61,91.66l0 0.34 0.05 15.44 0 0.17c0,0.49 -0.1,54.33 34.08,91.49 14.61,15.9 39.79,26.04 69.06,27.83 26.12,1.59 52.06,-3.71 66.1,-13.51 6.77,-4.72 12.95,-9.38 18.96,-13.9 24.65,-18.54 47.93,-36.06 88.87,-38.33l0.22 3.91 0.1 -3.93 0.71 0 0.12 4.54 0.22 -4.52c40.94,2.05 64.32,19.47 89.04,37.89 6.01,4.47 12.21,9.11 19,13.8 14.09,9.75 40.06,14.93 66.18,13.19 29.27,-1.93 54.38,-12.19 68.91,-28.17 33.98,-37.33 33.64,-91.17 33.61,-91.73l0 -0.29 -0.05 -15.44 0 -0.17c0,-0.49 0.1,-54.33 -34.05,-91.49 -14.61,-15.9 -39.79,-26.04 -69.06,-27.83 -26.09,-1.59 -52.06,3.71 -66.1,13.51 -6.77,4.72 -12.97,9.38 -18.96,13.9 -24.65,18.54 -47.93,36.06 -88.87,38.33l-0.25 -4.32 -0.1 4.35 -0.71 0 -0.12 -4.13 -0.19 4.1c-40.94,-2.05 -64.32,-19.47 -89.04,-37.89 -6.01,-4.47 -12.21,-9.11 -19,-13.8 -12.31,-8.5 -33.64,-13.53 -56.21,-13.53l0 0.05z"/></g><path fill-rule="nonzero" d="M180.07 440.72l-24.33 0 0 62.99 -11.55 0 0 -62.99 -24.44 0 0 -10.21 60.32 0 0 10.21zm139.79 52.79l0 10.2 -50.21 0 0 -73.21 49.28 0 0 10.21 -37.74 0 0 20.82 32.69 0 0 9.59 -32.69 0 0 22.38 38.67 0zm87.41 -26.92c0,-4.4 0.79,-8.78 2.37,-13.14 1.58,-4.37 3.87,-8.29 6.86,-11.76 2.99,-3.47 6.65,-6.27 10.98,-8.4 4.33,-2.13 9.25,-3.2 14.75,-3.2 6.53,0 12.15,1.48 16.85,4.43 4.71,2.96 8.23,6.81 10.57,11.55l-9.07 6.08c-0.97,-2.2 -2.17,-4.06 -3.61,-5.57 -1.44,-1.51 -3.01,-2.71 -4.69,-3.61 -1.69,-0.89 -3.42,-1.53 -5.21,-1.91 -1.78,-0.38 -3.54,-0.57 -5.25,-0.57 -3.72,0 -7,0.77 -9.85,2.32 -2.85,1.55 -5.24,3.59 -7.17,6.13 -1.93,2.54 -3.37,5.4 -4.33,8.56 -0.96,3.17 -1.45,6.33 -1.45,9.49 0,3.58 0.57,6.98 1.7,10.21 1.13,3.23 2.74,6.09 4.8,8.56 2.06,2.48 4.5,4.45 7.32,5.93 2.82,1.47 5.91,2.21 9.28,2.21 1.72,0 3.52,-0.22 5.42,-0.67 1.89,-0.45 3.67,-1.16 5.36,-2.16 1.69,-1 3.25,-2.25 4.69,-3.76 1.44,-1.51 2.65,-3.33 3.61,-5.47l9.59 5.47c-1.17,2.75 -2.8,5.18 -4.9,7.27 -2.1,2.1 -4.45,3.87 -7.06,5.31 -2.61,1.44 -5.4,2.55 -8.35,3.3 -2.96,0.76 -5.88,1.14 -8.77,1.14 -5.09,0 -9.73,-1.1 -13.92,-3.3 -4.2,-2.2 -7.82,-5.06 -10.88,-8.61 -3.06,-3.54 -5.43,-7.56 -7.11,-12.06 -1.68,-4.5 -2.52,-9.09 -2.52,-13.77zm214.03 -36.09l0 73.21 -11.65 0 0 -32.27 -36.91 0 0 32.27 -11.55 0 0 -73.21 11.55 0 0 30.63 36.91 0 0 -30.63 11.65 0zm107.62 21.66l0 51.55 -11.55 0 0 -73.21 9.07 0 41.86 52.8 0 -52.69 11.65 0 0 73.1 -9.59 0 -41.45 -51.55zm177.22 52.07c-5.15,0 -9.85,-1.05 -14.07,-3.14 -4.23,-2.1 -7.87,-4.88 -10.93,-8.36 -3.06,-3.47 -5.41,-7.44 -7.06,-11.91 -1.65,-4.47 -2.47,-9.04 -2.47,-13.71 0,-4.88 0.88,-9.56 2.63,-14.02 1.75,-4.47 4.17,-8.42 7.27,-11.86 3.09,-3.44 6.77,-6.17 11.03,-8.2 4.26,-2.03 8.9,-3.04 13.92,-3.04 5.15,0 9.85,1.08 14.07,3.25 4.23,2.16 7.86,5 10.88,8.5 3.03,3.51 5.36,7.48 7.01,11.91 1.65,4.43 2.47,8.95 2.47,13.56 0,4.88 -0.88,9.56 -2.63,14.02 -1.75,4.47 -4.17,8.4 -7.27,11.81 -3.1,3.4 -6.76,6.12 -10.98,8.15 -4.23,2.03 -8.85,3.04 -13.87,3.04zm-22.78 -37.12c0,3.44 0.53,6.77 1.6,10 1.07,3.23 2.6,6.08 4.59,8.56 1.99,2.47 4.4,4.45 7.22,5.93 2.82,1.48 5.98,2.22 9.49,2.22 3.58,0 6.79,-0.77 9.65,-2.32 2.85,-1.55 5.25,-3.59 7.21,-6.13 1.96,-2.54 3.45,-5.4 4.49,-8.56 1.03,-3.16 1.54,-6.39 1.54,-9.69 0,-3.51 -0.55,-6.86 -1.65,-10.06 -1.1,-3.19 -2.65,-6.01 -4.64,-8.45 -1.99,-2.44 -4.4,-4.4 -7.22,-5.88 -2.82,-1.48 -5.94,-2.22 -9.38,-2.22 -3.57,0 -6.79,0.77 -9.64,2.32 -2.85,1.55 -5.26,3.56 -7.21,6.03 -1.96,2.48 -3.46,5.32 -4.49,8.51 -1.04,3.2 -1.55,6.45 -1.55,9.75zm149.17 36.6l0 -73.21 11.55 0 0 63 39.28 0 0 10.2 -50.83 0zm167.01 0.52c-5.15,0 -9.84,-1.05 -14.07,-3.14 -4.23,-2.1 -7.87,-4.88 -10.93,-8.36 -3.06,-3.47 -5.41,-7.44 -7.06,-11.91 -1.65,-4.47 -2.48,-9.04 -2.48,-13.71 0,-4.88 0.88,-9.56 2.64,-14.02 1.75,-4.47 4.17,-8.42 7.26,-11.86 3.1,-3.44 6.77,-6.17 11.04,-8.2 4.27,-2.03 8.9,-3.04 13.92,-3.04 5.16,0 9.84,1.08 14.08,3.25 4.22,2.16 7.85,5 10.88,8.5 3.03,3.51 5.36,7.48 7,11.91 1.66,4.43 2.49,8.95 2.49,13.56 0,4.88 -0.88,9.56 -2.64,14.02 -1.74,4.47 -4.17,8.4 -7.27,11.81 -3.09,3.4 -6.75,6.12 -10.98,8.15 -4.22,2.03 -8.85,3.04 -13.87,3.04zm-22.78 -37.12c0,3.44 0.53,6.77 1.6,10 1.06,3.23 2.59,6.08 4.59,8.56 1.99,2.47 4.41,4.45 7.22,5.93 2.82,1.48 5.98,2.22 9.49,2.22 3.58,0 6.78,-0.77 9.64,-2.32 2.85,-1.55 5.25,-3.59 7.22,-6.13 1.96,-2.54 3.46,-5.4 4.49,-8.56 1.02,-3.16 1.54,-6.39 1.54,-9.69 0,-3.51 -0.55,-6.86 -1.65,-10.06 -1.1,-3.19 -2.65,-6.01 -4.64,-8.45 -1.99,-2.44 -4.39,-4.4 -7.22,-5.88 -2.81,-1.48 -5.94,-2.22 -9.38,-2.22 -3.58,0 -6.79,0.77 -9.64,2.32 -2.86,1.55 -5.25,3.56 -7.21,6.03 -1.96,2.48 -3.46,5.32 -4.49,8.51 -1.03,3.2 -1.55,6.45 -1.55,9.75zm199.7 27.53c-5.98,6.39 -12.96,9.59 -20.93,9.59 -4.75,0 -9.2,-1.05 -13.36,-3.14 -4.16,-2.1 -7.76,-4.88 -10.82,-8.36 -3.06,-3.47 -5.46,-7.46 -7.22,-11.96 -1.76,-4.5 -2.64,-9.16 -2.64,-13.97 0,-4.95 0.88,-9.66 2.64,-14.12 1.76,-4.47 4.16,-8.38 7.22,-11.75 3.06,-3.37 6.68,-6.03 10.87,-7.99 4.2,-1.96 8.78,-2.94 13.72,-2.94 6.87,0 12.64,1.46 17.32,4.38 4.67,2.92 8.22,6.79 10.62,11.6l-8.87 6.39c-2,-3.99 -4.7,-6.98 -8.1,-8.97 -3.4,-1.99 -7.16,-2.99 -11.29,-2.99 -3.37,0 -6.43,0.74 -9.18,2.22 -2.75,1.47 -5.11,3.44 -7.06,5.87 -1.96,2.44 -3.48,5.28 -4.55,8.51 -1.07,3.23 -1.59,6.6 -1.59,10.11 0,3.71 0.58,7.18 1.76,10.41 1.16,3.23 2.8,6.05 4.89,8.45 2.1,2.41 4.56,4.31 7.38,5.72 2.81,1.4 5.87,2.11 9.18,2.11 7.42,0 14.09,-3.61 20,-10.82l0 -7.74 -15.37 0 0 -8.55 25.06 0 0 37.01 -9.69 0 0 -9.07zm103.8 -64.13l20.32 36.71 20.41 -36.71 12.58 0 -27.22 47.02 0 26.19 -11.64 0 0 -26.4 -27.12 -46.81 12.68 0z"/></g></svg></div>
-  <div class="hdr-right">
-    <div class="hdr-tagline">#CREARESINFINITO</div>
-    <button class="btn-admin" onclick="openLogin()">⚙ Admin</button>
+  <!-- Row 1: Logo + Admin -->
+  <div class="site-header-top">
+    <div class="hdr-logo"><svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" height="32" viewBox="0 0 1653.32 504.33" style="fill:white;display:block;shape-rendering:geometricPrecision"><g><g><path d="M338.65 240.63c-1.2,-36.35 -24.53,-77.76 -105.87,-91.27 -46.95,-6.87 -103.21,-8.96 -132.21,-17.91 -63.42,-19.52 -43.78,-54.04 -20.64,-70.97 17.42,-13.09 48.35,-22.47 89.85,-22.47 102.41,0 112.05,54.84 112.05,60.83 0,4.64 0,13.66 -8.62,25.14l37.4 14.68c6.4,-9.67 11.95,-22.57 12.46,-38.65 1.34,-41.16 -44.36,-100.01 -153.68,-100.01 -109.32,0 -151.82,52.69 -152.32,96.15 -0.1,27.14 18.79,54.33 64.32,70.28 50.81,17.78 133.94,13.75 170.2,28.41 68.79,26.43 51.79,77.54 -8.35,100.33 -19.08,6.84 -42.65,11.99 -74.73,11.99 -72.8,-1.34 -110.86,-21.47 -124.47,-51.84 -9.45,-21.15 -2.57,-44.05 15.12,-60.58l-32.03 -17.76c-9.33,8.26 -25.36,29.29 -27.07,62.66 -2.1,47.59 45.97,108.54 169.68,107.19 123.71,-1.34 170.32,-62.71 168.85,-106.19l0.05 -0.03z"/><path d="M1325.54 44.95l0 -40.33 -154.39 0c-69.55,0 -125.91,56.38 -125.91,125.91l0 206.96 40.36 0 0 -166.6 239.94 0 0 -40.36 -239.94 0c0,-49.91 40.46,-85.57 90.36,-85.57l149.58 0z"/><rect x="1482.04" y="11.13" width="40.36" height="326.16"/><path d="M1653.32 44.95l0 -40.33 -172.36 0c-26.75,-0 -27.23,40.32 6.4,40.33l165.96 0z"/><path d="M1351.11 44.95l0 -40.33 172.36 0c26.75,-0 27.23,40.32 -6.4,40.33l-165.96 0z"/><path d="M523.29 338.7c-3.91,0 -7.87,-0.12 -11.85,-0.37 -39.94,-2.44 -73.95,-16.83 -95.71,-40.53 -44.19,-48.08 -44.53,-113.55 -44.49,-118.6l0 -15c-0.1,-5.11 -0.07,-70.55 43.87,-118.82 21.67,-23.79 55.58,-38.35 95.52,-40.99 35.49,-2.34 69.6,5.18 91.22,20.1 7.38,5.08 13.88,9.94 20.15,14.63 22.79,16.98 37.99,28.29 66.06,30.05 28.07,-1.88 43.19,-13.26 65.91,-30.36 6.28,-4.72 12.75,-9.6 20.1,-14.73 21.55,-15.05 55.62,-22.72 91.12,-20.54 39.94,2.44 73.95,16.83 95.71,40.53 44.19,48.08 44.53,113.55 44.49,118.6l0.05 15c0.07,5.08 0.05,70.53 -43.92,118.82 -21.67,23.79 -55.58,38.35 -95.52,40.99 -35.49,2.34 -69.6,-5.18 -91.22,-20.1 -7.38,-5.08 -13.88,-9.94 -20.15,-14.61 -22.79,-16.98 -37.99,-28.29 -66.06,-30.05 -28.07,1.88 -43.19,13.26 -65.89,30.36 -6.25,4.72 -12.75,9.6 -20.08,14.7 -19.15,13.36 -48.15,20.91 -79.27,20.91l-0.05 0zm-0.1 -295.22c-3.3,0 -6.62,0.1 -9.97,0.32 -29.27,1.93 -54.38,12.19 -68.94,28.17 -34.3,37.67 -33.64,91.12 -33.61,91.66l0 0.34 0.05 15.44 0 0.17c0,0.49 -0.1,54.33 34.08,91.49 14.61,15.9 39.79,26.04 69.06,27.83 26.12,1.59 52.06,-3.71 66.1,-13.51 6.77,-4.72 12.95,-9.38 18.96,-13.9 24.65,-18.54 47.93,-36.06 88.87,-38.33l0.22 3.91 0.1 -3.93 0.71 0 0.12 4.54 0.22 -4.52c40.94,2.05 64.32,19.47 89.04,37.89 6.01,4.47 12.21,9.11 19,13.8 14.09,9.75 40.06,14.93 66.18,13.19 29.27,-1.93 54.38,-12.19 68.91,-28.17 33.98,-37.33 33.64,-91.17 33.61,-91.73l0 -0.29 -0.05 -15.44 0 -0.17c0,-0.49 0.1,-54.33 -34.05,-91.49 -14.61,-15.9 -39.79,-26.04 -69.06,-27.83 -26.09,-1.59 -52.06,3.71 -66.1,13.51 -6.77,4.72 -12.97,9.38 -18.96,13.9 -24.65,18.54 -47.93,36.06 -88.87,38.33l-0.25 -4.32 -0.1 4.35 -0.71 0 -0.12 -4.13 -0.19 4.1c-40.94,-2.05 -64.32,-19.47 -89.04,-37.89 -6.01,-4.47 -12.21,-9.11 -19,-13.8 -12.31,-8.5 -33.64,-13.53 -56.21,-13.53l0 0.05z"/></g><path fill-rule="nonzero" d="M180.07 440.72l-24.33 0 0 62.99 -11.55 0 0 -62.99 -24.44 0 0 -10.21 60.32 0 0 10.21zm139.79 52.79l0 10.2 -50.21 0 0 -73.21 49.28 0 0 10.21 -37.74 0 0 20.82 32.69 0 0 9.59 -32.69 0 0 22.38 38.67 0zm87.41 -26.92c0,-4.4 0.79,-8.78 2.37,-13.14 1.58,-4.37 3.87,-8.29 6.86,-11.76 2.99,-3.47 6.65,-6.27 10.98,-8.4 4.33,-2.13 9.25,-3.2 14.75,-3.2 6.53,0 12.15,1.48 16.85,4.43 4.71,2.96 8.23,6.81 10.57,11.55l-9.07 6.08c-0.97,-2.2 -2.17,-4.06 -3.61,-5.57 -1.44,-1.51 -3.01,-2.71 -4.69,-3.61 -1.69,-0.89 -3.42,-1.53 -5.21,-1.91 -1.78,-0.38 -3.54,-0.57 -5.25,-0.57 -3.72,0 -7,0.77 -9.85,2.32 -2.85,1.55 -5.24,3.59 -7.17,6.13 -1.93,2.54 -3.37,5.4 -4.33,8.56 -0.96,3.17 -1.45,6.33 -1.45,9.49 0,3.58 0.57,6.98 1.7,10.21 1.13,3.23 2.74,6.09 4.8,8.56 2.06,2.48 4.5,4.45 7.32,5.93 2.82,1.47 5.91,2.21 9.28,2.21 1.72,0 3.52,-0.22 5.42,-0.67 1.89,-0.45 3.67,-1.16 5.36,-2.16 1.69,-1 3.25,-2.25 4.69,-3.76 1.44,-1.51 2.65,-3.33 3.61,-5.47l9.59 5.47c-1.17,2.75 -2.8,5.18 -4.9,7.27 -2.1,2.1 -4.45,3.87 -7.06,5.31 -2.61,1.44 -5.4,2.55 -8.35,3.3 -2.96,0.76 -5.88,1.14 -8.77,1.14 -5.09,0 -9.73,-1.1 -13.92,-3.3 -4.2,-2.2 -7.82,-5.06 -10.88,-8.61 -3.06,-3.54 -5.43,-7.56 -7.11,-12.06 -1.68,-4.5 -2.52,-9.09 -2.52,-13.77zm214.03 -36.09l0 73.21 -11.65 0 0 -32.27 -36.91 0 0 32.27 -11.55 0 0 -73.21 11.55 0 0 30.63 36.91 0 0 -30.63 11.65 0zm107.62 21.66l0 51.55 -11.55 0 0 -73.21 9.07 0 41.86 52.8 0 -52.69 11.65 0 0 73.1 -9.59 0 -41.45 -51.55zm177.22 52.07c-5.15,0 -9.85,-1.05 -14.07,-3.14 -4.23,-2.1 -7.87,-4.88 -10.93,-8.36 -3.06,-3.47 -5.41,-7.44 -7.06,-11.91 -1.65,-4.47 -2.47,-9.04 -2.47,-13.71 0,-4.88 0.88,-9.56 2.63,-14.02 1.75,-4.47 4.17,-8.42 7.27,-11.86 3.09,-3.44 6.77,-6.17 11.03,-8.2 4.26,-2.03 8.9,-3.04 13.92,-3.04 5.15,0 9.85,1.08 14.07,3.25 4.23,2.16 7.86,5 10.88,8.5 3.03,3.51 5.36,7.48 7.01,11.91 1.65,4.43 2.47,8.95 2.47,13.56 0,4.88 -0.88,9.56 -2.63,14.02 -1.75,4.47 -4.17,8.4 -7.27,11.81 -3.1,3.4 -6.76,6.12 -10.98,8.15 -4.23,2.03 -8.85,3.04 -13.87,3.04zm-22.78 -37.12c0,3.44 0.53,6.77 1.6,10 1.07,3.23 2.6,6.08 4.59,8.56 1.99,2.47 4.4,4.45 7.22,5.93 2.82,1.48 5.98,2.22 9.49,2.22 3.58,0 6.79,-0.77 9.65,-2.32 2.85,-1.55 5.25,-3.59 7.21,-6.13 1.96,-2.54 3.45,-5.4 4.49,-8.56 1.03,-3.16 1.54,-6.39 1.54,-9.69 0,-3.51 -0.55,-6.86 -1.65,-10.06 -1.1,-3.19 -2.65,-6.01 -4.64,-8.45 -1.99,-2.44 -4.4,-4.4 -7.22,-5.88 -2.82,-1.48 -5.94,-2.22 -9.38,-2.22 -3.57,0 -6.79,0.77 -9.64,2.32 -2.85,1.55 -5.26,3.56 -7.21,6.03 -1.96,2.48 -3.46,5.32 -4.49,8.51 -1.04,3.2 -1.55,6.45 -1.55,9.75zm149.17 36.6l0 -73.21 11.55 0 0 63 39.28 0 0 10.2 -50.83 0zm167.01 0.52c-5.15,0 -9.84,-1.05 -14.07,-3.14 -4.23,-2.1 -7.87,-4.88 -10.93,-8.36 -3.06,-3.47 -5.41,-7.44 -7.06,-11.91 -1.65,-4.47 -2.48,-9.04 -2.48,-13.71 0,-4.88 0.88,-9.56 2.64,-14.02 1.75,-4.47 4.17,-8.42 7.26,-11.86 3.1,-3.44 6.77,-6.17 11.04,-8.2 4.27,-2.03 8.9,-3.04 13.92,-3.04 5.16,0 9.84,1.08 14.08,3.25 4.22,2.16 7.85,5 10.88,8.5 3.03,3.51 5.36,7.48 7,11.91 1.66,4.43 2.49,8.95 2.49,13.56 0,4.88 -0.88,9.56 -2.64,14.02 -1.74,4.47 -4.17,8.4 -7.27,11.81 -3.09,3.4 -6.75,6.12 -10.98,8.15 -4.22,2.03 -8.85,3.04 -13.87,3.04zm-22.78 -37.12c0,3.44 0.53,6.77 1.6,10 1.06,3.23 2.59,6.08 4.59,8.56 1.99,2.47 4.41,4.45 7.22,5.93 2.82,1.48 5.98,2.22 9.49,2.22 3.58,0 6.78,-0.77 9.64,-2.32 2.85,-1.55 5.25,-3.59 7.22,-6.13 1.96,-2.54 3.46,-5.4 4.49,-8.56 1.02,-3.16 1.54,-6.39 1.54,-9.69 0,-3.51 -0.55,-6.86 -1.65,-10.06 -1.1,-3.19 -2.65,-6.01 -4.64,-8.45 -1.99,-2.44 -4.39,-4.4 -7.22,-5.88 -2.81,-1.48 -5.94,-2.22 -9.38,-2.22 -3.58,0 -6.79,0.77 -9.64,2.32 -2.86,1.55 -5.25,3.56 -7.21,6.03 -1.96,2.48 -3.46,5.32 -4.49,8.51 -1.03,3.2 -1.55,6.45 -1.55,9.75zm199.7 27.53c-5.98,6.39 -12.96,9.59 -20.93,9.59 -4.75,0 -9.2,-1.05 -13.36,-3.14 -4.16,-2.1 -7.76,-4.88 -10.82,-8.36 -3.06,-3.47 -5.46,-7.46 -7.22,-11.96 -1.76,-4.5 -2.64,-9.16 -2.64,-13.97 0,-4.95 0.88,-9.66 2.64,-14.12 1.76,-4.47 4.16,-8.38 7.22,-11.75 3.06,-3.37 6.68,-6.03 10.87,-7.99 4.2,-1.96 8.78,-2.94 13.72,-2.94 6.87,0 12.64,1.46 17.32,4.38 4.67,2.92 8.22,6.79 10.62,11.6l-8.87 6.39c-2,-3.99 -4.7,-6.98 -8.1,-8.97 -3.4,-1.99 -7.16,-2.99 -11.29,-2.99 -3.37,0 -6.43,0.74 -9.18,2.22 -2.75,1.47 -5.11,3.44 -7.06,5.87 -1.96,2.44 -3.48,5.28 -4.55,8.51 -1.07,3.23 -1.59,6.6 -1.59,10.11 0,3.71 0.58,7.18 1.76,10.41 1.16,3.23 2.8,6.05 4.89,8.45 2.1,2.41 4.56,4.31 7.38,5.72 2.81,1.4 5.87,2.11 9.18,2.11 7.42,0 14.09,-3.61 20,-10.82l0 -7.74 -15.37 0 0 -8.55 25.06 0 0 37.01 -9.69 0 0 -9.07zm103.8 -64.13l20.32 36.71 20.41 -36.71 12.58 0 -27.22 47.02 0 26.19 -11.64 0 0 -26.4 -27.12 -46.81 12.68 0z"/></g></svg></div>
+    <div class="hdr-right">
+      <div class="hdr-tagline">#CREARESINFINITO</div>
+      <button class="btn-admin" onclick="openLogin()">⚙ Admin</button>
+    </div>
+  </div>
+  <!-- Row 2: Tipo de Servicio — navegación principal -->
+  <div class="site-header-nav">
+    <button class="svc-btn active" id="tb-staff" onclick="setTipoNav('staff')">
+      <div class="svc-btn-icon">👥</div>
+      <div class="svc-btn-name">Staff Augmentation</div>
+      <div class="svc-btn-desc">SOOFT provee · Cliente gestiona</div>
+    </button>
+    <button class="svc-btn" id="tb-celula" onclick="setTipoNav('celula')">
+      <div class="svc-btn-icon">⚡</div>
+      <div class="svc-btn-name">Célula Ágil</div>
+      <div class="svc-btn-desc">SOOFT provee y gestiona · DM incluido</div>
+    </button>
+    <button class="svc-btn" id="tb-saas" onclick="setTipoNav('saas')">
+      <div class="svc-btn-icon">🏢</div>
+      <div class="svc-btn-name">Plataforma SaaS</div>
+      <div class="svc-btn-desc">ATS Enterprise · Licencia mensual</div>
+    </button>
   </div>
 </header>
 
-<!-- ══ NAV ══ -->
-<nav class="nav-tabs">
-  <button class="nav-tab active" onclick="goTab(0)" id="nt0">
-    <span class="tab-icon">🏢</span> Plataforma
+<!-- ══ CONTEXT BAR ══ -->
+<div class="context-bar">
+  <div class="context-bar-dot"></div>
+  <span id="ctx-label">Cotizando: Staff Augmentation</span>
+  <div class="context-bar-sep"></div>
+  <span id="ctx-desc" style="font-weight:400;opacity:.8;font-size:10px">SOOFT provee los perfiles · el cliente gestiona el equipo</span>
+</div>
+
+<!-- ══ SUB-TABS contextuales ══ -->
+<div class="sub-tabs">
+  <button class="sub-tab active" id="st0" onclick="goSubTab(0)">
+    <span id="st0-label">👥 Cotizar Equipo</span>
   </button>
-  <button class="nav-tab" onclick="goTab(1)" id="nt1">
-    <span class="tab-icon">👥</span> Equipo
+  <button class="sub-tab" id="st1" onclick="goSubTab(1)">
+    <span id="st1-label">📋 Propuesta</span>
   </button>
-  <button class="nav-tab" onclick="goTab(2)" id="nt2">
-    <span class="tab-icon">📋</span> Propuesta
-  </button>
-</nav>
+</div>
 
 <!-- ════════════════════════════════════════
      TAB 0 — PLATAFORMA (SOOFT SaaS Cotizador)
@@ -597,39 +712,15 @@ body{font-family:'Montserrat',sans-serif;background:#F4F4F2;min-height:100vh;fon
 ════════════════════════════════════════ -->
 <div id="tp2" class="tab-panel">
 
-  <!-- TIPO DE SERVICIO -->
-  <div class="card fu">
-    <div class="card-title">Tipo de servicio</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-      <button id="ts-staff" onclick="setTipo('staff')"
-        class="srv-btn active" style="flex-direction:column;align-items:flex-start;gap:6px">
-        <div style="font-size:22px">👥</div>
-        <div>
-          <div style="font-weight:800;font-size:12px;color:var(--text)">Staff Augmentation</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:2px">SOOFT provee · Cliente gestiona</div>
-        </div>
-      </button>
-      <button id="ts-celula" onclick="setTipo('celula')"
-        class="srv-btn" style="flex-direction:column;align-items:flex-start;gap:6px">
-        <div style="font-size:22px">⚡</div>
-        <div>
-          <div style="font-weight:800;font-size:12px;color:var(--text)">Célula Ágil</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:2px">SOOFT provee y gestiona · DM incluido</div>
-        </div>
-      </button>
-      <button id="ts-saas" onclick="setTipo('saas')"
-        class="srv-btn" style="flex-direction:column;align-items:flex-start;gap:6px">
-        <div style="font-size:22px">🏢</div>
-        <div>
-          <div style="font-weight:800;font-size:12px;color:var(--text)">Plataforma SaaS</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:2px">ATS Enterprise · Licencia mensual</div>
-        </div>
-      </button>
+  <!-- Indicador tipo activo -->
+  <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--dark);border-radius:10px;margin-bottom:2px">
+    <div id="prop-tipo-icon" style="font-size:20px">👥</div>
+    <div>
+      <div id="prop-tipo-label" style="font-size:12px;font-weight:800;color:white;text-transform:uppercase;letter-spacing:.5px">Staff Augmentation</div>
+      <div id="prop-tipo-sub" style="font-size:10px;color:rgba(255,255,255,.5)">SOOFT provee · Cliente gestiona</div>
     </div>
-    <!-- Badge tipo activo -->
-    <div id="tipo-badge" style="margin-top:12px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--orange);font-weight:700">
-      <div style="width:8px;height:8px;border-radius:50%;background:var(--orange)"></div>
-      <span id="tipo-badge-txt">Staff Augmentation seleccionado</span>
+    <div style="margin-left:auto">
+      <button onclick="goSubTab(0)" style="font-size:10px;font-weight:700;color:var(--orange);background:rgba(255,102,0,.15);border:1px solid rgba(255,102,0,.3);border-radius:6px;padding:4px 10px;cursor:pointer;font-family:'Montserrat',sans-serif">← Volver a configurar</button>
     </div>
   </div>
 
@@ -860,12 +951,63 @@ const fA=n=>'$\u202F'+Math.round(n).toLocaleString('es-AR');
 const fP=n=>(n*100).toFixed(1)+'%';
 
 /* ════ TAB NAVIGATION ════ */
-function goTab(i){
-  [0,1,2].forEach(j=>{
-    $('tp'+j).classList.toggle('active',j===i);
-    $('nt'+j).classList.toggle('active',j===i);
+/* ── Tipo de servicio nav ── */
+const TIPO_CONFIG = {
+  staff:  { label:'Staff Augmentation', tabs:['👥 Cotizar Equipo','📋 Propuesta'], panels:['tp1','tp2'], defaultTab:0 },
+  celula: { label:'Célula Ágil',        tabs:['⚡ Cotizar Célula','📋 Propuesta'], panels:['tp1','tp2'], defaultTab:0 },
+  saas:   { label:'Plataforma SaaS',    tabs:['🏢 Configurar Plataforma','📋 Propuesta'], panels:['tp0','tp2'], defaultTab:0 },
+};
+
+const TIPO_DESCS = {
+  staff:  'SOOFT provee los perfiles · el cliente gestiona el equipo',
+  celula: 'SOOFT provee y gestiona · Delivery Manager incluido sin costo',
+  saas:   'Licencia ATS Enterprise · Vacantes y usuarios ilimitados',
+};
+
+function setTipoNav(t) {
+  tipoActivo = t;
+  // Update tipo strip
+  ['staff','celula','saas'].forEach(k => {
+    const btn = $('tb-'+k);
+    if(btn) btn.classList.toggle('active', k===t);
   });
-  if(i===2){ refreshProposal(); refreshResumenInv(); }
+  // Update context bar
+  const ctxLabels = {staff:'Cotizando: Staff Augmentation', celula:'Cotizando: Célula Ágil', saas:'Cotizando: Plataforma SaaS'};
+  if($('ctx-label')) $('ctx-label').textContent = ctxLabels[t];
+  if($('ctx-desc'))  $('ctx-desc').textContent  = TIPO_DESCS[t];
+  // Update sub-tab labels
+  const cfg = TIPO_CONFIG[t];
+  $('st0-label').textContent = cfg.tabs[0];
+  $('st1-label').textContent = cfg.tabs[1];
+  // Activate first sub-tab
+  goSubTab(0);
+  // Update carta template
+  resetCarta();
+  // Sync the old setTipo references
+  setTipo(t);
+}
+
+let activeSubTab = 0;
+function goSubTab(i) {
+  activeSubTab = i;
+  const cfg = TIPO_CONFIG[tipoActivo];
+  // Hide all panels
+  ['tp0','tp1','tp2'].forEach(id => { const el=$(id); if(el) el.classList.remove('active'); });
+  // Show selected panel
+  const panelId = cfg.panels[i];
+  const panel = $(panelId);
+  if(panel) panel.classList.add('active');
+  // Update sub-tab active state
+  [0,1].forEach(j => { const el=$('st'+j); if(el) el.classList.toggle('active',j===i); });
+  // Refresh if propuesta tab
+  if(cfg.panels[i]==='tp2') { refreshProposal(); refreshResumenInv(); }
+}
+
+/* Legacy goTab — kept for internal calls */
+function goTab(i) {
+  // Map old indexes to new sub-tab system
+  if(i===2) { goSubTab(1); return; }
+  goSubTab(0);
 }
 
 /* ════ PLATFORM FUNCTIONS ════ */
@@ -1312,15 +1454,8 @@ SOOFT Technology`
 };
 
 function setTipo(t) {
-  tipoActivo = t;
-  ['staff','celula','saas'].forEach(k => {
-    const el = $('ts-'+k);
-    if(el) el.classList.toggle('active', k===t);
-  });
-  const labels = {staff:'Staff Augmentation seleccionado',celula:'Célula Ágil seleccionada',saas:'Plataforma SaaS seleccionada'};
-  if($('tipo-badge-txt')) $('tipo-badge-txt').textContent = labels[t];
-  resetCarta();
-  refreshResumenInv();
+  // delegate to setTipoNav when called internally
+  setTipoNav(t);
 }
 
 function resetCarta() {
@@ -1331,6 +1466,13 @@ function resetCarta() {
 }
 
 function refreshResumenInv() {
+  // Update propuesta tipo badge
+  const icons = {staff:'👥',celula:'⚡',saas:'🏢'};
+  const labels2 = {staff:'Staff Augmentation',celula:'Célula Ágil',saas:'Plataforma SaaS'};
+  const subs = {staff:'SOOFT provee · Cliente gestiona',celula:'SOOFT provee y gestiona · DM incluido',saas:'ATS Enterprise · Licencia mensual'};
+  if($('prop-tipo-icon')) $('prop-tipo-icon').textContent = icons[tipoActivo];
+  if($('prop-tipo-label')) $('prop-tipo-label').textContent = labels2[tipoActivo];
+  if($('prop-tipo-sub')) $('prop-tipo-sub').textContent = subs[tipoActivo];
   const ri = $('resumen-inv-content');
   if (!ri) return;
   const title = {staff:'Equipo — Inversión',celula:'Célula Ágil — Inversión',saas:'Plataforma — Inversión'};
@@ -1532,7 +1674,7 @@ function generarPPTX() {
 setSrv('cliente');
 calcP();
 // Init tipo after DOM is ready
-setTimeout(()=>{ setTipo('staff'); }, 100);
+setTimeout(()=>{ setTipoNav('staff'); }, 100);
 // Refresh resumen when switching to propuesta tab
 
 </script>
