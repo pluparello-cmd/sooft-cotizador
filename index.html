@@ -586,7 +586,7 @@ body{font-family:'Montserrat',sans-serif;background:#F4F4F2;min-height:100vh;fon
 
   <!-- Agregar persona -->
   <div class="card fu">
-    <div class="card-title">Agregar persona</div>
+    <div class="card-title">Agregar persona <span style="font-size:9px;font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0">· v29.04.2026 · Sin Ganancias · OSDE 260 · Monotributo Feb 2026</span></div>
     <div class="g2" style="margin-bottom:10px">
       <div>
         <div class="field-label">Nombre</div>
@@ -610,14 +610,17 @@ body{font-family:'Montserrat',sans-serif;background:#F4F4F2;min-height:100vh;fon
         <div class="field-label">Monotributo mensual</div>
         <select id="nmono" class="field" style="margin-top:4px;cursor:pointer">
           <option value="0">No aplica / Factura empresa</option>
-          <option value="3334.24">Cat. A</option>
-          <option value="3728.29">Cat. B</option>
-          <option value="4262.11">Cat. C</option>
-          <option value="5025.96">Cat. D</option>
-          <option value="6601.71">Cat. E</option>
-          <option value="7902.06">Cat. F</option>
-          <option value="9216.76">Cat. G</option>
-          <option value="16114.67">Cat. H</option>
+          <option value="42386.74">Cat. A — $42.387</option>
+          <option value="48250.78">Cat. B — $48.251</option>
+          <option value="56501.85">Cat. C — $56.502</option>
+          <option value="72414.10">Cat. D — $72.414</option>
+          <option value="102537.97">Cat. E — $102.538</option>
+          <option value="129045.32">Cat. F — $129.045</option>
+          <option value="197108.23">Cat. G — $197.108</option>
+          <option value="447346.93">Cat. H — $447.347</option>
+          <option value="824802.26">Cat. I — $824.802</option>
+          <option value="999007.65">Cat. J — $999.008</option>
+          <option value="1381687.90">Cat. K — $1.381.688</option>
         </select>
       </div>
     </div>
@@ -635,15 +638,12 @@ body{font-family:'Montserrat',sans-serif;background:#F4F4F2;min-height:100vh;fon
       </div>
       <div id="neto-info" style="display:none;margin-bottom:8px"></div>
       <div>
-        <div class="field-label">Swiss Medical</div>
-        <select id="nswiss" class="field" style="margin-top:4px;cursor:pointer">
-          <option value="0">No aplica</option>
-          <option value="8498.08">Individual — $8.498</option>
-          <option value="12407.52">Individual + Hijo — $12.408</option>
-          <option value="16996.15">Matrimonio — $16.996</option>
-          <option value="20905.59">Matrimonio + Hijo — $20.906</option>
-          <option value="2650.38">Hijo adicional — $2.650</option>
-        </select>
+        <div class="field-label">OSDE 260 — Edad del titular</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+          <input type="number" id="nosde-edad" class="field" min="0" max="99" placeholder="Edad (0=no aplica)" oninput="actualizarCostoOsde()" style="max-width:140px">
+          <div style="font-size:11px;color:var(--muted)" id="nosde-display">No aplica</div>
+        </div>
+        <div style="font-size:9px;color:var(--muted);margin-top:3px">Plan empresa · 30% descuento · ingresá la edad del titular</div>
       </div>
     </div>
 
@@ -953,8 +953,69 @@ const PWD='$ooft2026';
 const SP={srv:'cliente',int:false,intHrs:0,cuotas:1,ent:false,entQty:0,spt:false,sptHrs:0};
 
 /* ════ STAFF STATE (compañero) ════ */
-var CF={est:120000,maq:48922.68,sipa:.1077,inssjp:.0159,asig:.047,fondo:.0094,os:.06,lrt:.0084,lrtf:82.28,faecys:.005,agec:.02,seg:243,ap:.17,umbral:330000,gni:252564.84,dedEsp:1212311.24,
-tabG:[{d:0,h:97202,f:0,p:.05,e:0},{d:97202,h:194404.01,f:4960.1,p:.09,e:97202},{d:194404.01,h:291606.01,f:13608.28,p:.12,e:194404.01},{d:291606.01,h:388808.02,f:25727.52,p:.15,e:291606.01},{d:388808.02,h:583212.02,f:39852.82,p:.19,e:388808.02},{d:583212.02,h:777616.02,f:76789.58,p:.23,e:583212.02},{d:777616.02,h:1166424.03,f:121502.5,p:.27,e:777616.02},{d:1166424.03,h:1555232.07,f:226480.66,p:.31,e:1166424.03},{d:1555232.07,h:1e15,f:347011.16,p:.35,e:1555232.07}]};
+/* ── Config SOOFT v29.04.2026 — sin ganancias ── */
+var CF={
+  est:120000,          // costo estructura
+  maq:48922.68,        // valor máquina mensual
+  ap:.17,              // aportes empleado (17%)
+  sipa:.1077,          // contribución SIPA
+  inssjp:.0159,        // contribución INSSJP
+  asig:.047,           // asignaciones familiares
+  fondo:.0094,         // fondo de empleo
+  os:.06,              // obra social patronal
+  lrt:.0084,           // LRT porcentual
+  lrtf:1936.68,        // F931 fijo ($1.602) + Seguro Colectivo ($334.68)
+  faecys:0,            // Sindicato Faecys (0 en este período)
+  agec:0,              // Sindicato Agec (0 en este período)
+  seg:0,               // Seguro Mercantil (0 en este período)
+  limAp:3245240.49,    // límite base para aportes y contribuciones (mayo 2025)
+  coef:2,              // coeficiente de tarifa por defecto
+};
+
+/* ── OSDE 260 — Plan Empresa (30% descuento) ── */
+const OSDE260 = [
+  {edad:0,precio:74046.70},{edad:1,precio:76269.90},{edad:2,precio:78550.50},
+  {edad:3,precio:80917.90},{edad:4,precio:83344.80},{edad:5,precio:85854.30},
+  {edad:6,precio:88428.20},{edad:7,precio:91081.90},{edad:8,precio:93800.00},
+  {edad:9,precio:96635.70},{edad:10,precio:98566.30},{edad:11,precio:100545.20},
+  {edad:12,precio:102564.70},{edad:13,precio:104615.00},{edad:14,precio:106708.70},
+  {edad:15,precio:108843.00},{edad:16,precio:110990.60},{edad:17,precio:113229.20},
+  {edad:18,precio:116631.20},{edad:19,precio:120112.30},{edad:20,precio:123738.30},
+  {edad:21,precio:127437.10},{edad:22,precio:131257.00},{edad:23,precio:135214.80},
+  {edad:24,precio:139259.40},{edad:25,precio:143432.10},{edad:26,precio:147760.90},
+  {edad:27,precio:152194.00},{edad:28,precio:159798.10},{edad:29,precio:167774.60},
+  {edad:30,precio:176162.00},{edad:35,precio:218000.00},{edad:40,precio:269000.00},
+  {edad:45,precio:330000.00},{edad:50,precio:406000.00},{edad:55,precio:498000.00},
+  {edad:60,precio:611000.00},{edad:65,precio:750000.00},
+];
+function costoOsde260(edad) {
+  if (!edad || edad < 0) return 0;
+  let prev = OSDE260[0];
+  for (let i=1; i<OSDE260.length; i++) {
+    if (edad <= OSDE260[i].edad) {
+      // interpolación lineal entre rangos
+      const r = (edad - prev.edad) / (OSDE260[i].edad - prev.edad);
+      return Math.round(prev.precio + r * (OSDE260[i].precio - prev.precio));
+    }
+    prev = OSDE260[i];
+  }
+  return Math.round(OSDE260[OSDE260.length-1].precio);
+}
+
+/* ── Monotributo Feb 2026 ── */
+const MONO_CAT = [
+  {cat:'A', total:42386.74},
+  {cat:'B', total:48250.78},
+  {cat:'C', total:56501.85},
+  {cat:'D', total:72414.10},
+  {cat:'E', total:102537.97},
+  {cat:'F', total:129045.32},
+  {cat:'G', total:197108.23},
+  {cat:'H', total:447346.93},
+  {cat:'I', total:824802.26},
+  {cat:'J', total:999007.65},
+  {cat:'K', total:1381687.90},
+];
 var staff=[];var expO=false;
 
 /* ════ HELPERS ════ */
@@ -1083,32 +1144,30 @@ function calcP(){
 }
 
 /* ════ STAFF FUNCTIONS (del compañero, adaptadas) ════ */
-function ganC(b){
-  if(b<CF.umbral)return{paga:false,anual:0,mens:0};
-  var s=(b-b*CF.ap)*12-(CF.gni+CF.dedEsp);if(s<=0)return{paga:false,anual:0,mens:0};
-  var tr=null;for(var i=0;i<CF.tabG.length;i++){if(s>CF.tabG[i].d&&s<=CF.tabG[i].h){tr=CF.tabG[i];break;}}
-  if(!tr)return{paga:false,anual:0,mens:0};var a=tr.f+(s-tr.e)*tr.p;
-  return a>0?{paga:true,anual:a,mens:a/12}:{paga:false,anual:0,mens:0};
-}
+function ganC(b){ return {paga:false,anual:0,mens:0}; } // sin ganancias v29.04.2026
 function calcNeto(){
-  $('nneto').value='';var b=parseFloat($('nbruto').value);var box=$('neto-info');
+  $('nneto').value='';
+  var b=parseFloat($('nbruto').value);
+  var box=$('neto-info');
   if(!b||b<=0){box.style.display='none';return;}
-  var gn=ganC(b),ap=b*CF.ap,neto=b-ap-gn.mens,paga=gn.paga;
-  var col=paga?'#6B21A8':'var(--green)';var bgH=paga?'#F3E8FF':'var(--green-lt)';
-  box.innerHTML='<div style="background:'+bgH+';border-radius:8px;padding:10px 13px">'
-    +'<div style="font-size:12px;font-weight:700;color:'+col+';">'+(paga?'⚠ Paga Impuesto a las Ganancias':'✓ No paga Impuesto a las Ganancias')+'</div>'
-    +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px">'
-    +'<div><div class="kpi-label">Aportes (17%)</div><div style="font-weight:800;font-size:14px">'+fA(ap)+'</div></div>'
-    +(paga?'<div><div class="kpi-label" style="color:#6B21A8">Ganancias/mes</div><div style="font-weight:800;font-size:14px;color:#6B21A8">'+fA(gn.mens)+'</div></div>':'<div></div>')
-    +'<div><div class="kpi-label" style="color:var(--green)">Neto de bolsillo</div><div style="font-weight:800;font-size:15px;color:var(--green)">'+fA(neto)+'</div></div>'
+  // v29.04.2026 — sin cálculo de ganancias
+  var ap=b*CF.ap;
+  var neto=b-ap;
+  box.innerHTML='<div style="background:var(--green-lt);border-radius:8px;padding:10px 13px">'
+    +'<div style="font-size:12px;font-weight:700;color:var(--green);">✓ Sin retención de Ganancias (v29.04.2026)</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">'
+    +'<div><div class="kpi-label">Aportes empleado (17%)</div><div style="font-weight:800;font-size:14px">'+fA(ap)+'</div></div>'
+    +'<div><div class="kpi-label" style="color:var(--green)">Neto estimado de bolsillo</div><div style="font-weight:800;font-size:15px;color:var(--green)">'+fA(neto)+'</div></div>'
     +'</div></div>';
   box.style.display='block';
 }
 function calcBruto(){
   $('nbruto').value='';$('neto-info').style.display='none';
   var n=parseFloat($('nneto').value);if(!n||n<=0)return;
-  var b=n/(1-CF.ap);for(var i=0;i<15;i++){var gn=ganC(b),ap=b*CF.ap,nc=b-ap-gn.mens,d=n-nc;if(Math.abs(d)<0.5)break;b+=d;}
-  $('nbruto').value=Math.round(b);calcNeto();
+  // Sin ganancias: bruto = neto / (1 - 0.17)
+  var b = Math.round(n / (1 - CF.ap));
+  $('nbruto').value = b;
+  calcNeto();
 }
 function chgTipo(){
   var t=$('ntipo').value;
@@ -1123,20 +1182,46 @@ function toggl(id){
 }
 function togV(id){return $(id).style.background.includes('102')}
 
+function actualizarCostoOsde() {
+  var edad = parseInt($('nosde-edad').value)||0;
+  var costo = costoOsde260(edad);
+  if($('nosde-display')) {
+    $('nosde-display').textContent = edad > 0 ? '$ '+costo.toLocaleString('es-AR')+'/mes' : 'No aplica';
+  }
+}
+
 function cFL(hon,mono,vac,maq){
   var d9=vac?((hon/25)-(hon/30))*14:0,e9=hon,f9=(hon*1.18)/6,j9=hon/2;
   var c10=((d9+e9+j9)/12)+f9+CF.est,maqC=maq?CF.maq:0;
   return{tipo:'fl',hon:hon,mono:mono,vac:d9,agM:e9/12,pd:f9,tiM:j9/12,est:CF.est,maqC:maqC,total:hon+mono+c10+maqC,
   des:[['Honorario',hon],['Monotributo',mono],['Estructura',CF.est],['Plus vacacional',d9],['Aguinaldo (1/12)',e9/12],['Tarifa int.(1/12)',j9/12],['Prev. despido',f9],['Máquina',maqC]].filter(x=>x[1]>0)};
 }
-function cEMP(bruto,swiss,vac,maq){
-  var sipa=bruto*CF.sipa,inssjp=bruto*CF.inssjp,asig=bruto*CF.asig,fondo=bruto*CF.fondo;
-  var os=bruto*CF.os,lrt=bruto*CF.lrt+CF.lrtf,fae=bruto*CF.faecys,age=bruto*CF.agec;
-  var contrib=sipa+inssjp+asig+fondo+os+lrt+fae+age+CF.seg+swiss,mens=bruto+contrib;
-  var d9=vac?((bruto/25)-(bruto/30))*14:0,e9=bruto,f9=(bruto*1.18)/6,j9=bruto/2;
-  var c10=((d9+e9+j9)/12)+f9+CF.est,maqC=maq?CF.maq:0;
-  return{tipo:'emp',bruto:bruto,swiss:swiss,contrib:contrib,mens:mens,vac:d9,agM:e9/12,pd:f9,tiM:j9/12,est:CF.est,maqC:maqC,total:mens+c10+maqC,
-  des:[['Sueldo bruto',bruto],['SIPA 10.77%',sipa],['INSSJP 1.59%',inssjp],['Asig. Fam. 4.7%',asig],['Fondo Empleo 0.94%',fondo],['OS pat. 6%',os],['LRT',lrt],['Faecys 0.5%',fae],['Agec 2%',age],['Seg. Mercantil',CF.seg],['Swiss Medical',swiss],['Estructura',CF.est],['Plus vacacional',d9],['Aguinaldo (1/12)',e9/12],['Tarifa int.(1/12)',j9/12],['Prev. despido',f9],['Máquina',maqC]].filter(x=>x[1]>0)};
+function cEMP(bruto,osde,vac,maq){
+  // Contribuciones patronales (v29.04.2026 — sin ganancias)
+  var baseAp = Math.min(bruto, CF.limAp); // límite base aportes mayo 2025
+  var sipa   = baseAp * CF.sipa;
+  var inssjp = baseAp * CF.inssjp;
+  var asig   = baseAp * CF.asig;
+  var fondo  = baseAp * CF.fondo;
+  var os     = baseAp * CF.os;
+  var lrt    = baseAp * CF.lrt + CF.lrtf; // porcentual + F931 fijo ($1.602) + Seguro Colectivo ($334.68)
+  var contrib = sipa+inssjp+asig+fondo+os+lrt+osde;
+  var mens    = bruto + contrib;
+  // Provisiones (plus vacacional, aguinaldo, previsión despido)
+  var d9 = vac ? ((bruto/25)-(bruto/30))*14 : 0;
+  var e9 = bruto, f9 = (bruto*1.18)/6, j9 = bruto/2;
+  var prov = ((d9+e9+j9)/12) + f9;
+  var maqC = maq ? CF.maq : 0;
+  var total = mens + prov + CF.est + maqC;
+  return{tipo:'emp',bruto:bruto,osde:osde,contrib:contrib,mens:mens,vac:d9,agM:e9/12,pd:f9,tiM:j9/12,est:CF.est,maqC:maqC,total:total,
+  des:[
+    ['Sueldo bruto',bruto],
+    ['SIPA 10.77%',sipa],['INSSJP patr. 1.59%',inssjp],['Asig. Fam. 4.7%',asig],
+    ['Fondo Empleo 0.94%',fondo],['OS patronal 6%',os],['LRT + F931',lrt],
+    ['OSDE 260',osde],['Estructura',CF.est],
+    ['Plus vacacional',d9],['Aguinaldo (1/12)',e9/12],['Tarifa int.(1/12)',j9/12],
+    ['Prev. despido',f9],['Máquina',maqC],
+  ].filter(x=>x[1]>0)};
 }
 
 function agregarS(){
@@ -1151,11 +1236,13 @@ function agregarS(){
   }else{
     var bruto=parseFloat($('nbruto').value);
     if(!bruto||bruto<=0){err.textContent='Ingresá el sueldo bruto.';err.style.display='block';return;}
-    costo=cEMP(bruto,parseFloat($('nswiss').value)||0,vac,maq);
+    var edadOsde=parseInt($('nosde-edad').value)||0;
+    costo=cEMP(bruto,costoOsde260(edadOsde),vac,maq);
   }
   staff.push({nom:nom,costo:costo,tarifa:tar});
   $('nn').value='';$('nhon').value='';$('nbruto').value='';$('nneto').value='';$('ntar').value='';
-  $('nmono').selectedIndex=0;$('nswiss').selectedIndex=0;$('neto-info').style.display='none';
+  $('nmono').selectedIndex=0;$('nosde-edad').value='';$('neto-info').style.display='none';
+  if($('nosde-display')) $('nosde-display').textContent='No aplica';
   $('tvac').style.background='var(--orange)';$('tvac').querySelector('div').style.left='21px';
   $('tmaq').style.background='#DDD9D0';$('tmaq').querySelector('div').style.left='3px';
   renderStaff();recalcS();
