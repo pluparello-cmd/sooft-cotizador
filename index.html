@@ -345,6 +345,48 @@ body{font-family:'Montserrat',sans-serif;background:#F4F4F2;min-height:100vh;fon
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .fu{animation:fadeUp .4s ease both}
 .fu1{animation-delay:.05s}.fu2{animation-delay:.1s}.fu3{animation-delay:.15s}.fu4{animation-delay:.2s}.fu5{animation-delay:.25s}.fu6{animation-delay:.3s}
+
+/* ══ CÉLULA ÁGIL — estilos exclusivos ══ */
+.cel-pill-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.cel-pill{
+  display:flex;align-items:center;gap:5px;
+  padding:6px 11px;border-radius:8px;
+  border:1.5px solid var(--border);background:var(--bg);
+  font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;
+  font-family:'Montserrat',sans-serif;color:var(--muted);
+}
+.cel-pill:hover{border-color:var(--orange);background:#FFF3EB;color:var(--orange)}
+.cel-pill.active{border-color:var(--orange);background:#FFF3EB;color:var(--orange);box-shadow:0 0 0 2px #FFD4B3}
+.cel-tipo-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.cel-tipo-opt{
+  padding:11px 10px;border:1.5px solid var(--border);border-radius:10px;
+  background:var(--bg);text-align:center;cursor:pointer;
+  transition:all .15s;font-family:'Montserrat',sans-serif;
+  font-size:11px;font-weight:700;color:var(--muted);
+}
+.cel-tipo-opt:hover{border-color:var(--orange);background:#FFF3EB;color:var(--orange)}
+.cel-tipo-opt.active{border-color:var(--orange);background:#FFF3EB;color:var(--orange)}
+.cel-tipo-opt-icon{font-size:18px;margin-bottom:4px}
+.cel-dm-banner{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 13px;
+  background:var(--green-lt);border:1.5px solid #A7F3D0;
+  border-radius:10px;margin-bottom:12px;
+  font-size:12px;color:var(--green);line-height:1.5;
+}
+.cel-dm-icon{font-size:18px;flex-shrink:0}
+.cel-perfil-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 12px;border:1px solid var(--border);
+  border-radius:10px;background:var(--bg);margin-bottom:7px;
+}
+.cel-perfil-left{flex:1}
+.cel-perfil-name{font-weight:700;font-size:13px}
+.cel-perfil-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:2px}
+.cel-badge-fl{font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;background:var(--green-lt);color:var(--green)}
+.cel-badge-emp{font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;background:var(--blue-lt);color:var(--blue)}
+.cel-badge-rol{font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;background:#F3F0FF;color:#6D28D9}
+.cel-kpi-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px}
 </style>
 </head>
 <body>
@@ -580,9 +622,12 @@ body{font-family:'Montserrat',sans-serif;background:#F4F4F2;min-height:100vh;fon
 </div><!-- /tp0 -->
 
 <!-- ════════════════════════════════════════
-     TAB 1 — EQUIPO (Staff Cotizador)
+     TAB 1 — EQUIPO (Staff + Célula Ágil)
 ════════════════════════════════════════ -->
 <div id="tp1" class="tab-panel">
+
+<!-- ░░ PANEL STAFF AUGMENTATION ░░ -->
+<div id="panel-staff">
 
   <!-- Agregar persona -->
   <div class="card fu">
@@ -717,6 +762,204 @@ body{font-family:'Montserrat',sans-serif;background:#F4F4F2;min-height:100vh;fon
     <div id="expbody" style="display:none"></div>
     <button onclick="goTab(2)" class="btn-primary" style="margin-top:4px">Ver propuesta completa →</button>
   </div>
+
+</div><!-- /panel-staff -->
+
+<!-- ░░ PANEL CÉLULA ÁGIL ░░ -->
+<div id="panel-celula" style="display:none">
+
+  <!-- ── Paso 1: Agregar perfil a la célula ── -->
+  <div class="card fu">
+    <div class="card-title">Agregar perfil a la célula <span style="font-size:9px;font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0">· v29.04.2026 · Sin Ganancias · OSDE 260</span></div>
+
+    <div class="field-label" style="margin-bottom:6px">Tipo de perfil</div>
+    <div class="cel-pill-row" id="cel-pill-row">
+      <div class="cel-pill active" data-rol="Programador Backend" onclick="celSelRol(this)">💻 Backend</div>
+      <div class="cel-pill" data-rol="Programador Frontend" onclick="celSelRol(this)">🖼 Frontend</div>
+      <div class="cel-pill" data-rol="Programador Fullstack" onclick="celSelRol(this)">⚡ Fullstack</div>
+      <div class="cel-pill" data-rol="Scrum Master" onclick="celSelRol(this)">🔄 Scrum Master</div>
+      <div class="cel-pill" data-rol="Analista Funcional" onclick="celSelRol(this)">📋 Analista Func.</div>
+      <div class="cel-pill" data-rol="Project Manager" onclick="celSelRol(this)">📁 PM</div>
+      <div class="cel-pill" data-rol="QA Tester" onclick="celSelRol(this)">🐛 QA Tester</div>
+      <div class="cel-pill" data-rol="UX/UI Designer" onclick="celSelRol(this)">🎨 UX/UI</div>
+      <div class="cel-pill" data-rol="DevOps" onclick="celSelRol(this)">🖥 DevOps</div>
+      <div class="cel-pill" data-rol="Data Engineer" onclick="celSelRol(this)">📊 Data Eng.</div>
+      <div class="cel-pill" data-rol="Tech Lead" onclick="celSelRol(this)">🏆 Tech Lead</div>
+    </div>
+
+    <div class="g3" style="margin-bottom:10px">
+      <div>
+        <div class="field-label">Seniority</div>
+        <select id="cel-seniority" class="field" style="margin-top:4px;cursor:pointer">
+          <option value="Junior">Junior</option>
+          <option value="Semi Senior" selected>Semi Senior</option>
+          <option value="Senior">Senior</option>
+          <option value="Tech Lead">Tech Lead</option>
+        </select>
+      </div>
+      <div>
+        <div class="field-label">Cantidad</div>
+        <input type="number" id="cel-qty" value="1" min="1" max="20" class="field" style="margin-top:4px">
+      </div>
+      <div>
+        <div class="field-label">Tarifa venta / persona ($)</div>
+        <input type="number" id="cel-tar" placeholder="Opcional" class="field field-green" style="margin-top:4px">
+      </div>
+    </div>
+
+    <div class="field-label" style="margin-bottom:8px">Modalidad de contratación</div>
+    <div class="cel-tipo-row">
+      <div class="cel-tipo-opt active" id="cel-tipo-fl" onclick="celChgTipo('fl')">
+        <div class="cel-tipo-opt-icon">📄</div>
+        Freelancer / Honorarios
+      </div>
+      <div class="cel-tipo-opt" id="cel-tipo-emp" onclick="celChgTipo('emp')">
+        <div class="cel-tipo-opt-icon">📑</div>
+        Empleado / Relación de Dependencia
+      </div>
+    </div>
+
+    <!-- Campos Freelance -->
+    <div id="cel-fl-f" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+      <div>
+        <div class="field-label">Honorario mensual ($)</div>
+        <input id="cel-nhon" type="number" placeholder="1500000" class="field" style="margin-top:4px">
+      </div>
+      <div>
+        <div class="field-label">Monotributo mensual</div>
+        <select id="cel-nmono" class="field" style="margin-top:4px;cursor:pointer">
+          <option value="0">No aplica / Factura empresa</option>
+          <option value="42386.74">Cat. A — $42.387</option>
+          <option value="48250.78">Cat. B — $48.251</option>
+          <option value="56501.85">Cat. C — $56.502</option>
+          <option value="72414.10">Cat. D — $72.414</option>
+          <option value="102537.97">Cat. E — $102.538</option>
+          <option value="129045.32">Cat. F — $129.045</option>
+          <option value="197108.23">Cat. G — $197.108</option>
+          <option value="447346.93">Cat. H — $447.347</option>
+          <option value="824802.26">Cat. I — $824.802</option>
+          <option value="999007.65">Cat. J — $999.008</option>
+          <option value="1381687.90">Cat. K — $1.381.688</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Campos Empleado -->
+    <div id="cel-emp-f" style="display:none;margin-bottom:10px">
+      <div class="g2" style="margin-bottom:8px">
+        <div>
+          <div class="field-label">Sueldo bruto ($)</div>
+          <input id="cel-nbruto" type="number" placeholder="1200000" oninput="celCalcNeto()" class="field" style="margin-top:4px">
+        </div>
+        <div>
+          <div class="field-label">O ingresá el neto ($)</div>
+          <input id="cel-nneto" type="number" placeholder="Neto de bolsillo" oninput="celCalcBruto()" class="field field-gold" style="margin-top:4px">
+        </div>
+      </div>
+      <div id="cel-neto-info" style="display:none;margin-bottom:8px"></div>
+      <div>
+        <div class="field-label">OSDE 260 — Edad del titular</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+          <input type="number" id="cel-nosde-edad" class="field" min="0" max="99" placeholder="Edad (0=no aplica)" oninput="celActualizarOsde()" style="max-width:140px">
+          <div style="font-size:11px;color:var(--muted)" id="cel-nosde-display">No aplica</div>
+        </div>
+        <div style="font-size:9px;color:var(--muted);margin-top:3px">Plan empresa · 30% descuento · ingresá la edad del titular</div>
+      </div>
+    </div>
+
+    <!-- Toggles -->
+    <div style="background:var(--bg);border-radius:8px;padding:8px 12px;margin-bottom:12px;display:flex;gap:20px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:12px">Plus vacacional</span>
+        <div id="cel-tvac" onclick="celToggl('cel-tvac')" style="width:40px;height:22px;border-radius:11px;cursor:pointer;position:relative;background:var(--orange);flex-shrink:0">
+          <div style="position:absolute;top:3px;left:21px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:12px">Máquina</span>
+        <div id="cel-tmaq" onclick="celToggl('cel-tmaq')" style="width:40px;height:22px;border-radius:11px;cursor:pointer;position:relative;background:#DDD9D0;flex-shrink:0">
+          <div style="position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="cel-ferr" style="display:none;font-size:12px;color:var(--red);padding:7px 10px;background:var(--red-lt);border-radius:6px;margin-bottom:8px"></div>
+    <button onclick="celAgregarPerfil()" class="btn-primary">+ Agregar perfil a la célula</button>
+  </div>
+
+  <!-- ── Paso 2: Composición de la célula ── -->
+  <div class="card fu fu1">
+    <div class="card-title">Composición de la célula</div>
+
+    <div class="cel-dm-banner">
+      <div class="cel-dm-icon">✅</div>
+      <div><strong>Delivery Manager + People Care incluidos sin costo adicional</strong> durante toda la vigencia del servicio. Seguimiento mensual técnico y de bienestar del equipo.</div>
+    </div>
+
+    <div id="cel-slist">
+      <div style="text-align:center;padding:18px;color:var(--muted);font-size:12px">Sin perfiles agregados — construí la célula desde el formulario de arriba</div>
+    </div>
+
+    <div id="cel-kpis" style="display:none;margin-top:12px">
+      <div class="cel-kpi-row">
+        <div class="kpi">
+          <div class="kpi-label">Perfiles en la célula</div>
+          <div class="kpi-val" id="cel-kpi-qty" style="font-size:18px">0</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Costo total mensual</div>
+          <div class="kpi-val" id="cel-kpi-costo" style="font-size:18px">$0</div>
+        </div>
+        <div class="kpi" style="background:#FFF3EB;border-color:#FFD4B3">
+          <div class="kpi-label" style="color:var(--orange)">Tarifa sugerida p/ 28% ★</div>
+          <div class="kpi-val" id="cel-kpi-sug" style="color:var(--orange);font-size:18px">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Paso 3: Rentabilidad ── -->
+  <div class="card fu fu2">
+    <div class="card-title">Rentabilidad esperada</div>
+    <div class="g2" style="margin-bottom:14px">
+      <div>
+        <div class="field-label">Tarifa de venta total célula ($)</div>
+        <input id="cel-rven" type="number" placeholder="Total a cobrar al cliente" oninput="celRecalcS()" class="field" style="margin-top:4px">
+      </div>
+      <div>
+        <div class="field-label">Margen objetivo (%)</div>
+        <input id="cel-rmrg" type="number" value="28" min="1" max="99" oninput="celRecalcS()" class="field" style="margin-top:4px;border-color:var(--orange);background:#FFF3EB;color:var(--orange);font-size:16px;font-weight:800">
+      </div>
+    </div>
+
+    <div class="g3" style="margin-bottom:14px">
+      <div class="kpi">
+        <div class="kpi-label">Costo total</div>
+        <div class="kpi-val" id="cel-mc" style="font-size:18px">$0</div>
+      </div>
+      <div class="kpi" id="cel-mr-box">
+        <div class="kpi-label">Rentabilidad</div>
+        <div class="kpi-val" id="cel-mr" style="font-size:18px">—</div>
+      </div>
+      <div class="kpi" style="background:#FFF3EB;border-color:#FFD4B3">
+        <div class="kpi-label" style="color:var(--orange)" id="cel-ms-lbl">Venta p/ 28% ★</div>
+        <div class="kpi-val" id="cel-ms" style="color:var(--orange);font-size:18px">—</div>
+      </div>
+    </div>
+
+    <div id="cel-dres" style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 13px;margin-bottom:14px">
+      <div style="text-align:center;color:var(--muted);padding:8px;font-size:12px">Agregá perfiles para ver el resumen de rentabilidad</div>
+    </div>
+
+    <div class="field-label" style="margin-bottom:8px">Escenarios de precio de venta</div>
+    <div id="cel-sctbl" style="margin-bottom:12px"></div>
+
+    <button onclick="togExpCel()" id="cel-exp-btn" class="btn-secondary" style="margin-bottom:8px">▼ Ver desglose detallado por perfil</button>
+    <div id="cel-expbody" style="display:none"></div>
+    <button onclick="goTab(2)" class="btn-primary" style="margin-top:4px">Ver propuesta completa →</button>
+  </div>
+
+</div><!-- /panel-celula -->
 
 </div><!-- /tp1 -->
 
@@ -1055,6 +1298,8 @@ function setTipoNav(t) {
   $('st1-label').textContent = cfg.tabs[1];
   // Activate first sub-tab
   goSubTab(0);
+  // Sync staff/celula panels visibility
+  syncPanels();
   // Update carta template
   resetCarta();
   // Sync the old setTipo references
@@ -1556,6 +1801,209 @@ SOOFT Technology`
 function setTipo(t) {
   // delegate to setTipoNav when called internally
   setTipoNav(t);
+  syncPanels();
+}
+
+/* ════ PANEL VISIBILITY: staff vs celula ════ */
+function syncPanels() {
+  var isCell = tipoActivo === 'celula';
+  var ps = $('panel-staff'), pc = $('panel-celula');
+  if(ps) ps.style.display = isCell ? 'none' : 'block';
+  if(pc) pc.style.display = isCell ? 'block' : 'none';
+}
+
+/* ════ CÉLULA ÁGIL — FUNCIONES ════ */
+var celStaff = [];
+var celRolSel = 'Programador Backend';
+var celTipoSel = 'fl';
+var celExpO = false;
+
+function celSelRol(el) {
+  document.querySelectorAll('.cel-pill').forEach(function(p){ p.classList.remove('active'); });
+  el.classList.add('active');
+  celRolSel = el.dataset.rol;
+}
+
+function celChgTipo(t) {
+  celTipoSel = t;
+  $('cel-tipo-fl').classList.toggle('active', t === 'fl');
+  $('cel-tipo-emp').classList.toggle('active', t === 'emp');
+  $('cel-fl-f').style.display = t === 'fl' ? 'grid' : 'none';
+  $('cel-emp-f').style.display = t === 'emp' ? 'block' : 'none';
+  $('cel-neto-info').style.display = 'none';
+}
+
+function celToggl(id) {
+  var el = $(id), on = el.style.background.includes('102');
+  el.style.background = on ? '#DDD9D0' : 'var(--orange)';
+  el.querySelector('div').style.left = on ? '3px' : '21px';
+}
+function celTogV(id) { return $(id).style.background.includes('102'); }
+
+function celCalcNeto() {
+  $('cel-nneto').value = '';
+  var b = parseFloat($('cel-nbruto').value);
+  var box = $('cel-neto-info');
+  if (!b || b <= 0) { box.style.display = 'none'; return; }
+  var ap = b * CF.ap, neto = b - ap;
+  box.innerHTML = '<div style="background:var(--green-lt);border-radius:8px;padding:10px 13px">'
+    + '<div style="font-size:12px;font-weight:700;color:var(--green);">&#x2713; Sin retención de Ganancias (v29.04.2026)</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">'
+    + '<div><div class="kpi-label">Aportes empleado (17%)</div><div style="font-weight:800;font-size:14px">' + fA(ap) + '</div></div>'
+    + '<div><div class="kpi-label" style="color:var(--green)">Neto estimado de bolsillo</div><div style="font-weight:800;font-size:15px;color:var(--green)">' + fA(neto) + '</div></div>'
+    + '</div></div>';
+  box.style.display = 'block';
+}
+
+function celCalcBruto() {
+  $('cel-nbruto').value = ''; $('cel-neto-info').style.display = 'none';
+  var n = parseFloat($('cel-nneto').value); if (!n || n <= 0) return;
+  var b = Math.round(n / (1 - CF.ap));
+  $('cel-nbruto').value = b;
+  celCalcNeto();
+}
+
+function celActualizarOsde() {
+  var edad = parseInt($('cel-nosde-edad').value) || 0;
+  var costo = costoOsde260(edad);
+  if ($('cel-nosde-display')) {
+    $('cel-nosde-display').textContent = edad > 0 ? '$ ' + costo.toLocaleString('es-AR') + '/mes' : 'No aplica';
+  }
+}
+
+function celAgregarPerfil() {
+  var err = $('cel-ferr'); err.style.display = 'none';
+  var seniority = $('cel-seniority').value;
+  var qty = parseInt($('cel-qty').value) || 1;
+  var tar = parseFloat($('cel-tar').value) || 0;
+  var vac = celTogV('cel-tvac'), maq = celTogV('cel-tmaq');
+  var costo;
+  if (celTipoSel === 'fl') {
+    var hon = parseFloat($('cel-nhon').value);
+    if (!hon || hon <= 0) { err.textContent = 'Ingresa el honorario mensual.'; err.style.display = 'block'; return; }
+    var mono = parseFloat($('cel-nmono').value) || 0;
+    costo = cFL(hon, mono, vac, maq);
+  } else {
+    var bruto = parseFloat($('cel-nbruto').value);
+    if (!bruto || bruto <= 0) { err.textContent = 'Ingresa el sueldo bruto.'; err.style.display = 'block'; return; }
+    var edadOsde = parseInt($('cel-nosde-edad').value) || 0;
+    costo = cEMP(bruto, costoOsde260(edadOsde), vac, maq);
+  }
+  for (var i = 0; i < qty; i++) {
+    celStaff.push({ rol: celRolSel, seniority: seniority, tipo: celTipoSel, costo: costo, tarifa: tar });
+  }
+  $('cel-nhon').value = ''; $('cel-nbruto').value = ''; $('cel-nneto').value = '';
+  $('cel-tar').value = ''; $('cel-qty').value = 1;
+  $('cel-nmono').selectedIndex = 0; $('cel-nosde-edad').value = '';
+  $('cel-neto-info').style.display = 'none';
+  if ($('cel-nosde-display')) $('cel-nosde-display').textContent = 'No aplica';
+  $('cel-tvac').style.background = 'var(--orange)'; $('cel-tvac').querySelector('div').style.left = '21px';
+  $('cel-tmaq').style.background = '#DDD9D0'; $('cel-tmaq').querySelector('div').style.left = '3px';
+  celRenderStaff();
+  celRecalcS();
+}
+
+function celRenderStaff() {
+  var c = $('cel-slist');
+  var kpis = $('cel-kpis');
+  if (!celStaff.length) {
+    c.innerHTML = '<div style="text-align:center;padding:18px;color:var(--muted);font-size:12px">Sin perfiles agregados — construi la celula desde el formulario de arriba</div>';
+    if (kpis) kpis.style.display = 'none';
+    return;
+  }
+  if (kpis) kpis.style.display = 'block';
+  c.innerHTML = celStaff.map(function(p, i) {
+    var co = p.costo;
+    var det = co.tipo === 'fl' ? 'Hon. ' + fA(co.hon) + (co.mono ? ' · Mono ' + fA(co.mono) : '') : 'Bruto ' + fA(co.bruto);
+    return '<div class="cel-perfil-item">'
+      + '<div class="cel-perfil-left">'
+      + '<div class="cel-perfil-name">' + p.seniority + ' ' + p.rol + '</div>'
+      + '<div class="cel-perfil-meta">'
+      + '<span class="' + (co.tipo === 'fl' ? 'cel-badge-fl' : 'cel-badge-emp') + '">' + (co.tipo === 'fl' ? 'Freelance' : 'Empleado') + '</span>'
+      + '<span>' + det + '</span>'
+      + (p.tarifa > 0 ? '<span style="color:var(--green);font-weight:600">· Tarifa ' + fA(p.tarifa) + '</span>' : '')
+      + '</div></div>'
+      + '<div style="display:flex;align-items:center;gap:8px">'
+      + '<div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:800">' + fA(co.total) + '<span style="font-size:10px;font-weight:400;color:var(--muted)">/mes</span></div>'
+      + '<button onclick="celDelS(' + i + ')" class="del-btn">x</button>'
+      + '</div></div>';
+  }).join('');
+}
+
+function celDelS(i) { celStaff.splice(i, 1); celRenderStaff(); celRecalcS(); }
+
+function celRecalcS() {
+  var costoT = celStaff.reduce(function(s,p){ return s+p.costo.total; }, 0);
+  var tarSuma = celStaff.reduce(function(s,p){ return s+p.tarifa; }, 0);
+  var venI = parseFloat($('cel-rven').value) || 0;
+  var ven = venI > 0 ? venI : tarSuma;
+  var mrg = parseFloat($('cel-rmrg').value) || 28;
+  if ($('cel-rven') && tarSuma > 0 && !venI) $('cel-rven').placeholder = fA(tarSuma) + ' (suma tarifas)';
+  $('cel-mc').textContent = fA(costoT);
+  var sug = costoT > 0 ? costoT / (1 - mrg / 100) : 0;
+  if ($('cel-kpi-qty'))   $('cel-kpi-qty').textContent  = celStaff.length;
+  if ($('cel-kpi-costo')) $('cel-kpi-costo').textContent = fA(costoT);
+  if ($('cel-kpi-sug'))   $('cel-kpi-sug').textContent   = costoT > 0 ? fA(sug) : '—';
+  var rEl = $('cel-mr'), rBox = $('cel-mr-box');
+  if (ven > 0 && costoT > 0) {
+    var rent = (ven - costoT) / ven;
+    rEl.textContent = fP(rent);
+    var col = rent>=.30?'var(--green)':rent>=.20?'var(--gold)':'var(--red)';
+    var bg  = rent>=.30?'var(--green-lt)':rent>=.20?'var(--gold-lt)':'var(--red-lt)';
+    rEl.style.color=col; rBox.style.background=bg;
+  } else { rEl.textContent='—'; rEl.style.color='var(--text)'; rBox.style.background='var(--bg)'; }
+  $('cel-ms-lbl').textContent = 'Venta p/ ' + Math.round(mrg) + '% ★';
+  $('cel-ms').textContent = costoT > 0 ? fA(sug) : '—';
+  if (costoT > 0) {
+    var honT  = celStaff.reduce(function(s,p){return s+(p.costo.tipo==='fl'?p.costo.hon+(p.costo.mono||0):(p.costo.mens||0));},0);
+    var provT = celStaff.reduce(function(s,p){return s+(p.costo.vac||0)+(p.costo.agM||0)+(p.costo.tiM||0)+(p.costo.pd||0);},0);
+    var estT  = celStaff.reduce(function(s,p){return s+(p.costo.est||0);},0);
+    var maqT  = celStaff.reduce(function(s,p){return s+(p.costo.maqC||0);},0);
+    var gan   = ven > 0 ? ven - costoT : null;
+    var rows  = [['Honorarios / Sueldos + contrib.',honT],['Provisiones',provT],['Costo estructura',estT]];
+    if (maqT>0) rows.push(['Maquina',maqT]);
+    $('cel-dres').innerHTML = '<div style="background:var(--bg);border-radius:8px;padding:10px">'
+      +'<div style="font-size:11px;font-weight:800;color:var(--green);margin-bottom:8px">&#x2713; Delivery Manager + People Care: sin costo adicional</div>'
+      +rows.map(function(r){return '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px"><span style="color:var(--muted)">'+r[0]+'</span><span style="font-weight:700">'+fA(r[1])+'</span></div>';}).join('')
+      +'<div style="display:flex;justify-content:space-between;padding:6px 0;border-top:1.5px solid var(--blue-lt);font-size:13px;font-weight:800;margin-top:4px"><span>Costo total celula</span><span>'+fA(costoT)+'</span></div>'
+      +(gan!==null?'<div style="display:flex;justify-content:space-between;padding:5px 0;font-size:12px"><span style="color:var(--muted)">Ganancia estimada</span><span style="font-weight:700;color:'+(gan<0?'var(--red)':'var(--green)')+'">'+fA(gan)+'</span></div>':'')
+      +'</div>';
+    var base=[20,25,30,35,40],all=base.slice();
+    if(!all.includes(Math.round(mrg)))all.push(Math.round(mrg));
+    all.sort(function(a,b){return a-b;});
+    $('cel-sctbl').innerHTML=all.map(function(p){
+      var v=costoT/(1-p/100),ga=v-costoT,isT=Math.round(mrg)===p;
+      var col=isT?'var(--orange)':p>=30?'var(--green)':p>=25?'var(--gold)':'var(--red)';
+      var bg=isT?'#FFF3EB':p>=30?'var(--green-lt)':p>=25?'var(--gold-lt)':'var(--red-lt)';
+      return '<div class="sc-row" style="background:'+bg+';border:1.5px solid '+(isT?'var(--orange)':'transparent')+'">'
+        +'<span style="font-weight:900;font-size:14px;color:'+col+';width:48px">'+p+'%'+(isT?' ★':'')+'</span>'
+        +'<span style="font-weight:700;font-size:13px">'+fA(v)+'</span>'
+        +'<span style="font-size:11px;color:var(--muted)">gan. '+fA(ga)+'</span>'
+        +(ven>0&&Math.abs(v-ven)/v<.015?'<span style="font-size:10px;font-weight:800;color:var(--blue)">← actual</span>':'')
+        +'</div>';
+    }).join('');
+  } else {
+    $('cel-dres').innerHTML='<div style="text-align:center;color:var(--muted);padding:8px;font-size:12px">Agrega perfiles para ver el resumen</div>';
+  }
+  if(celExpO) celRenderExp();
+}
+
+function togExpCel(){
+  celExpO=!celExpO;
+  $('cel-expbody').style.display=celExpO?'block':'none';
+  $('cel-exp-btn').textContent=celExpO?'▲ Ocultar desglose':'▼ Ver desglose detallado por perfil';
+  if(celExpO) celRenderExp();
+}
+
+function celRenderExp(){
+  $('cel-expbody').innerHTML=celStaff.map(function(p){
+    var co=p.costo;
+    return '<div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 13px;margin-bottom:8px">'
+      +'<div style="font-weight:800;font-size:13px;color:var(--blue);margin-bottom:8px">'+p.seniority+' '+p.rol
+      +' <span style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;background:'+(co.tipo==='fl'?'var(--green-lt)':'var(--blue-lt)')+';color:'+(co.tipo==='fl'?'var(--green)':'var(--blue)')+'">'+(co.tipo==='fl'?'Freelance':'Empleado')+'</span></div>'
+      +(co.des||[]).map(function(d){return '<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);font-size:11px"><span style="color:var(--muted)">'+d[0]+'</span><span style="font-weight:700">'+fA(d[1])+'</span></div>';}).join('')
+      +'<div style="display:flex;justify-content:space-between;padding:6px 0;border-top:1.5px solid var(--blue-lt);font-size:13px;font-weight:800"><span>Total</span><span style="color:var(--blue)">'+fA(co.total)+'</span></div></div>';
+  }).join('');
 }
 
 function resetCarta() {
@@ -1591,7 +2039,7 @@ function refreshResumenInv() {
       +'</tbody></table>'
       +'<div class="total-bar" style="margin-top:10px"><div class="total-bar-label">Total mensual</div><div class="total-bar-val">'+fU(total)+'</div></div>';
   } else {
-    const costoT = staff.reduce((s,p)=>s+p.costo.total,0);
+    const costoT = (tipoActivo==='celula' ? celStaff : staff).reduce((s,p)=>s+p.costo.total,0);
     const incluye = tipoActivo==='celula' ? '<tr style="background:#F0FDF4"><td colspan="2" style="color:var(--green);font-weight:700">✓ Delivery Manager + People Care</td><td style="text-align:right;color:var(--green);font-weight:800">SIN COSTO</td></tr>' : '';
     if (!staff.length) {
       ri.innerHTML='<div style="text-align:center;padding:12px;color:var(--muted);font-size:12px">Agregá personas en la pestaña 👥 Equipo</div>';
@@ -1718,13 +2166,14 @@ function generarPPTX() {
     s4.addTable(rows,{x:.35,y:1.5,w:9.3,border:{pt:1,color:'DDDDDD'},fontSize:11,fontFace:'Arial',colW:[4.3,2.7,2.3]});
     s4.addText(`* USD. No incluyen impuestos. Vigencia: ${vigencia} días.`,{x:.35,y:5.0,w:9.3,h:.22,fontSize:9,color:MU,fontFace:'Arial',italic:true});
   } else {
-    const costoT = staff.reduce((s,p)=>s+p.costo.total,0);
-    if (!staff.length) {
+    const activeStaff = tipoActivo==='celula' ? celStaff : staff;
+    const costoT = activeStaff.reduce((s,p)=>s+p.costo.total,0);
+    if (!activeStaff.length) {
       s4.addText('Sin perfiles cargados. Agregá personas en la pestaña Equipo.',{x:.35,y:2.5,w:9.3,h:.4,fontSize:13,color:MU,fontFace:'Arial',align:'center'});
     } else {
       const rows = [
         [mkH('Perfil'),mkH('País'),mkH('Moneda'),{text:'Costo mensual',options:{bold:true,color:WH,...hdrFill,align:'right'}}],
-        ...staff.map(p=>[p.nom,'Argentina','Pesos',{text:fmtA(p.costo.total),options:{align:'right'}}]),
+        ...activeStaff.map(p=>[p.costo.tipo==='fl'?p.nom+' (FL)':p.nom,'Argentina','Pesos',{text:fmtA(p.costo.total),options:{align:'right'}}]),
       ];
       if (tipoActivo==='celula') {
         rows.push([{text:'Delivery Manager + People Care',options:{italic:true,color:OR,colspan:3}},{text:'SIN COSTO',options:{align:'right',bold:true,color:OR}}]);
