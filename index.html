@@ -1302,8 +1302,6 @@ function setTipoNav(t) {
   syncPanels();
   // Update carta template
   resetCarta();
-  // Sync the old setTipo references
-  setTipo(t);
 }
 
 let activeSubTab = 0;
@@ -1799,9 +1797,8 @@ SOOFT Technology`
 };
 
 function setTipo(t) {
-  // delegate to setTipoNav when called internally
-  setTipoNav(t);
-  syncPanels();
+  // setTipoNav is now the main entry point; setTipo kept for legacy calls
+  if (tipoActivo !== t) setTipoNav(t);
 }
 
 /* ════ PANEL VISIBILITY: staff vs celula ════ */
@@ -1924,8 +1921,8 @@ function celRenderStaff() {
       + (p.tarifa > 0 ? '<span style="color:var(--green);font-weight:600">· Tarifa ' + fA(p.tarifa) + '</span>' : '')
       + '</div></div>'
       + '<div style="display:flex;align-items:center;gap:8px">'
-      + '<div style="font-family:'DM Mono',monospace;font-size:14px;font-weight:800">' + fA(co.total) + '<span style="font-size:10px;font-weight:400;color:var(--muted)">/mes</span></div>'
-      + '<button onclick="celDelS(' + i + ')" class="del-btn">x</button>'
+      + '<div style="font-family:\'DM Mono\',monospace;font-size:14px;font-weight:800">\' + fA(co.total) + \'<span style="font-size:10px;font-weight:400;color:var(--muted)">/mes</span></div>'
+      + '<button onclick="celDelS('+i+')" class="del-btn">x</button>'
       + '</div></div>';
   }).join('');
 }
