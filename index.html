@@ -1028,6 +1028,16 @@ body{font-family:'Montserrat',sans-serif;background:#F4F4F2;min-height:100vh;fon
         <input id="cli-ciudad" type="text" placeholder="Buenos Aires" class="field" style="margin-top:4px" value="Buenos Aires">
       </div>
     </div>
+    <!-- Foto de portada del cliente -->
+    <div style="margin-top:12px">
+      <div class="field-label">Foto de portada del cliente <span style="font-weight:400;color:var(--muted)">· Imagen corporativa para la tapa del PPTX</span></div>
+      <label style="margin-top:6px;display:flex;align-items:center;gap:10px;cursor:pointer;background:#F9F9F7;border:1.5px dashed var(--border);border-radius:8px;padding:10px 14px;transition:border-color .2s" onmouseover="this.style.borderColor='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'">
+        <span style="font-size:20px">🖼</span>
+        <span id="cover-photo-name" style="font-size:12px;color:var(--muted);flex:1">Clic para seleccionar imagen del cliente (JPG, PNG)...</span>
+        <input id="cli-foto-cover" type="file" accept="image/*" style="display:none" onchange="previewCoverPhoto(this)">
+      </label>
+      <img id="cover-photo-preview" src="" alt="" style="display:none;margin-top:8px;max-height:90px;border-radius:6px;border:1px solid var(--border);object-fit:cover;width:100%">
+    </div>
   </div>
 
   <!-- Carta de presentación editable -->
@@ -2050,179 +2060,299 @@ function refreshResumenInv() {
   }
 }
 
+/* ════ FOTO PORTADA ════ */
+function previewCoverPhoto(input) {
+  const preview = $('cover-photo-preview');
+  const nameEl  = $('cover-photo-name');
+  if (input.files && input.files[0]) {
+    nameEl.textContent = input.files[0].name;
+    nameEl.style.color = 'var(--text)';
+    const reader = new FileReader();
+    reader.onload = e => {
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
 /* ════ PPTX GENERATOR ════ */
-function generarPPTX() {
+async function generarPPTX() {
   const empresa   = $('cli-empresa').value.trim();
   const comercial = $('cli-comercial').value.trim();
   if (!empresa)   { alert('Completá la empresa cliente.'); $('cli-empresa').focus(); return; }
   if (!comercial) { alert('Completá tu nombre como comercial.'); $('cli-comercial').focus(); return; }
 
-  const proyecto = $('cli-proyecto').value.trim() || 'Propuesta de Servicios';
-  const ciudad   = $('cli-ciudad').value.trim() || 'Buenos Aires';
-  const vigencia = $('cli-vigencia').value;
+  const proyecto = $('cli-proyecto').value.trim() || '';
   const cargo    = $('cli-cargo').value.trim() || 'Account Manager';
-  const carta    = $('cli-carta').value.trim();
+  const vigencia = $('cli-vigencia').value || '30';
   const fecha    = new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
-  const fmtA     = n => '$ ' + Math.round(n).toLocaleString('es-AR');
-  const fmtU2    = n => 'USD ' + Math.round(n).toLocaleString('es-AR');
 
-  const tipoLabels = {staff:'DESARROLLO DE STAFF',celula:'CÉLULA ÁGIL',saas:'PLATAFORMA SaaS ENTERPRISE'};
-  const tipoLabel  = tipoLabels[tipoActivo];
+  const img   = name => './assets/' + name;
+  const fmtA  = n => '$ ' + Math.round(n).toLocaleString('es-AR');
+  const fmtU  = n => 'USD ' + Math.round(n).toLocaleString('es-AR');
 
-  const pptx = new PptxGenJS();
-  pptx.layout = 'LAYOUT_16x9';
-  pptx.title  = `Propuesta ${tipoLabel} - ${empresa}`;
+  // Foto de portada: usa la imagen subida por el usuario, o el fallback genérico
+  const coverFile = $('cli-foto-cover') && $('cli-foto-cover').files[0];
+  const coverData = coverFile ? await new Promise(res => {
+    const r = new FileReader();
+    r.onload = e => res(e.target.result);
+    r.readAsDataURL(coverFile);
+  }) : null;
 
-  const OR='FF6600', DK='2D2D2D', WH='FFFFFF', MU='595959';
+    const pptx = new PptxGenJS();
+  pptx.layout  = 'LAYOUT_16x9';
+  pptx.title   = 'SOOFT – Propuesta ' + empresa;
+  pptx.company = 'SOOFT Technology';
 
-  function addHeaderFooter(slide, sectionTitle) {
-    // Top orange bar
-    slide.addShape(pptx.shapes.RECTANGLE, {x:0,y:0,w:10,h:.5,fill:{color:OR},line:{color:OR}});
-    slide.addText('SOOFT Technology', {x:.25,y:.06,w:3.5,h:.38,fontSize:12,bold:true,color:WH,fontFace:'Arial',valign:'middle'});
-    slide.addText('#CREARESINFINITO', {x:6,y:.06,w:3.75,h:.38,fontSize:9,color:WH,fontFace:'Arial',align:'right',charSpacing:2,valign:'middle'});
-    // Section title dark bar
-    slide.addShape(pptx.shapes.RECTANGLE, {x:0,y:.5,w:10,h:.5,fill:{color:DK},line:{color:DK}});
-    slide.addText(sectionTitle, {x:.3,y:.53,w:9.4,h:.44,fontSize:15,bold:true,color:WH,fontFace:'Arial Black',valign:'middle'});
-    // Bottom footer dark bar
-    slide.addShape(pptx.shapes.RECTANGLE, {x:0,y:5.3,w:10,h:.325,fill:{color:DK},line:{color:DK}});
-    slide.addText('www.sooft.tech', {x:.25,y:5.33,w:4,h:.28,fontSize:9,color:OR,fontFace:'Arial',valign:'middle'});
-    slide.addText('#CREARESINFINITO', {x:5.75,y:5.33,w:4,h:.28,fontSize:9,color:WH,fontFace:'Arial',align:'right',charSpacing:2,valign:'middle'});
+  const OR = 'FF6600', DK = '333333', BK = '000000', WH = 'FFFFFF', MU = '595959';
+  const SH = pptx.shapes;
+
+  function footer(sl) {
+    sl.addImage({ path: img('footer-bar.png'), x: 0, y: 4.677, w: 10, h: 0.948 });
   }
 
-  // ─ Slide 1: Portada ─
+  /* ── SLIDE 1: PORTADA ──────────────────────────────────────── */
   const s1 = pptx.addSlide();
-  s1.addShape(pptx.shapes.RECTANGLE, {x:0,y:0,w:4,h:5.625,fill:{color:OR},line:{color:OR}});
-  s1.addText('SOOFT', {x:.25,y:.35,w:3.5,h:.75,fontSize:44,bold:true,color:WH,fontFace:'Arial Black'});
-  s1.addText('TECHNOLOGY', {x:.25,y:1.05,w:3.5,h:.3,fontSize:10,color:WH,fontFace:'Arial',charSpacing:6});
-  s1.addText('#CREARESINFINITO', {x:.25,y:5.15,w:3.5,h:.3,fontSize:9,color:WH,fontFace:'Arial',charSpacing:3});
-  s1.addText('www.sooft.tech', {x:.25,y:5.35,w:3.5,h:.2,fontSize:8,color:'FFCC99',fontFace:'Arial'});
-  s1.addShape(pptx.shapes.RECTANGLE, {x:4,y:0,w:6,h:5.625,fill:{color:WH},line:{color:WH}});
-  s1.addText('Servicio:', {x:4.3,y:.55,w:5.5,h:.3,fontSize:13,bold:true,color:OR,fontFace:'Arial Black'});
-  s1.addText(tipoLabel, {x:4.3,y:.82,w:5.5,h:.5,fontSize:18,bold:true,color:OR,fontFace:'Arial Black'});
-  s1.addText(proyecto, {x:4.3,y:1.38,w:5.5,h:.4,fontSize:14,bold:true,color:DK,fontFace:'Arial Black'});
-  s1.addShape(pptx.shapes.RECTANGLE, {x:4.3,y:1.92,w:5.3,h:.03,fill:{color:'DDDDDD'},line:{color:'DDDDDD'}});
-  s1.addText('Para la firma:', {x:4.3,y:2.05,w:5.5,h:.28,fontSize:11,bold:true,color:DK,fontFace:'Arial'});
-  s1.addText(empresa, {x:4.3,y:2.35,w:5.5,h:.48,fontSize:22,bold:true,color:DK,fontFace:'Arial Black'});
-  if($('cli-contacto').value.trim()) s1.addText($('cli-contacto').value.trim(), {x:4.3,y:2.88,w:5.5,h:.28,fontSize:11,color:MU,fontFace:'Arial'});
-  s1.addText([{text:'Fecha de Propuesta:  ',options:{bold:true}},{text:fecha}], {x:4.3,y:4.55,w:5.5,h:.28,fontSize:11,color:DK,fontFace:'Arial'});
+  if (coverData) { s1.addImage({ data: coverData, x: 0, y: 0, w: 10, h: 5.625 }); } else { s1.addImage({ path: img('foto-cover-bg.png'), x: 0, y: 0, w: 10, h: 5.625 }); }
+  s1.addImage({ path: img('cover-gradient.png'), x: 0, y: 0,     w: 10, h: 3.685 });
+  s1.addShape(SH.RECTANGLE, { x: 0, y: 2.885, w: 10, h: 2.74,  fill: { color: BK }, line: { type: 'none' } });
+  s1.addShape(SH.RECTANGLE, { x: 0.488, y: 3.415, w: 5.099, h: 0.909, fill: { color: OR }, line: { type: 'none' } });
+  s1.addImage({ path: img('logo-sooft-white.png'), x: 0.544, y: 2.42, w: 0.923, h: 0.282 });
+  s1.addText('CREAMOS SIN LÍMITES', { x: 6.5, y: 2.38, w: 3.4, h: 0.35,
+    fontSize: 9, color: WH, fontFace: 'Montserrat', align: 'right' });
+  s1.addText('Propuesta Técnica Comercial', { x: 0.544, y: 3.45, w: 4.9, h: 0.4,
+    fontSize: 20, bold: true, color: WH, fontFace: 'Montserrat' });
+  s1.addText('Ingeniería de Software Elite', { x: 0.544, y: 3.83, w: 4.9, h: 0.4,
+    fontSize: 20, bold: true, color: DK, fontFace: 'Montserrat' });
+  s1.addText('Implementación en', { x: 5.7, y: 3.56, w: 4.0, h: 0.35,
+    fontSize: 12, color: DK, fontFace: 'Montserrat', align: 'right' });
+  s1.addText(empresa, { x: 5.2, y: 3.85, w: 4.5, h: 0.85,
+    fontSize: 28, bold: true, color: OR, fontFace: 'Montserrat', align: 'right', shrinkText: true });
+  const tagline1 = proyecto || ('Estrategia de gestión integral y talento de alta performance para ' + empresa + '.');
+  s1.addText(tagline1, { x: 0.544, y: 4.36, w: 9.2, h: 0.32,
+    fontSize: 9, color: DK, fontFace: 'Montserrat' });
 
-  // ─ Slide 2: Carta ─
+  /* ── SLIDE 2: ECOSISTEMA SOOFT ─────────────────────────────── */
   const s2 = pptx.addSlide();
-  addHeaderFooter(s2,'Resumen de PROPUESTA DE SERVICIOS');
-  s2.addShape(pptx.shapes.RECTANGLE, {x:0,y:1.0,w:3.4,h:4.15,fill:{color:'EEEEEE'},line:{color:'CCCCCC'}});
-  s2.addText('[ Imagen ]', {x:0,y:2.7,w:3.4,h:.3,fontSize:10,color:'BBBBBB',fontFace:'Arial',align:'center'});
-  // Carta text
-  const lines = carta.split('\n');
-  let cy = 1.05;
-  lines.forEach(line => {
-    if (cy > 5.1) return;
-    const isSig = line===comercial||line===cargo||line==='SOOFT Technology';
-    s2.addText(line||' ', {x:3.55,y:cy,w:6.2,h:.28,fontSize:isSig?12:10.5,bold:isSig,color:isSig?DK:MU,fontFace:'Arial',valign:'top'});
-    cy += isSig ? .24 : .27;
-  });
+  s2.background = { color: WH };
+  s2.addImage({ path: img('foto-ecosistema.png'), x: 6.829, y: 0, w: 3.171, h: 5.625 });
+  footer(s2);
+  s2.addText([{ text: 'Ecosistema ', options: { bold: true, color: DK } },
+              { text: 'SOOFT',       options: { bold: false, color: OR } }],
+    { x: 0.645, y: 0.77, w: 5.5, h: 0.5, fontSize: 24, fontFace: 'Montserrat' });
+  s2.addText([{ text: 'Mucho más que una provisión de horas: ', options: { bold: false } },
+              { text: 'un modelo de valor agregado.',                   options: { bold: true } }],
+    { x: 0.579, y: 1.13, w: 5.5, h: 0.55, fontSize: 12, color: DK, fontFace: 'Montserrat' });
+  s2.addText([{ text: '20 Años de ',        options: { bold: true, color: DK } },
+              { text: 'Innovación Continua', options: { bold: false, color: OR } }],
+    { x: 0.645, y: 1.93, w: 5.5, h: 0.45, fontSize: 22, fontFace: 'Montserrat' });
+  s2.addText([{ text: 'Solidez Institucional\n', options: { bold: true } },
+              { text: 'Dos décadas liderando la transformación digital en LATAM. Nuestra madurez garantiza procesos de selección rigurosos y una estabilidad operativa que protege el ROI de su proyecto.' }],
+    { x: 0.603, y: 2.52, w: 2.56, h: 1.6, fontSize: 10, color: DK, fontFace: 'Montserrat' });
+  s2.addText([{ text: 'Impacto Disruptivo\n', options: { bold: true } },
+              { text: 'Implementamos con éxito agentes de IA de gran impacto corporativo y social. No solo resolvemos el presente, preparamos su arquitectura para el futuro tecnológico.' }],
+    { x: 3.5, y: 2.52, w: 2.56, h: 1.6, fontSize: 10, color: DK, fontFace: 'Montserrat' });
 
-  // ─ Slide 3: Detalle ─
+  /* ── SLIDE 3: DELIVERY MANAGER ─────────────────────────────── */
   const s3 = pptx.addSlide();
-  addHeaderFooter(s3,'Detalle de PROPUESTA DE SERVICIOS');
-  const items3 = tipoActivo==='celula'
-    ? ['SOOFT Technology provee Y gestiona el equipo de trabajo completo.','Incluye Delivery Manager sin costo adicional.','People Care realiza seguimiento mensual técnico y de bienestar.','Disponibilización del perfil: máximo 30 días corridos.','Preaviso de baja: 30 días corridos.','Habla hispana fluida en todos los perfiles.']
-    : tipoActivo==='staff'
-    ? ['SOOFT provee los perfiles; el cliente gestiona el equipo.','Disponibilización del perfil: máximo 30 días corridos.','Preaviso de baja: 30 días corridos.','SOOFT asegura equipamiento, registro laboral y confidencialidad.','Todos los perfiles con habla hispana fluida.']
-    : ['Licencia mensual del ATS Enterprise — vacantes y usuarios ilimitados.','Panel de administración, reportes avanzados y soporte por email.','Integración con sistemas HR/ERP según módulo seleccionado.','Entrevistador Virtual IA disponible como módulo adicional.','Infraestructura en la nube del cliente o SOOFT Cloud (opcional).'];
-  s3.addText('1. OBJETIVO', {x:.35,y:1.1,w:9.3,h:.3,fontSize:12,bold:true,color:DK,fontFace:'Arial'});
-  s3.addText(tipoActivo==='saas'
-    ? 'SOOFT Technology ofrece a '+empresa+' una plataforma ATS Enterprise para gestión integral de reclutamiento y selección, con escalabilidad sin costos adicionales por usuarios o vacantes.'
-    : 'SOOFT TECHNOLOGY ofrece a '+empresa+' servicios de '+tipoLabel+'. Nuestros profesionales altamente calificados se adaptan a las necesidades específicas del proyecto, garantizando calidad y rapidez.',
-    {x:.35,y:1.42,w:9.3,h:.5,fontSize:11,color:MU,fontFace:'Arial'});
-  s3.addText('2. ALCANCE — MODALIDAD DE PRESTACIÓN', {x:.35,y:2.0,w:9.3,h:.3,fontSize:12,bold:true,color:DK,fontFace:'Arial'});
-  items3.forEach((item,i)=>{
-    s3.addText([{text:'',options:{bullet:true}},{text:item}], {x:.5,y:2.35+i*.38,w:9.1,h:.35,fontSize:11,color:MU,fontFace:'Arial',valign:'top',bullet:{color:OR}});
+  s3.background = { color: WH };
+  s3.addImage({ path: img('foto-dm.jpg'), x: 0, y: 0, w: 3.171, h: 5.625 });
+  footer(s3);
+  s3.addText([{ text: 'El Rol del ',      options: { bold: false, color: DK } },
+              { text: 'Delivery Manager', options: { bold: true,  color: OR } }],
+    { x: 3.639, y: 0.73, w: 5.5, h: 0.5, fontSize: 24, fontFace: 'Montserrat' });
+  const dmRows = [
+    { icon: 'icon-onboarding.png',     tit: 'Onboarding Guiado',
+      txt: 'Inducción técnica y cultural acelerada para asegurar productividad total del recurso desde la primera semana.' },
+    { icon: 'icon-sincronizacion.png', tit: 'Sincronización Estratégica',
+      txt: 'Reuniones periódicas con sus líderes para alinear expectativas, validar Sprints y anticipar riesgos operativos.' },
+    { icon: 'icon-gestion.png',        tit: 'Gestión de Desempeño',
+      txt: 'Auditoría constante y reportes de métricas para garantizar que el valor entregado supere las metas pactadas.' },
+  ];
+  dmRows.forEach(function(row, i) {
+    const yBase = 1.47 + i * 0.916;
+    s3.addImage({ path: img(row.icon), x: 3.639, y: yBase, w: 0.31, h: 0.31 });
+    s3.addText([{ text: row.tit + '\n', options: { bold: true } }, { text: row.txt }],
+      { x: 4.091, y: yBase, w: 4.491, h: 0.72, fontSize: 10, color: DK, fontFace: 'Montserrat' });
   });
 
-  // ─ Slide 4: Inversión ─
+  /* ── SLIDE 4: SOPORTE IA ───────────────────────────────────── */
   const s4 = pptx.addSlide();
-  addHeaderFooter(s4,'Inversión en el Servicio');
-  s4.addText('3. DETALLE DE INVERSIÓN', {x:.35,y:1.1,w:9.3,h:.3,fontSize:12,bold:true,color:DK,fontFace:'Arial'});
+  s4.background = { color: WH };
+  s4.addImage({ path: img('foto-ia.jpg'), x: 6.829, y: 0, w: 3.171, h: 5.625 });
+  footer(s4);
+  s4.addText([{ text: 'Soporte ',              options: { bold: true,  color: DK } },
+              { text: 'Especializado en IA',   options: { bold: false, color: OR } }],
+    { x: 0.645, y: 1.34, w: 5.5, h: 0.5, fontSize: 24, fontFace: 'Montserrat' });
+  s4.addText(
+    'Cada una de nuestras unidades de negocio cuenta con el soporte activo de equipos expertos en Inteligencia Artificial y nuevas tendencias.\n\n' +
+    'El desarrollador asignado tiene acceso directo a este Core Team, permitiendo aplicar soluciones de vanguardia y optimizaciones de alto nivel en el desarrollo de ' + empresa + '.',
+    { x: 0.579, y: 1.79, w: 4.98, h: 2.0, fontSize: 11, color: DK, fontFace: 'Montserrat' });
 
-  const hdrFill = {fill:{color:OR}};
-  const totFill = {fill:{color:DK}};
-  const mkH = t => ({text:t,options:{bold:true,color:WH,...hdrFill}});
-  const mkT = (t,c) => ({text:t,options:{bold:true,color:c||OR,...totFill}});
+  /* ── SLIDE 5: ALCANCE OPERATIVO ────────────────────────────── */
+  const s5 = pptx.addSlide();
+  s5.background = { color: WH };
+  s5.addImage({ path: img('foto-alcance.jpg'), x: 0, y: 0, w: 3.171, h: 5.625 });
+  footer(s5);
+  s5.addText([{ text: 'Alcance ',   options: { bold: true,  color: DK } },
+              { text: 'Operativo',  options: { bold: false, color: OR } }],
+    { x: 3.639, y: 0.42, w: 5.5, h: 0.5, fontSize: 24, fontFace: 'Montserrat' });
+  s5.addText('Definición del perfil y compromiso de gestión integral de recursos.',
+    { x: 3.583, y: 0.82, w: 5.5, h: 0.32, fontSize: 10, color: MU, fontFace: 'Montserrat' });
 
-  if (tipoActivo==='saas') {
-    const {items,total} = calcP();
-    const rows = [
-      [mkH('Módulo / Servicio'),mkH('Condición'),{text:'USD / mes',options:{bold:true,color:WH,...hdrFill,align:'right'}}],
-      ['Fee Base Mensual — Vacantes y Usuarios ILIMITADOS','Fijo mensual',{text:fmtU2(P.base),options:{align:'right',bold:true}}],
-    ];
-    if (SP.srv==='sooft') rows.push(['Infraestructura SOOFT Cloud','Fijo mensual',{text:fmtU2(P.srv),options:{align:'right'}}]);
-    if (SP.int&&SP.intHrs>0) rows.push([`Cuota Implementación (1 de ${SP.cuotas})`,`${SP.intHrs} hrs × USD ${P.intHr}`,{text:fmtU2(items.cuota.v),options:{align:'right'}}]);
-    if (SP.ent&&SP.entQty>0) rows.push(['Entrevistador Virtual IA',`${SP.entQty} × USD ${P.ent}`,{text:fmtU2(items.ent.v),options:{align:'right'}}]);
-    if (SP.spt&&SP.sptHrs>0) rows.push(['Soporte Premium',`${SP.sptHrs} hrs × USD ${P.sptHr}`,{text:fmtU2(items.spt.v),options:{align:'right'}}]);
-    rows.push([mkT('TOTAL MENSUAL ESTIMADO',WH),mkT('',WH),{text:fmtU2(total),options:{bold:true,color:OR,...totFill,align:'right'}}]);
-    s4.addTable(rows,{x:.35,y:1.5,w:9.3,border:{pt:1,color:'DDDDDD'},fontSize:11,fontFace:'Arial',colW:[4.3,2.7,2.3]});
-    s4.addText(`* USD. No incluyen impuestos. Vigencia: ${vigencia} días.`,{x:.35,y:5.0,w:9.3,h:.22,fontSize:9,color:MU,fontFace:'Arial',italic:true});
+  const activeS5 = tipoActivo === 'celula' ? celStaff : staff;
+  let alcTxt = [];
+  if (activeS5.length > 0) {
+    activeS5.forEach(function(p) {
+      const nombre5 = p.nom ? p.nom : ((p.seniority || '') + ' ' + (p.rol || '')).trim();
+      const tipo5   = p.costo.tipo === 'emp' ? 'Relación de Dependencia' : 'Freelance / Honorarios';
+      alcTxt.push({ text: nombre5 + '\n', options: { bold: true } });
+      alcTxt.push({ text: tipo5 + '\n',   options: { color: OR } });
+    });
   } else {
-    const activeStaff = tipoActivo==='celula' ? celStaff : staff;
-    const costoT = activeStaff.reduce((s,p)=>s+p.costo.total,0);
-    if (!activeStaff.length) {
-      s4.addText('Sin perfiles cargados. Agregá personas en la pestaña Equipo.',{x:.35,y:2.5,w:9.3,h:.4,fontSize:13,color:MU,fontFace:'Arial',align:'center'});
-    } else {
-      const rows = [
-        [mkH('Perfil'),mkH('País'),mkH('Moneda'),{text:'Costo mensual',options:{bold:true,color:WH,...hdrFill,align:'right'}}],
-        ...activeStaff.map(p=>[p.costo.tipo==='fl'?p.nom+' (FL)':p.nom,'Argentina','Pesos',{text:fmtA(p.costo.total),options:{align:'right'}}]),
-      ];
-      if (tipoActivo==='celula') {
-        rows.push([{text:'Delivery Manager + People Care',options:{italic:true,color:OR,colspan:3}},{text:'SIN COSTO',options:{align:'right',bold:true,color:OR}}]);
-      }
-      rows.push([mkT('TOTAL MENSUAL',WH),mkT('',WH),mkT('',WH),{text:fmtA(costoT),options:{bold:true,color:OR,...totFill,align:'right'}}]);
-      s4.addTable(rows,{x:.35,y:1.5,w:9.3,border:{pt:1,color:'DDDDDD'},fontSize:11,fontFace:'Arial',colW:[3.8,1.5,1.5,2.5]});
-      s4.addText(`* Pesos argentinos. No incluyen impuestos. Revisión trimestral IPC INDEC.`,{x:.35,y:5.0,w:9.3,h:.22,fontSize:9,color:MU,fontFace:'Arial',italic:true});
+    alcTxt.push({ text: 'Perfil técnico para ' + empresa + '\n', options: { bold: true } });
+  }
+  alcTxt = alcTxt.concat([
+    { text: '\nSeniority: ',       options: { bold: true } },
+    { text: 'Experiencia comprobada en arquitecturas escalables.\n' },
+    { text: 'Gestión Ágil: ', options: { bold: true } },
+    { text: 'Dominio de metodologías Scrum y compromiso con los ciclos de entrega.\n' },
+    { text: 'Autogestión: ',   options: { bold: true } },
+    { text: 'Resolución técnica autónoma respaldada por soporte de ingeniería SOOFT.\n' },
+    { text: 'Disponibilidad: ',    options: { bold: true } },
+    { text: 'Full-Time en horario comercial acordado, modalidad remota o híbrida.' },
+  ]);
+  s5.addText(alcTxt, { x: 3.639, y: 1.23, w: 5.613, h: 3.1, fontSize: 10, color: DK, fontFace: 'Montserrat' });
+
+  /* ── SLIDE 6: RESPONSABILIDAD INTEGRAL ─────────────────────── */
+  const s6 = pptx.addSlide();
+  s6.background = { color: WH };
+  s6.addImage({ path: img('foto-responsabilidad.jpg'), x: 6.829, y: 0, w: 3.171, h: 5.625 });
+  footer(s6);
+  s6.addText([{ text: 'Responsabilidad\nIntegral ', options: { bold: true,  color: DK } },
+              { text: 'SOOFT',                      options: { bold: false, color: OR } }],
+    { x: 0.645, y: 0.8, w: 5.139, h: 1.0, fontSize: 24, fontFace: 'Montserrat' });
+  s6.addText([
+    { text: 'Gestión Administrativa y Técnica\n', options: { bold: true } },
+    { text: 'SOOFT se encarga del 100% de las obligaciones legales, fiscales y previsionales.\n\nIncluimos la provisión de equipamiento informático de alta gama y beneficios corporativos de primer nivel para asegurar la retención y foco del talento.' }],
+    { x: 0.579, y: 1.8, w: 4.98, h: 1.9, fontSize: 11, color: DK, fontFace: 'Montserrat' });
+
+  /* ── SLIDE 7: INVERSIÓN ──────────────────────────────────────── */
+  const s7 = pptx.addSlide();
+  s7.background = { color: WH };
+  footer(s7);
+  s7.addText([{ text: 'Inversión en el ', options: { bold: true,  color: DK } },
+              { text: 'Servicio',             options: { bold: false, color: OR } }],
+    { x: 2.5, y: 0.92, w: 5.0, h: 0.45, fontSize: 18, fontFace: 'Montserrat', align: 'center' });
+
+  // Header naranja
+  s7.addShape(SH.RECTANGLE, { x: 0.791, y: 1.604, w: 8.419, h: 0.659, fill: { color: OR }, line: { type: 'none' } });
+  s7.addText('Perfil Técnico',       { x: 0.98,  y: 1.75, w: 2.8,  h: 0.31, fontSize: 12, bold: true, color: WH, fontFace: 'Montserrat' });
+  s7.addText('Cant.',                    { x: 3.784, y: 1.75, w: 0.9,  h: 0.31, fontSize: 12, bold: true, color: WH, fontFace: 'Montserrat', align: 'center' });
+  s7.addText('Valor mensual (Flat)',     { x: 4.884, y: 1.75, w: 2.24, h: 0.31, fontSize: 12, bold: true, color: WH, fontFace: 'Montserrat' });
+  s7.addText('Valor Hora Equiv.',        { x: 7.43,  y: 1.75, w: 1.43, h: 0.31, fontSize: 11, bold: true, color: WH, fontFace: 'Montserrat' });
+
+  const activeS7 = tipoActivo === 'celula' ? celStaff : staff;
+  const filas7   = [];
+  let   totalVal = 0;
+
+  if (tipoActivo === 'saas') {
+    const rp = calcP();
+    totalVal = rp.total;
+    filas7.push({ perfil: 'Plataforma ATS Enterprise — Fee Base + Módulos', cant: '1',
+                  valor: fmtU(rp.total), hora: '—' });
+  } else if (activeS7.length > 0) {
+    activeS7.forEach(function(p) {
+      const nombre7 = p.nom ? p.nom : ((p.seniority || '') + ' ' + (p.rol || '')).trim();
+      const tarifa7 = p.tarifa || 0;
+      const hora7   = tarifa7 > 0 ? fmtA(Math.round(tarifa7 / 160)) : '—';
+      totalVal += tarifa7;
+      filas7.push({ perfil: nombre7, cant: '1', valor: tarifa7 > 0 ? fmtA(tarifa7) : '—', hora: hora7 });
+    });
+    if (tipoActivo === 'celula') {
+      filas7.push({ perfil: 'Delivery Manager + People Care', cant: '—',
+                    valor: 'SIN COSTO', hora: '—', esGratis: true });
     }
+  } else {
+    filas7.push({ perfil: empresa, cant: '1', valor: '—', hora: '—' });
   }
 
-  // ─ Slide 5: Condiciones ─
-  const s5 = pptx.addSlide();
-  addHeaderFooter(s5,'Forma de Pago y Condiciones Comerciales');
-  const conds = [
-    'Facturación mensual a período vencido.',
-    'Forma de pago: Transferencia bancaria.',
-    'Fecha de pago: 15 días corridos de la fecha de factura.',
-    `Validez de la propuesta: ${vigencia} días.`,
-    tipoActivo==='saas'
-      ? 'El precio del plan es fijo mensual. Módulos adicionales se facturan según uso.'
-      : 'Revisión de tarifas trimestralmente según IPC INDEC.',
-    tipoActivo==='celula'
-      ? 'Delivery Manager y People Care incluidos sin costo adicional durante toda la vigencia.'
-      : tipoActivo==='staff'
-      ? 'Traspaso de profesionales: fee equivalente a 1 mes de servicio (a partir del 6to mes).'
-      : 'Implementación financiable en cuotas mensuales según acuerdo.',
-    'Rescisión sin expresión de causa con 30 días de preaviso fehaciente.',
-    'Competencia: Tribunales ordinarios de la ciudad de Córdoba, Argentina.',
-    'Contacto: info@sooft.tech  ·  www.sooft.tech',
+  filas7.forEach(function(f, i) {
+    const yRow  = 2.263 + i * 0.38;
+    const bgRow = f.esGratis ? 'F0FDF4' : (i % 2 === 0 ? 'F7F7F7' : 'FFFFFF');
+    const tCol  = f.esGratis ? '1A7A52' : DK;
+    s7.addShape(SH.RECTANGLE, { x: 0.791, y: yRow, w: 8.419, h: 0.36, fill: { color: bgRow }, line: { type: 'none' } });
+    s7.addText(f.perfil, { x: 0.98,  y: yRow + 0.03, w: 2.8,  h: 0.31, fontSize: 11, bold: !f.esGratis, italic: !!f.esGratis, color: tCol, fontFace: 'Montserrat' });
+    s7.addText(f.cant,   { x: 3.784, y: yRow + 0.03, w: 0.9,  h: 0.31, fontSize: 12, bold: true, color: tCol, fontFace: 'Montserrat', align: 'center' });
+    s7.addText(f.valor,  { x: 4.884, y: yRow + 0.03, w: 2.24, h: 0.31, fontSize: 12, bold: true, color: f.esGratis ? '1A7A52' : DK, fontFace: 'Montserrat' });
+    s7.addText(f.hora,   { x: 7.43,  y: yRow + 0.03, w: 1.43, h: 0.31, fontSize: 11, bold: false, color: MU, fontFace: 'Montserrat' });
+  });
+
+  const yTot = 2.263 + filas7.length * 0.38 + 0.06;
+  s7.addShape(SH.RECTANGLE, { x: 0.791, y: yTot, w: 8.419, h: 0.44, fill: { color: '2D2D2D' }, line: { type: 'none' } });
+  s7.addText('TOTAL MENSUAL', { x: 0.98, y: yTot + 0.06, w: 3.5, h: 0.31, fontSize: 12, bold: true, color: WH, fontFace: 'Montserrat' });
+  const totStr = tipoActivo === 'saas' ? fmtU(totalVal) : fmtA(totalVal);
+  s7.addText(totStr, { x: 4.884, y: yTot + 0.05, w: 3.5, h: 0.34, fontSize: 16, bold: true, color: OR, fontFace: 'Montserrat' });
+
+  const notaLegal = tipoActivo === 'saas'
+    ? '* Valores en USD. No incluyen impuestos locales. Vigencia de la propuesta: ' + vigencia + ' días corridos.'
+    : '* Pesos argentinos. No incluyen IVA. Ajustes trimestrales según IPC INDEC. Vigencia: ' + vigencia + ' días corridos.';
+  s7.addText(notaLegal, { x: 1.332, y: yTot + 0.62, w: 7.337, h: 0.32, fontSize: 8, color: '888888', fontFace: 'Montserrat' });
+
+  /* ── SLIDE 8: MÉTRICAS ──────────────────────────────────────── */
+  const s8 = pptx.addSlide();
+  s8.background = { color: WH };
+  s8.addImage({ path: img('foto-metricas.jpg'), x: 0, y: 0, w: 3.171, h: 5.625 });
+  footer(s8);
+  s8.addText([{ text: 'Métricas de ', options: { bold: true,  color: DK } },
+              { text: 'Estabilidad',     options: { bold: false, color: OR } }],
+    { x: 3.679, y: 1.3, w: 4.5, h: 0.45, fontSize: 20, fontFace: 'Montserrat' });
+  s8.addShape(SH.RECTANGLE, { x: 3.679, y: 1.763, w: 2.311, h: 1.081,
+    fill: { color: OR }, line: { type: 'none' } });
+  s8.addText('98%', { x: 3.679, y: 1.763, w: 2.311, h: 1.081,
+    fontSize: 52, bold: true, color: WH, fontFace: 'Montserrat', align: 'center', valign: 'middle' });
+  s8.addText([{ text: 'Tasa de Retención de Talento\n', options: { bold: true } },
+              { text: 'Nuestra rotación es inferior al 2%, protegiendo su curva de aprendizaje.' }],
+    { x: 5.86, y: 1.95, w: 3.091, h: 0.8, fontSize: 10, color: DK, fontFace: 'Montserrat' });
+  s8.addText('El valor hora en SOOFT no es solo un importe; es un concepto de servicio que excede lo económico para aportar valor real al negocio.',
+    { x: 3.679, y: 2.978, w: 4.46, h: 0.5, fontSize: 10, color: MU, fontFace: 'Montserrat' });
+
+  /* ── SLIDE 9: ROADMAP ──────────────────────────────────────── */
+  const s9 = pptx.addSlide();
+  s9.background = { color: WH };
+  footer(s9);
+  s9.addText([{ text: 'Roadmap de ',      options: { bold: true,  color: DK } },
+              { text: 'Implementación', options: { bold: false, color: OR } }],
+    { x: 2.0, y: 1.066, w: 6.0, h: 0.45, fontSize: 20, fontFace: 'Montserrat', align: 'center' });
+  const etapas9 = [
+    { label: 'Descubrimiento',  desc: 'Mapeo de necesidades y alineación de prioridades.',      x: 0.742 },
+    { label: 'Onboarding',      desc: 'Inducción cultural y técnica dirigida por DM.',      x: 3.0   },
+    { label: 'Operación Ágil', desc: 'Gestión de Sprints y reportes de desempeño.', x: 5.258 },
+    { label: 'Mejora Continua', desc: 'Soporte de IA y escalabilidad del servicio.',                 x: 7.516 },
   ];
-  s5.addText('4. FORMA DE PAGO Y CONDICIONES COMERCIALES', {x:.35,y:1.1,w:9.3,h:.3,fontSize:12,bold:true,color:DK,fontFace:'Arial'});
-  conds.forEach((c,i)=>{
-    s5.addText([{text:'',options:{bullet:true}},{text:c}],
-      {x:.5,y:1.5+i*.38,w:9.1,h:.35,fontSize:11,color:MU,fontFace:'Arial',valign:'top',bullet:{color:OR}});
+  etapas9.forEach(function(e) {
+    s9.addShape(SH.RECTANGLE, { x: e.x, y: 1.865, w: 1.8, h: 0.387,
+      fill: { color: OR }, line: { type: 'none' } });
+    s9.addText(e.label, { x: e.x, y: 1.865, w: 1.8, h: 0.387,
+      fontSize: 10, bold: true, color: WH, fontFace: 'Montserrat', align: 'center', valign: 'middle' });
+    s9.addShape(SH.RECTANGLE, { x: e.x + 0.82, y: 2.39, w: 0.165, h: 0.165,
+      fill: { color: OR }, line: { type: 'none' } });
+    s9.addText(e.desc, { x: e.x, y: 2.72, w: 1.9, h: 0.65,
+      fontSize: 9, color: DK, fontFace: 'Montserrat', align: 'center' });
   });
 
-  // Download
-  const fileName = `SOOFT_${tipoLabel.replace(/ /g,'_')}_${empresa.replace(/[^a-zA-Z0-9]/g,'_')}.pptx`;
-  pptx.writeFile({fileName}).then(()=>{
-    const msg=$('msg-save');
-    msg.innerHTML='<div class="bridge-dot" style="background:var(--green)"></div><span style="color:var(--green)">✓ PowerPoint generado: '+fileName+'</span>';
-    msg.style.cssText='display:flex;background:var(--green-lt);border-color:#A7F3D0';
-  });
-}
-
-/* ════ INIT ════ */
-setSrv('cliente');
-calcP();
-// Init tipo after DOM is ready
-setTimeout(()=>{ setTipoNav('staff'); }, 100);
-// Refresh resumen when switching to propuesta tab
-
-</script>
-</body>
-</html>
+  /* ── SLIDE 10: PRÓXIMOS PASOS ──────────────────────────────── */
+  const s10 = pptx.addSlide();
+  s10.background = { color: WH };
+  footer(s10);
+  s10.addText([{ text: '¿Próximos ', options: { bold: false, color: DK } },
+               { text: 'Pasos?',             options: { bold: true,  color: OR } }],
+    { x: 1.0, y: 0.82, w: 8.0, h: 0.96, fontSize: 52, fontFace: 'Montserrat', align: 'center' });
+  s10.addText('Estamos listos para potenciar el equipo de ' + empresa + '.',
+    { x: 0.644, y: 1.84, w: 8.711, h: 0.44, fontSize: 14, color: DK, fontFace: 'Montserrat', align: 'center' });
+  s10.addText(comercial,
+    { x: 1.483, y: 2.65, w: 7.034, h: 0.38, fontSize: 16, bold: true, color: DK, fontFace: 'Montserrat', align: 'center' });
+  s10.addText(cargo,
+    { x: 1.483, y: 3.03, w: 7.034, h: 0.3,  fontSize: 13, color: MU, fontFace: 'Montserrat', align: 'center' });
+  s10.addText('i
